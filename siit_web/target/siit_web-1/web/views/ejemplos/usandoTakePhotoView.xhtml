@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+
+    <ui:param name="paramBackBean" value="#{usandoTakePhotoBackBean}"/>
+
+    <ui:define name="headerContent">
+        Ejemplo como usar componente de camara: TakePhoto
+    </ui:define>
+    <ui:define name="content">
+
+        <h:form id="formEjemplo" style="min-height: 480px;">
+            <p:lightBox>
+                <h:outputLink value="#{usandoTakePhotoBackBean.imagenbase64}">
+                    <p:graphicImage
+                            value="#{usandoTakePhotoBackBean.imagen1}"
+                            stream="false"
+                            style="width: 300px; border: solid 1px #808080;display: block; min-height: 100px;"/>
+                </h:outputLink>
+            </p:lightBox>
+            <mc:TakePhoto2 id="takePhoto" selectionListener="#{usandoTakePhotoBackBean.seleccionar}"
+                           buttonStyle="width:300px;"/>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

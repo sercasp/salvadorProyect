@@ -1,0 +1,288 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{listaAutorizacionBackBean}"/>
+
+    <ui:define name="headerContent">
+        Autorizaciones
+    </ui:define>
+
+    <ui:define name="content">
+        <style type="text/css">
+            .size {
+                margin-left: 100px;
+            }
+
+            .size2 {
+                height: 25px !important;
+            }
+
+            .size3 {
+                margin-bottom: 15px !important;
+                margin-top: 10px !important;
+            }
+
+            .size4 {
+                margin-bottom: 15px;
+                margin-top: 10px !important;
+                margin-left: 15px;
+            }
+
+            .width {
+                width: 350px;
+            }
+
+            .pasivo {
+                background-color: red !important;
+            }
+
+            .titulo {
+                font-weight: 500;
+                font-size: 20px;
+                line-height: 32px;
+                margin: 0;
+                color: white;
+            }
+
+            .margin {
+                margin-left: 60px !important;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 2px !important;
+            }
+
+            .btn-width-auto {
+                width: auto !important;
+            }
+
+            .float-left {
+                float: left !important;
+            }
+
+            .float-right {
+                float: right !important;
+            }
+
+            .clear-fix {
+                clear: both;
+            }
+
+            .m-b-10 {
+                margin-bottom: 10px !important;
+            }
+
+            .m-t-10 {
+                margin-top: 10px !important;
+            }
+
+            .font color {
+                font-weight: bold;
+                color: #000000;
+            }
+
+            .font-color-pasivo {
+                font-weight: bold;
+                color: #ff0c0c;
+            }
+
+            .cuadrado {
+                width: 20px;
+                height: 20px;
+                background: red;
+                position: center;
+            }
+        </style>
+        <h:form id="formLista" style="height: 500px">
+            <p:dataTable var="r"
+                         value="#{listaAutorizacionBackBean.listaAutorizaciones}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaAutorizacionBackBean.selectedRow}"
+                         rowKey="#{r.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="8" pageLinks="3" scrollHeight="400"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <f:facet name="header">
+                    <!--            Botones-->
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen">
+                                <p:outputPanel style="display: block; text-align: left;">
+                                    <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                 style="width: 60%"
+                                                 value="#{listaAutorizacionBackBean.txtBuscar}"
+                                                 id="buscar" autocomplete="off"/>
+                                    <p:commandButton icon="ui-icon-search"
+                                                     style="margin-left: 5px"
+                                                     update="formLista"
+                                                     action="#{listaAutorizacionBackBean.cargarLista}"/>
+                                </p:outputPanel>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-plus"
+                                                 value="#{labelName.btnAgregar}"
+                                                 ajax="true"
+                                                 update=":formLista :formDetalle"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 action="#{listaAutorizacionBackBean.limpiar}"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-pencil" value="#{labelName.btnEditar}"
+                                                 ajax="true" update=":formDetalle"
+                                                 actionListener="#{listaAutorizacionBackBean.editar}"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <!-- COlumnas-->
+                <!-- Evento doble click sobre una fila -->
+                <!--                <p:ajax event="rowSelect" listener="#{listaAutorizacionBackBean.editar}"-->
+                <!--                        update=":formDetalle" resetValues="true"/>-->
+
+                <p:column headerText="Codigo" styleClass="Wid20">
+                    <h:outputText value="#{r.codigo}"/>
+                </p:column>
+
+                <p:column headerText="Nombre" styleClass="Wid60">
+                    <h:outputText value="#{r.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Modulo" styleClass="Wid20">
+                    <h:outputText value="#{r.moduloIdByModuloId.nombre}"/>
+                </p:column>
+                <p:column headerText="Pasivo" style="text-align: center; width: 10%">
+                    <p:selectBooleanCheckbox value="#{r.pasivo}" disabled="true"
+                                             styleClass="ui-linus-enabled"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+        <!--            Modal Agregar-->
+        <p:dialog id="dlgFormDetalle" widgetVar="wvDlgFormDetalle" modal="true" width="60%"
+                  closable="false" resizable="false" showEffect="clip" hideEffect="fold" styleClass="disable-scroll"
+                  style="padding: 10px">
+            <h:form id="formDetalle" style="height: 210px; width: 100%">
+
+                <p:inputText type="hidden" value="#{listaAutorizacionBackBean.hfId}"/>
+                <p:panel style="height: auto" styleClass="fondoPaneles">
+                    <f:facet name="header">
+                        <!--Botones-->
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-6 sinMargen">
+                                    <h:outputText value=" Autorización ID: #{listaAutorizacionBackBean.hfId}"
+                                                  rendered="#{!listaAutorizacionBackBean.nuevoRegistro}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-trash" value="#{labelName.btnEliminar}"
+                                                     actionListener="#{listaAutorizacionBackBean.elminar}"
+                                                     update=":formDetalle :formLista"
+                                                     rendered="#{listaAutorizacionBackBean.btnElminiarVisible}">
+                                        <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                   message="#{dialogText.deleteConfirmationTextContent}"
+                                                   icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                     update="formDetalle :formLista"
+                                                     action="#{listaAutorizacionBackBean.guardar}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                     actionListener="#{listaAutorizacionBackBean.limpiar}"
+                                                     update="formLista"
+                                                     onclick="PF('wvDlgFormDetalle').hide()" immediate="true"/>
+                                </div>
+                            </div>
+                        </div>
+                    </f:facet>
+                    <!--Campos-->
+                    <div class="ui-g-12 sinMargen">
+                        <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                            <p:outputLabel for="codigo" value="Código:" style="margin-bottom: 15px;"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-5 sinMargen">
+                            <p:inputText id="codigo" label="Código" required="true"
+                                         style="width: 95%!important; margin-bottom: 15px; margin-left: 15px"
+                                         readonly="#{!listaAutorizacionBackBean.nuevoRegistro}"
+                                         value="#{listaAutorizacionBackBean.txtCodigo}" autocomplete="off">
+                                <f:validateLength minimum="0" maximum="20"/>
+                            </p:inputText>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                            <p:outputLabel for="nombre" value="Nombre:"
+                                           style=" margin-left: 20px; margin-bottom: 15px"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-5 sinMargen">
+                            <p:inputText id="nombre" label="Nombre" required="true"
+                                         style="width: 95%!important;  margin-left: 20px; margin-bottom: 15px;"
+                                         value="#{listaAutorizacionBackBean.txtNombre}" autocomplete="off">
+                                <f:validateRegex pattern="#{listaParametroBackBean.regExpDescriptor}"/>
+                                <f:validateLength minimum="0" maximum="100"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 sinMargen">
+                        <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                            <p:outputLabel for="descripcion" value="Descripción:"
+                                           style="margin-bottom: 15px;"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-5 sinMargen">
+                            <p:inputTextarea id="descripcion" autoResize="true" rows="1"
+                                             style="width: 95%!important; margin-bottom: 15px; margin-left: 15px"
+                                             value="#{listaAutorizacionBackBean.txtDescripcion}"
+                                             label="Descripcion">
+                                <f:validateLength minimum="0" maximum="1000"/>
+                                <p:keyFilter regEx="/^[a-zA-Z \áéíóúAÉÍÓÚÑñ\;]*$/"/>
+                                <p:ajax/>
+                            </p:inputTextarea>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                            <p:outputLabel for="modulo" value="Módulo:" style="margin-left: 20px;"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-5 sinMargen">
+                            <p:selectOneMenu id="modulo" label="Modulo"
+                                             style="width: 95%!important; margin-left: 20px;"
+                                             value="#{listaAutorizacionBackBean.cmbModulo}">
+                                <f:selectItem itemLabel="Seleccione Módulo" itemValue="#{null}"/>
+                                <f:selectItems var="md" value="#{listaAutorizacionBackBean.listaModulos}"
+                                               itemLabel="#{md.nombre}" itemValue="#{md.id}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <p:outputLabel rendered="#{listaAutorizacionBackBean.nuevoRegistro}"/>
+                    </div>
+                    <div class="ui-g-12 sinMargen">
+                        <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                            <p:outputLabel for="pasivo" value="Pasivo:" style="width: 10px"
+                                           rendered="#{!listaAutorizacionBackBean.nuevoRegistro}"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                            <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                                   style="width: 100%; margin-left: 15px"
+                                                   value="#{listaAutorizacionBackBean.rbPasivo}"
+                                                   rendered="#{!listaAutorizacionBackBean.nuevoRegistro}"/>
+                        </div>
+                    </div>
+
+                    <p:keyFilter for="codigo" regEx="/#{listaAutorizacionBackBean.regExpCodigo}/"/>
+                    <p:keyFilter for="nombre" regEx="/#{listaAutorizacionBackBean.regExpDescriptor}/"/>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

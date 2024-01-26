@@ -1,0 +1,219 @@
+
+body {
+    background-color: #003d50;
+    margin: 0;
+    padding: 0;
+    color: #586064;
+    font-family: "Helvetica Neue Regular",Helvetica,sans-serif;
+    font-size: 12px !important;
+}
+
+#login {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 350px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+#login_table{
+    width: 100%;
+}
+
+#login_wrapper {
+    /*background: -moz-linear-gradient(center top , #FAFAFA 0%, #E5E5E5 100%) repeat scroll 0 0 transparent;*/
+    background-color: #EEEEEE ;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.4);
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 370px;
+    min-width: 280px;
+    overflow: hidden;
+}
+
+#left_side {
+    float: left;
+    padding-right: 15px;
+    width: 320px;
+}
+
+#right_side {
+    text-align: right;
+    vertical-align: top;
+}
+#right_side {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 10px;
+}
+
+#logo_wrapper {
+    margin: 35px auto 10px;
+    max-height: 120px;
+    overflow: hidden;
+    text-align: center;
+}
+
+#loginwidget {
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width:65%;
+    padding: 10px;
+    text-align: justify;
+}
+
+#menu {
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width:65%;
+    padding: 10px;
+    text-align: center;
+}
+
+.ui-icon-Web{
+    background-image: url("#{resource['img/icons/modulos/web.png']}") !important;
+}
+
+
+
+.menu-modulo{
+    font-size: 1em !important;
+    height: 70px;
+    padding: 5px;
+    width: 50%;
+    margin: 5px;
+    background: -moz-linear-gradient(center top , #EDEDED 5%, #DFDFDF 100%) repeat scroll 0 0 #EDEDED;
+    border: 1px solid #888888;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 0 0 #FFFFFF inset;
+    color: #4D404D !important;
+    display: inline-block;
+    padding: 2px 5px;
+    text-decoration: none;
+    text-shadow: 1px 1px 0 #FFFFFF;
+    cursor:pointer
+}
+
+.images {
+    background: url("#{resource['img/icons/modulos/web.png']}") no-repeat top left;
+}
+
+.ui-icon-Mobile{
+    background-image: url("#{resource['img/icons/modulos/movil.png']}") !important;
+}
+
+#footer, #footer a {
+    color: #000000;
+}
+#footer {
+    font-size: 10px;
+    line-height: 14px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 6px;
+    text-align: center;
+}
+
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.input-group {
+    border-collapse: separate;
+    display: table;
+    position: relative;
+}
+
+.input-group-addon:first-child {
+    border-right: 0 none;
+}
+
+.input-group .form-control:first-child, .input-group-addon:first-child, .input-group-btn:first-child > .btn, .input-group-btn:first-child > .btn-group > .btn, .input-group-btn:first-child > .dropdown-toggle, .input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle), .input-group-btn:last-child > .btn-group:not(:last-child) > .btn {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.input-group-addon {
+    background-color: #EEEEEE;
+'border: 1px solid #CCCCCC;
+border-radius: 4px;
+    color: #000000;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1;
+    padding: 4px 8px;
+    text-align: center;
+}
+
+.input-group-addon, .input-group-btn {
+    vertical-align: middle;
+    white-space: nowrap;
+    width: 1%;
+}
+
+.input-group-addon, .input-group-btn, .input-group .form-control {
+    display: table-cell;
+}
+
+input.btn-block[type="submit"], input.btn-block[type="reset"], input.btn-block[type="button"] {
+    width: 100%;
+}
+
+button, html input[type="button"], input[type="reset"], input[type="submit"] {
+    cursor: pointer;
+}
+
+.btn-block {
+    display: block;
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+}
+
+.btn-primary {
+    background-color: #428BCA;
+    border-color: #357EBD;
+    color: #FFFFFF;
+}
+
+.btn {
+    -moz-user-select: none;
+    background-image: none;
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open .dropdown-toggle.btn-primary {
+    color: #fff;
+    background-color: #3276b1;
+    border-color: #285e8e;
+}
+
+.entorno {
+    text-align: center;
+    margin-top: 1px;
+    padding: 5px;
+    font-weight: bold;
+    background: none repeat scroll 0 0 #FBEC88 !important;
+    border: 1px solid #FAD42E !important;
+    color: #363636 !important;
+}
+

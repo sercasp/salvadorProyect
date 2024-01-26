@@ -1,0 +1,210 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaEstablecimientoBackBean}"/>
+
+    <ui:define name="headerContent">
+        Establecimientos
+    </ui:define>
+    <ui:define name="content">
+        <style>
+            .size2 {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 3px !important;
+            }
+        </style>
+        <h:form id="formLista">
+            <p:dataTable var="r"
+                         value="#{listaEstablecimientoBackBean.listaEstablecimientos}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaEstablecimientoBackBean.selectedRow}"
+                         rowKey="#{r.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="12"
+                         scrollable="true"
+                         scrollHeight="410"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <div class="ui-g-12 ui-md-6 ui-lg-9" style="padding-top: 16px;">
+                                            <span class="md-inputfield">
+                                                  <p:inputText autocomplete="off"
+                                                               value="#{listaEstablecimientoBackBean.txtBuscar}"
+                                                  />
+                                                <label>#{labelName.placeholderBuscar}</label>
+                                            </span>
+
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}"
+                                                 ajax="true"
+                                                 update="formLista"
+                                                 action="#{listaEstablecimientoBackBean.cargarLista}"/>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3"></div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3">
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="fa fa-plus-circle"
+                                                 styleClass="green-btn"
+                                                 value="#{labelName.btnAgregar}" ajax="true"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 update=":formDetalle"
+                                                 action="#{listaEstablecimientoBackBean.limpiar}"
+                                                 resetValues="true"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="ui-icon-pencil" value="#{labelName.btnEditar}"
+                                                 ajax="true"
+                                                 update=":formDetalle"
+                                                 action="#{listaEstablecimientoBackBean.editar}"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <!-- Evento doble click sobre una fila -->
+                <p:ajax event="rowSelect" listener="#{listaEstablecimientoBackBean.editar}"
+                        update=":formDetalle"
+                        resetValues="true"/>
+
+                <p:column headerText="Codigo" styleClass="Wid10">
+                    <h:outputText value="#{r.codigo}"/>
+                </p:column>
+
+                <p:column headerText="Nombre" styleClass="Wid50">
+                    <h:outputText value="#{r.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Pasivo" style="text-align: center">
+                    <p:selectBooleanCheckbox value="#{r.pasivo}" disabled="true"
+                                             styleClass="ui-linus-enabled"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+        <p:dialog id="dlgFormDetalle" modal="true" resizable="false" showEffect="clip"
+                  hideEffect="fold" styleClass="disable-scroll"
+                  widgetVar="wvDlgFormDetalle" closable="false" style="padding: 0">
+            <h:form id="formDetalle" styleClass="maxHeight" style="width: 100%;">
+                <p:inputText type="hidden" value="#{listaEstablecimientoBackBean.hfId}"/>
+                <p:panel styleClass="fondoPaneles">
+                    <f:facet name="header">
+
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                    <h:outputText value="ID: #{listaEstablecimientoBackBean.hfId}"
+                                                  rendered="#{!listaEstablecimientoBackBean.nuevoRegistro}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="fa fa-clipboard fa-lg"
+                                                     value="#{labelName.btnAuditoria}"
+                                                     oncomplete="PF('tipoCatalogoAuditWV').show();"
+                                                     process="@this"
+                                                     update=":tipoCatalogoAudit"
+                                                     rendered="#{listaEstablecimientoBackBean.btnAuditoriaVisible}"
+                                                     action="#{listaEstablecimientoBackBean.cargarAuditoria}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-trash" value="#{labelName.btnEliminar}"
+                                                     actionListener="#{listaEstablecimientoBackBean.elminar}"
+                                                     update="formDetalle :formLista"
+                                                     rendered="#{listaEstablecimientoBackBean.btnElminiarVisible}">
+                                        <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                   message="#{dialogText.deleteConfirmationTextContent}"
+                                                   icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                     actionListener="#{listaEstablecimientoBackBean.guardar}"
+                                                     update="formDetalle :formLista"
+                                                     rendered="#{listaEstablecimientoBackBean.btnGuardarVisible}"/>
+                                </div>
+
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                     actionListener="#{listaEstablecimientoBackBean.limpiar}"
+                                                     update="formDetalle"
+                                                     onclick="PF('wvDlgFormDetalle').hide()"
+                                                     resetValues="true" process="@this"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </f:facet>
+
+                    <p:panel id="panelCampos" style="overflow: auto!important;">
+
+                        <div class="ui-g-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="codigo" value="Código:"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                <p:inputText autocomplete="off" id="codigo"
+                                             label="Código"
+                                             required="true"
+                                             style="width: 100%"
+                                             value="#{listaEstablecimientoBackBean.txtCodigo}">
+                                    <f:validateLength minimum="0" maximum="20"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="nombre" value="Nombre:"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                <p:inputText autocomplete="off" id="nombre"
+                                             label="Nombre"
+                                             required="true"
+                                             style="width: 105%"
+                                             value="#{listaEstablecimientoBackBean.txtNombre}">
+                                    <f:validateRegex pattern="#{listaEstablecimientoBackBean.regExpNombre}"/>
+                                    <f:validateLength minimum="0" maximum="100"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="pasivo" value="Pasivo:" styleClass="size2"
+                                               rendered="#{!listaEstablecimientoBackBean.nuevoRegistro}"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo" styleClass="size2"
+                                                       value="#{listaEstablecimientoBackBean.rbPasivo}"
+                                                       rendered="#{!listaEstablecimientoBackBean.nuevoRegistro}"/>
+                            </div>
+                        </div>
+                    </p:panel>
+
+
+                    <p:keyFilter for="codigo" regEx="/#{listaEstablecimientoBackBean.regExpCodigo}/"/>
+                    <p:keyFilter for="nombre" regEx="/#{listaEstablecimientoBackBean.regExpNombre}/"/>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+        <mc:dialogAuditoria id="tipoCatalogoAudit" auditoriaId="tipoCatalogoAuditWV"
+                            auditoriaList="#{listaEstablecimientoBackBean.listaAuditoria}"/>
+    </ui:define>
+</ui:composition>

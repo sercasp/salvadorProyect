@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Sistema Integrado de Información Turística</title>
+    <link href="#{facesContext.externalContext.requestContextPath}/resources/siit/1_0/img/aplicacion/favintur.ico" rel="shortcut icon" type="image/x-icon"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <h:outputStylesheet name="css/nanoscroller.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/ripple.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/grid.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/style.css" library="siit"/>
+    <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="sapphire-layout"/>
+</h:head>
+
+<h:body class="fontRegular red-back">
+
+    <div class="Container100 Top20Percent PosAbsolute MarAuto OvHidden">
+        <div class="Wid50 MarAuto OvHidden TexAlCenter">
+            <h:graphicImage name="images/logo-white.svg" library="sapphire-layout" style="width: 100px;"/>
+
+            <div class="EmptyBox20"></div>
+            <span class="white Fs100 Wid100 DispBlock">404</span>
+            <span class="white Wid100 DispBlock Fs24">Pagina No Encontrada</span><br/>
+            <span class="white Wid100 DispBlock Fs20">Lo sentimos, pero el recurso que busca no se ha encontrado.<br/>
+            <span class="white Wid100 DispBlock Fs24">Disculpe las molestias #{sessionBean.usuarioActual.nombres}
+                #{sessionBean.usuarioActual.apellidos}</span><br/>
+            </span>
+
+            <div class="EmptyBox20"></div>
+            <p:button value="Regresar" styleClass="Fs24" href="/"></p:button>
+
+            <div class="EmptyBox50"></div>
+        </div>
+    </div>
+
+</h:body>
+
+</html>

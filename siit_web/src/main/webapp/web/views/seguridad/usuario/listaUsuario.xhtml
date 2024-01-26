@@ -1,0 +1,834 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaUsuarioBckBean}"/>
+
+    <ui:define name="headerContent">
+        Usuarios
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .margin {
+                margin-left: 60px !important;
+            }
+
+            .size {
+                margin-bottom: 30px;
+                margin-top: 10px !important;
+            }
+
+            .width {
+                width: 350px;
+            }
+        </style>
+        <!--Form principal lista de usuarios-->
+        <h:form id="formLista">
+
+            <div class="ui-g">
+                <div class="ui-g-12 ui-md-12 ui-lg-6">
+                    <div class="ui-g-12 ui-md-6 ui-lg-9" style="padding-top: 16px;">
+                                            <span class="md-inputfield">
+                                                  <p:inputText value="#{listaUsuarioBckBean.txtBuscar}"
+                                                               autocomplete="off"/>
+                                                <label>#{labelName.placeholderBuscar}</label>
+                                            </span>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                        <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                         value="#{labelName.btnBuscar}"
+                                         ajax="true"
+                                         update="formLista"
+                                         action="#{listaUsuarioBckBean.cargarLista}"/>
+                    </div>
+                </div>
+
+                <div class="ui-g-12 ui-md-12 ui-lg-3"></div>
+
+                <div class="ui-g-12 ui-md-12 ui-lg-3">
+                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                        <p:commandButton icon="fa fa-plus-circle" styleClass="cyan-btn"
+                                         value="#{labelName.btnAgregar}"
+                                         ajax="true"
+                                         update=":formDetalle formLista"
+                                         action="#{listaUsuarioBckBean.limpiar}"
+                                         immediate="true"
+                                         onclick="PF('wvDlgFormDetalle').show()"
+                                         resetValues="true"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                        <p:commandButton icon="fa fa-pencil-square-o" styleClass="green-btn"
+                                         value="#{labelName.btnEditar}"
+                                         ajax="true"
+                                         update=":formDetalle"
+                                         action="#{listaUsuarioBckBean.editar}"
+                                         resetValues="true"/>
+                    </div>
+                </div>
+            </div>
+
+            <p:dataTable var="r"
+                         value="#{listaUsuarioBckBean.listaUsuarios}"
+                         scrollable="false"
+                         scrollHeight="410"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaUsuarioBckBean.selectedRow}"
+                         rowKey="#{r.id}"
+                         paginator="true"
+                         emptyMessage="tableEmptyMessage}"
+                         rows="10"
+                         reflow="true"
+                         pageLinks="3"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+
+                <!-- Evento doble click sobre una fila -->
+<!--                <p:ajax event="rowSelect" listener="#{listaUsuarioBckBean.editar}"-->
+<!--                        update=":formDetalle"-->
+<!--                        resetValues="true"/>-->
+
+                <p:column headerText="usuario" styleClass="Wid20">
+                    <h:outputText value="#{r.username}"/>
+                </p:column>
+
+                <p:column headerText="nombre" styleClass="Wid60">
+                    <h:outputText value="#{r.nombres} #{r.apellidos}"/>
+                </p:column>
+
+                <p:column headerText="Seleccionar" styleClass="Wid10 TexAlCenter">
+                    <p:selectBooleanCheckbox value="#{r.pasivo}" disabled="true"
+                                             styleClass="ui-linus-enabled"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+        <!--Modal agregar de usuario-->
+        <p:dialog header="Usuarios" id="dlgFormDetalle"
+                  widgetVar="wvDlgFormDetalle" modal="true" resizable="false" width="95%" closable="false"
+                  responsive="true" positionType="absolute">
+            <h:form id="formDetalle">
+                <p:panel styleClass="fondoPaneles">
+                    <p:focus context="formDetalle"/>
+                    
+                        <div class="ui-g">
+
+                            <div class="ui-g-12 ui-md-12 ui-lg-12">
+                                <h:outputText value="ID: #{listaUsuarioBckBean.hfId}"
+                                              rendered="#{!listaUsuarioBckBean.nuevoRegistro}"/>
+
+                                <h:outputText style="color: yellow" value=" (Conectado)"
+                                              rendered="#{listaUsuarioBckBean.usuarioConectado}"/>
+                            </div>
+
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon="fa fa-clipboard fa-lg"
+                                                 immediate="true"
+                                                 value="btnAuditoria}"
+                                                 oncomplete="PF('tipoCatalogoAuditWV').show();"
+                                                 process="@this" update=":tipoCatalogoAudit"
+                                                 rendered="#{listaUsuarioBckBean.btnAuditoriaVisible}"
+                                                 action="#{listaUsuarioBckBean.cargarAuditoria}"/>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon="fa fa-trash-o" styleClass="red-btn"
+                                                 value="btnEliminar}"
+                                                 actionListener="#{listaUsuarioBckBean.eliminar()}"
+                                                 immediate="true"
+                                                 resetValues="true"
+                                                 update=":formDetalle :formLista"
+                                                 rendered="#{listaUsuarioBckBean.btnElminiarVisible}">
+                                    <p:confirm
+                                            header="#{dialogText.deleteConfirmationTextHeader}"
+                                            message="#{dialogText.deleteConfirmationTextContent}"
+                                            icon="fa fa-bullhorn"/>
+                                </p:commandButton>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon=" fa fa-arrow-circle-up"
+                                                 value="Importar" immediate="true"
+                                                 actionListener="#{listaUsuarioBckBean.modalImportarUsuarios}"/>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon="fa fa-save" styleClass="green-btn"
+                                                 value="btnGuardar}"
+                                                 actionListener="#{listaUsuarioBckBean.guardar}"/>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon="fa fa-ban" styleClass="orange-btn"
+                                                 value="btnCerrarModal}"
+                                                 actionListener="#{listaUsuarioBckBean.limpiar}"
+                                                 update=":formDetalle"
+                                                 onclick="PF('modalMenus').hide()"
+                                                 immediate="true"
+                                                 resetValues="true" process="@this"/>
+                            </div>
+
+
+                        </div>
+
+                    
+
+
+                    <p:tabView id="tabV" dynamic="true" border="none">
+
+                        <p:tab id="tabDatos" title="Datos Generales">
+                            <p:panel id="datosG">
+                                <!--datos generales-->
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                        <p:outputLabel value="usuario}:"/>
+                                        <p:inputText id="username"
+                                                     maxlength="30"
+                                                     autocomplete="off"
+                                                     styleClass="size"
+                                                     required="true"
+                                                     value="#{listaUsuarioBckBean.txtUsername}"
+                                                     disabled="#{!listaUsuarioBckBean.nuevoRegistro}">
+                                            <f:validateRegex pattern="#{listaUsuarioBckBean.regExpUsername}"/>
+                                            <f:validateLength minimum="0" maximum="50"/>
+                                        </p:inputText>
+
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                        <p:outputLabel value="nombres}:"/>
+                                        <p:inputText maxlength="50" id="nombres" styleClass="size"
+                                                     required="true"
+                                                     autocomplete="off"
+                                                     value="#{listaUsuarioBckBean.txtNombres}">
+                                            <f:validateRegex
+                                                    pattern="#{listaUsuarioBckBean.regExpNombresyApellidos}"/>
+                                            <f:validateLength minimum="0" maximum="50"/>
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                        <p:outputLabel value="apellidos}:"/>
+                                        <p:inputText maxlength="50" id="apellidos" styleClass="size"
+                                                     value="#{listaUsuarioBckBean.txtApellidos}"
+                                                     autocomplete="off"
+                                                     label="Apellidos" required="true">
+                                            <f:validateRegex
+                                                    pattern="#{listaUsuarioBckBean.regExpNombresyApellidos}"/>
+                                            <f:validateLength minimum="0" maximum="50"/>
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                        <p:outputLabel value="email}:"/>
+                                        <p:inputText maxlength="100" id="email"
+                                                     styleClass="size"
+                                                     autocomplete="off"
+                                                     value="#{listaUsuarioBckBean.txtEmail}"
+                                                     label="E-mail" required="true">
+                                            <f:validateLength minimum="0" maximum="100"/>
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                        <p:outputLabel value="referencia}:"/>
+                                        <p:inputText id="referencia" styleClass="size"
+                                                     autocomplete="off"
+                                                     maxlength="200"
+                                                     value="#{listaUsuarioBckBean.txtReferencia}"
+                                                     label="Referencia">
+                                            <f:validateRegex
+                                                    pattern="#{listaUsuarioBckBean.regExpReferencia}"/>
+                                            <f:validateLength minimum="0" maximum="200"/>
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                        <p:outputLabel value="telefono}:"/>
+                                        <p:inputText id="telefono" styleClass="size"
+                                                     autocomplete="off"
+                                                     maxlength="8"
+                                                     value="#{listaUsuarioBckBean.txtTelefono}"
+                                                     label="Referencia">
+                                            <f:validateRegex
+                                                    pattern="#{listaUsuarioBckBean.regExpSoloNumeros}"/>
+                                            <f:validateLength minimum="0" maximum="8"/>
+                                        </p:inputText>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                        <p:outputLabel value="empleado} :"/>
+                                        <p:selectOneMenu label="btnSeleccionar}"
+                                                         value="#{listaUsuarioBckBean.empleadoSeleccionado}"
+                                                         filter="true"
+                                                         rendered="true"
+                                                         filterMatchMode="contains">
+                                            <f:selectItem itemLabel="btnSeleccionar}"
+                                                          itemValue="#{null}"/>
+                                            <f:selectItems var="varEmpleado"
+                                                           value="#{listaUsuarioBckBean.listaEmpleados}"
+                                                           itemLabel="#{varEmpleado.nombre_completo}"
+                                                           itemDisabled="#{varEmpleado.liquidado}"
+                                                           itemValue="#{varEmpleado.id}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+
+                                </div>
+
+
+                                <!--configuraciones-->
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                        <p:outputLabel value="verInfoPantalla}:"/>
+                                        <p:selectBooleanButton onLabel="Si" offLabel="No" id="infoPantalla"
+                                                               value="#{listaUsuarioBckBean.rbVerInfoPantalla}"/>
+
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                        <p:outputLabel value="verDetalleErrores}:"/>
+                                        <p:selectBooleanButton onLabel="Si" offLabel="No" id="infoError"
+                                                               value="#{listaUsuarioBckBean.rbVerInfoError}"/>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                        <p:outputLabel value="auditarInicioSession}:"/>
+                                        <p:selectBooleanButton onLabel="Si" offLabel="No"
+                                                               id="auditInicioSession"
+                                                               value="#{listaUsuarioBckBean.rbAuditarInicioSession}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                        <p:outputLabel value="auditarNavegacion}:"/>
+                                        <p:selectBooleanButton onLabel="Si" offLabel="No" id="auditNavegacion"
+                                                               value="#{listaUsuarioBckBean.rbAuditarNavegacion}"/>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                        <p:outputLabel value="verAuditoria}:"/>
+                                        <p:selectBooleanButton onLabel="Si" offLabel="No" id="verAuditoria"
+                                                               value="#{listaUsuarioBckBean.rbVerAuditoria}"/>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-2 ui-lg-2">
+                                        <p:outputLabel value="pasivo}:"
+                                                       rendered="#{!listaUsuarioBckBean.nuevoRegistro}"/>
+                                        <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                                               value="#{listaUsuarioBckBean.rbPasivo}"
+                                                               rendered="#{!listaUsuarioBckBean.nuevoRegistro}"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <p:separator/>
+                                <br/>
+
+                                <!--contraseña-->
+                                <div>
+
+                                    <div class="ui-g">
+                                        <div class="ui-g-12 ui-md-12 ui-lg-12">
+                                            <h2>password}</h2>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-g">
+                                        <!--Combobox de seleccion de tipo de contraseña-->
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:outputLabel for="tipoClave" value="tipo}:"
+                                                           style="margin-bottom: 10px; margin-top: 10px"/>
+                                            <p:selectOneMenu id="tipoClave" label="tipoPassword}:"
+                                                             style="margin-bottom: 10px; margin-top: 10px"
+                                                             value="#{listaUsuarioBckBean.somTipoGeneracionClave}">
+                                                <f:selectItem itemLabel="btnSeleccionar}"
+                                                              itemValue="#{null}"/>
+                                                <f:selectItem itemLabel="Manual" itemValue="manual"/>
+                                                <f:selectItem itemLabel="Aleatoria" itemValue="aleatoria"/>
+                                                <p:ajax update=":formDetalle"
+                                                        event="change"
+                                                        listener="#{listaUsuarioBckBean.seleccionarTipoGeneracionClave}"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                        <div class="ui-g-11 ui-md-5 ui-lg-5">
+                                            <p:outputLabel value="claveAleatoriaGenerada}:  "
+                                                           id="labelClaveAleatoria"
+                                                           style="margin-bottom: 10px; margin-top: 10px"
+                                                           rendered="#{listaUsuarioBckBean.esClaveAleatoria}"/>
+
+                                            <p:outputLabel id="labelClave"
+                                                           value="#{listaUsuarioBckBean.pwContrasena}"
+                                                           style="margin-bottom: 10px; margin-top: 10px"
+                                                           rendered="#{listaUsuarioBckBean.esClaveAleatoria}"/>
+                                        </div>
+
+                                        <div class="ui-g-1 ui-md-1 ui-lg-1">
+                                            <p:commandButton icon="fa fa-refresh" id="btnClave"
+                                                             update="labelClave cambiarClave "
+                                                             immediate="true"
+                                                             action="#{listaUsuarioBckBean.generarClaveTemporal}"
+                                                             rendered="#{listaUsuarioBckBean.esClaveAleatoria}"/>
+                                            <p:outputLabel rendered="#{!listaUsuarioBckBean.esClaveAleatoria}"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="ui-g">
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:outputLabel for="cambiarClave" value="clave}:"
+                                                           style="margin-bottom: 10px; margin-top: 10px"
+                                                           rendered="#{listaUsuarioBckBean.esClaveManual}"/>
+                                            <p:password id="cambiarClave" styleClass="Wid50"
+                                                        autocomplete="off" redisplay="true"
+                                                        maxlength="40"
+                                                        feedback="true"
+                                                        promptLabel="Ingrese una contraseña"
+                                                        weakLabel="Débil"
+                                                        goodLabel="Buena"
+                                                        strongLabel="Excelente"
+                                                        match="claveConfirmacion"
+                                                        style="margin-bottom: 10px; margin-top: 10px"
+                                                        value="#{listaUsuarioBckBean.pwContrasena}"
+                                                        label="Clave"
+                                                        rendered="#{listaUsuarioBckBean.esClaveManual}">
+                                                <p:keyFilter regEx="/#{indexBackBean.regExpClave}/"/>
+                                            </p:password>
+                                        </div>
+
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:outputLabel for="claveConfirmacion" value="confirmacionClave}:"
+                                                           style="margin-bottom: 10px; margin-top: 10px"
+                                                           rendered="#{listaUsuarioBckBean.esClaveManual}"/>
+
+                                            <p:password id="claveConfirmacion" styleClass="Wid50"
+                                                        autocomplete="off" redisplay="true"
+                                                        maxlength="40"
+                                                        feedback="true"
+                                                        style="margin-bottom: 10px; margin-top: 10px"
+                                                        promptLabel="Ingrese una contraseña"
+                                                        weakLabel="Débil"
+                                                        goodLabel="Buena"
+                                                        strongLabel="Excelente"
+                                                        value="#{listaUsuarioBckBean.pwConfirmacionContrasena}"
+                                                        label="Clave Confirmación"
+                                                        rendered="#{listaUsuarioBckBean.esClaveManual}">
+                                                <p:keyFilter regEx="/#{indexBackBean.regExpClave}/"/>
+                                            </p:password>
+                                        </div>
+
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:outputLabel for="claveTemporal" value="claveTemporal}:"
+                                                           style="margin-bottom: 10px; margin-top: 10px"
+                                                           rendered="#{listaUsuarioBckBean.esClaveManual}"/>
+                                            <p:selectBooleanButton id="claveTemporal" onLabel="Si" offLabel="No"
+                                                                   rendered="#{listaUsuarioBckBean.esClaveManual}"
+                                                                   value="#{listaUsuarioBckBean.sbbClaveTemporal}">
+                                                <p:ajax listener="#{listaUsuarioBckBean.seleccionEnClaveTemporal}"/>
+                                            </p:selectBooleanButton>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p:keyFilter for="username" regEx="/#{listaUsuarioBckBean.regExpUsername}/"/>
+                                <p:keyFilter for="nombres"
+                                             regEx="/#{listaUsuarioBckBean.regExpNombresyApellidos}/"/>
+                                <p:keyFilter for="apellidos"
+                                             regEx="/#{listaUsuarioBckBean.regExpNombresyApellidos}/"/>
+                                <p:keyFilter for="referencia"
+                                             regEx="/#{listaUsuarioBckBean.regExpReferencia}/"/>
+                            </p:panel>
+                        </p:tab>
+
+
+                        <p:tab id="tabPermisos" title="Permisos (#{listaUsuarioBckBean.listaRoles.size()})"
+                               rendered="#{!listaUsuarioBckBean.nuevoRegistro}">
+                            <p:panel>
+                                
+                                    <div class="ui-g">
+                                        <p:commandButton icon="fa-plus-circle"
+                                                         value="btnAgregar}"
+                                                         action="#{listaUsuarioBckBean.agregarRol}"
+                                                         update="formDetalle:tabV"
+                                                         rendered="#{listaUsuarioBckBean.btnAgregarPermisoVisible}"/>
+
+                                    </div>
+                                
+
+                                <div class="ui-g">
+                                    <div class="ui-g-11 ui-md-5 ui-lg-5">
+                                        <p:outputLabel>entidad}</p:outputLabel>
+                                        <p:inputText placeholder="btnSeleccionar}" id="txtEntidad"
+                                                     readonly="true" required="true" style="width: 100%"
+                                                     value="#{listaUsuarioBckBean.seleccionandoEntidad}"/>
+                                    </div>
+                                    <div class="ui-g-1 ui-md-1 ui-lg-1">
+                                        <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                         type="image"
+                                                         action="#{listaUsuarioBckBean.agregarEntidadListado}"
+                                                         update=":dlgAgregarEntidad txtRol"/>
+                                    </div>
+                                    <div class="ui-g-11 ui-md-5 ui-lg-5">
+                                        <p:outputLabel>rol}:</p:outputLabel>
+                                        <p:inputText placeholder="btnSeleccionar}" id="txtRol"
+                                                     readonly="true" required="true"
+                                                     value="#{listaUsuarioBckBean.seleccionandoRol}"/>
+                                    </div>
+                                    <div class="ui-g-1 ui-md-1 ui-lg-1">
+                                        <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                         type="image"
+                                                         action="#{listaUsuarioBckBean.cargarListaAgregarRoles}"
+                                                         update=":dlgAgregarRol"/>
+                                    </div>
+
+                                </div>
+
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-md-12 ui-lg-12">
+                                        <p:panel>
+                                            rolesPorEntidad}
+                                            <p:outputPanel styleClass="tableClass"
+                                                           rendered="#{!listaUsuarioBckBean.nuevoRegistro}">
+
+                                                <p:dataTable var="rol"
+                                                             value="#{listaUsuarioBckBean.listaRoles}"
+                                                             scrollable="true"
+                                                             scrollHeight="207"
+                                                             paginatorPosition="top"
+                                                             selection="#{listaUsuarioBckBean.selectedRol}"
+                                                             rowKey="#{rol.id}"
+                                                             paginator="true"
+                                                             emptyMessage="tableEmptyMessage}"
+                                                             rows="8"
+                                                             reflow="true"
+                                                             pageLinks="3"
+                                                             paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                                             currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                                    <p:column selectionMode="multiple"
+                                                              style="width:25px;text-align:center"/>
+
+                                                    <p:column headerText="entidad}">
+                                                        <h:outputText value="#{rol.entidadnombre}"/>
+                                                    </p:column>
+
+                                                    <p:column headerText="nombre}">
+                                                        <h:outputText value="#{rol.nombre}"/>
+                                                    </p:column>
+
+                                                    <p:column headerText="tipoRol}">
+                                                        <h:outputText value="#{rol.tipo}"/>
+                                                    </p:column>
+
+                                                    <p:column>
+                                                        <p:commandButton icon="fa fa-trash-o"
+                                                                         actionListener="#{listaUsuarioBckBean.quitarRol}"
+                                                                         resetValues="true"
+                                                                         update="formDetalle:tabV"
+                                                                         rendered="#{listaUsuarioBckBean.btnQuitarPermisoVisible}">
+                                                            <p:confirm
+                                                                    header="#{dialogText.deleteConfirmationTextHeader}"
+                                                                    message="#{dialogText.deleteConfirmationTextContent}"
+                                                                    icon="fa fa-bullhorn"/>
+                                                        </p:commandButton>
+                                                    </p:column>
+                                                </p:dataTable>
+
+                                            </p:outputPanel>
+                                        </p:panel>
+                                    </div>
+                                </div>
+                            </p:panel>
+                        </p:tab>
+
+                    </p:tabView>
+
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--Modal agregar entidad-->
+        <p:dialog id="dlgAgregarEntidad" modal="true" resizable="false" width="95%" height="600px"
+                  showEffect="clip" responsive="true" header="Agregar Entidad" positionType="absolute"
+                  widgetVar="wvDlgAgregarEntidad" closable="false">
+
+            <h:form id="formularioAgregarEntidad" style="width: 100%">
+                <p:panel>
+                    
+                        <div class="ui-g">
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <h:outputText value="agregarEntidad}"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon="fa fa-pencil-square-o" styleClass="green-btn"
+                                                 value="btnSeleccionar}"
+                                                 actionListener="#{listaUsuarioBckBean.seleccionandoEntidad}"
+                                                 update=":formDetalle:tabV:txtEntidad"
+                                                 oncomplete="PF('wvDlgAgregarEntidad').hide()"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon="fa fa-ban" styleClass="orange-btn"
+                                                 value="btnCerrarModal}"
+                                                 actionListener="#{listaUsuarioBckBean.limpiarCamposPermisos}"
+                                                 update="formDetalle"
+                                                 onclick="PF('wvDlgAgregarEntidad').hide()"
+                                                 resetValues="true"
+                                                 process="@this"/>
+                            </div>
+
+                        </div>
+
+                    
+
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12">
+                            <p:dataTable var="ar"
+                                         value="#{listaUsuarioBckBean.listaEntidadesSinAgregar}"
+                                         paginatorPosition="top"
+                                         scrollable="true"
+                                         pageLinks="1"
+                                         selectionMode="single"
+                                         paginator="true"
+                                         selection="#{listaUsuarioBckBean.selectedEntidadSinAgregar}"
+                                         rowKey="#{ar.id}"
+                                         emptyMessage="tableEmptyMessage}"
+                                         rows="10"
+                                         reflow="true"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                <p:ajax event="rowSelect" listener="#{listaUsuarioBckBean.seleccionandoEntidad}"
+                                        update=":formDetalle:tabV:txtEntidad"
+                                        oncomplete="PF('wvDlgAgregarEntidad').hide()"
+                                        resetValues="true"/>
+
+                                <p:column headerText="nombre}" style="width: 80%">
+                                    <h:outputText value="#{ar.nombre}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--Modal agregar rol-->
+        <p:dialog id="dlgAgregarRol" width="95%" height="600px" widgetVar="wvDlgAgregarRol" header="Agregar Rol"
+                  responsive="true" modal="true" resizable="false" maximizable="false" closable="false"
+                  style="padding: 0">
+            <h:form id="formularioAgregarRol" styleClass="maxHeight" style="width: 100%;">
+                <p:panel>
+                    
+                        <div class="ui-g">
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <h:outputText value="agregarRol}"/>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon="fa fa-pencil-square-o" styleClass="green-btn"
+                                                 value="btnSeleccionar}"
+                                                 action="#{listaUsuarioBckBean.seleccionandoRol}"
+                                                 update=":formDetalle:tabV:txtRol"
+                                                 oncomplete="PF('wvDlgAgregarRol').hide()"/>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon="fa fa-ban" styleClass="orange-btn"
+                                                 value="btnCerrarModal}"
+                                                 actionListener="#{listaUsuarioBckBean.limpiarCamposPermisos}"
+                                                 update="formDetalle"
+                                                 onclick="PF('wvDlgAgregarRol').hide()"
+                                                 resetValues="true"
+                                                 process="@this"/>
+                            </div>
+                        </div>
+                    
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12">
+                            <p:dataTable var="ars"
+                                         id="listaAgregarRole" widgetVar="listaAgregarRole"
+                                         value="#{listaUsuarioBckBean.listaAgregarRoles}"
+                                         paginatorPosition="top"
+                                         scrollHeight="300"
+                                         scrollable="false"
+                                         pageLinks="1"
+                                         selectionMode="single"
+                                         paginator="true"
+                                         selection="#{listaUsuarioBckBean.rolNoAgregadoSeleccionado}"
+                                         rowKey="#{ars.id}"
+                                         emptyMessage="tableEmptyMessage}"
+                                         rows="10"
+                                         reflow="true"
+                                         tableStyle="table-layout: auto;"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                <p:ajax event="rowSelect" listener="#{listaUsuarioBckBean.seleccionandoRol}"
+                                        update=":formDetalle:tabV:txtRol" oncomplete="PF('wvDlgAgregarRol').hide()"
+                                        resetValues="true"/>
+
+                                <p:ajax
+                                        event="rowToggle"
+                                        global="false"
+                                        async="false"
+                                        process="listaAgregarRole"
+                                        listener="#{listaUsuarioBckBean.obtenerDetalleRole}"/>
+
+                                <p:column width="1" style="white-space: nowrap;">
+                                    <p:rowToggler/>
+                                </p:column>
+
+                                <p:column headerText="Nombre"  filterBy="#{ars.nombre}"
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{ars.nombre}"/>
+                                </p:column>
+
+                                <p:column filterBy="#{ars.tipo}" headerText="Tipo" filterMatchMode="exact">
+                                    <f:facet name="filter">
+                                        <p:selectOneMenu onchange="PF('listaAgregarRole').filter()">
+                                            <f:selectItem itemLabel="btnSeleccionar}" itemValue="#{null}"
+                                                          noSelectionOption="true"/>
+                                            <f:selectItem itemLabel="REPORTE" itemValue="R"/>
+                                            <f:selectItem itemLabel="PANTALLA" itemValue="P"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                    <h:outputText value="#{ars.tipo == 'P' ? 'PANTALLA' : 'REPORTE'}"/>
+                                </p:column>
+
+                                <p:rowExpansion>
+                                    <p:tree
+                                            styleClass="whitOtBorderTree"
+                                            value="#{listaUsuarioBckBean.detalleRol}"
+                                            expanded="true"
+                                            var="node"
+                                            animate="true">
+                                        <p:treeNode>
+                                            <h:outputText value="#{node.text}"/>
+                                        </p:treeNode>
+                                    </p:tree>
+                                </p:rowExpansion>
+
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+
+        <!--Modal inportar usuario-->
+        <p:dialog id="dlgAgregarUsuarios" modal="true" resizable="false" width="95%" height="600px"
+                  widgetVar="wvDlgAgregarUsuarios" header="agregarUsuario}" responsive="true"
+                  showEffect="clip"
+                  hideEffect="fold" styleClass="disable-scroll" closable="false" style="padding: 0">
+
+            <h:form id="formularioImportar" style="width: 100%">
+                <p:panel styleClass="fondoPaneles">
+                    
+                        <div class="ui-g">
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon=" fa fa-refresh" alt="Iniciar"
+                                                 actionListener="#{listaUsuarioBckBean.importarUsuarios}"
+                                                 title="Iniciar" value="Iniciar" styleClass="right"/>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-3 ui-lg-2">
+                                <p:commandButton icon="fa fa-ban" styleClass="orange-btn"
+                                                 onclick="PF('wvDlgAgregarUsuarios').hide()"
+                                                 alt="Cerrar" title="Cerrar" value="Cerrar" immediate="true"
+                                                 update="formularioImportar"/>
+                            </div>
+                        </div>
+                    
+                    <p:fileUpload id="fuImportarUsuarios" fileLimit="1"
+                                  fileLimitMessage="Solamente puede seleccionar un archivo para su importación"
+                                  allowTypes="/(\.|\/)(csv)$/"
+                                  invalidFileMessage="Solo se permiten archivos .csv"
+                                  cancelLabel="Cancelar" uploadLabel="Cargar"
+                                  label="Seleccione un archivo .csv"
+                                  fileUploadListener="#{listaUsuarioBckBean.subirUsuarios}"
+                                  mode="advanced"
+                                  onstart="PF('statusDialog').show()"
+                                  oncomplete="PF('statusDialog').hide()"/>
+
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12">
+                            <p:dataTable var="r"
+                                         value="#{listaUsuarioBckBean.listaUsuariosImportar}"
+                                         scrollable="false"
+                                         scrollHeight="230"
+                                         paginatorPosition="top"
+                                         selectionMode="single"
+                                         selection="#{listaUsuarioBckBean.usuarioImportarSeleccionado}"
+                                         rowKey="#{r}"
+                                         paginator="true"
+                                         emptyMessage="tableEmptyMessage}"
+                                         rows="5"
+                                         reflow="true"
+                                         pageLinks="3"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                                
+                                    <p:outputPanel styleClass="ui-g-18" style="float: right;padding: 0;">
+                                        <div class="p-grid10">
+                                            <p:outputPanel styleClass="p-col">
+                                                <div class="box">
+                                                    <p:commandButton icon="fa fa-minus-circle"
+                                                                     update="formularioImportar" immediate="true"
+                                                                     actionListener="#{listaUsuarioBckBean.quitarUsuarioImportar}"
+                                                                     styleClass="right"
+                                                                     value="Quitar"/>
+                                                </div>
+                                            </p:outputPanel>
+                                        </div>
+                                    </p:outputPanel>
+                                    <div style="clear: both"></div>
+                                
+                                <!-- Evento doble click sobre una fila -->
+                                <p:ajax event="rowSelect"/>
+
+                                <p:column headerText="usuario}" styleClass="Wid10">
+                                    <h:outputText value="#{r.usuario}"/>
+                                </p:column>
+
+                                <p:column headerText="nombre}" styleClass="Wid20">
+                                    <h:outputText value="#{r.nombres} #{r.apellidos}"/>
+                                </p:column>
+
+                                <p:column headerText="email}" styleClass="Wid20">
+                                    <h:outputText value="#{r.email}"/>
+                                </p:column>
+
+                                <p:column headerText="referencia}" styleClass="Wid20">
+                                    <h:outputText value="#{r.ref}"/>
+                                </p:column>
+
+                                <p:column headerText="telefono}" styleClass="Wid10">
+                                    <h:outputText value="#{r.telefono}"/>
+                                </p:column>
+
+                                <p:column headerText="password}" styleClass="Wid10">
+                                    <h:outputText value="#{r.password}"/>
+                                </p:column>
+
+                                <p:column headerText="temporal}" styleClass="Wid10">
+                                    <p:selectBooleanCheckbox value="#{r.temporal}" disabled="true"
+                                                             styleClass="ui-linus-enabled"/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+        <mc:dialogAuditoria id="tipoCatalogoAudit" auditoriaId="tipoCatalogoAuditWV"
+                            auditoriaList="#{listaUsuarioBckBean.listaAuditoria}"/>
+    </ui:define>
+
+</ui:composition>

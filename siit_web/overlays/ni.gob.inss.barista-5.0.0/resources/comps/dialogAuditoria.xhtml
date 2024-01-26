@@ -1,0 +1,113 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+
+<composite:interface>
+    <composite:attribute name="auditoriaId" required="true"/>
+    <composite:attribute name="auditoriaList" required="true" type="java.util.List"/>
+</composite:interface>
+
+<composite:implementation>
+    <h:form id="formularioAuditoria">
+        <div id="#{cc.clientId}">
+            <p:dialog modal="true" id="dialogoAuditoria" width="980" height="570" widgetVar="#{cc.attrs.auditoriaId}"
+                      header="Auditoría" resizable="false">
+                <p:tabView id="tabsAuditoria" value="#{cc.attrs.auditoriaList}" var="auditoria"
+                           style="overflow: hidden">
+                    <p:tab id="tab" title="#{auditoria.schema}.#{auditoria.tabla} ID: #{auditoria.id}">
+                        <h:panelGrid styleClass="panelGridClass" columns="4" style="width: 100%;margin-bottom: 20px">
+                            <p:outputLabel value="Creado por: "/>
+                            <h:outputText value="#{auditoria.creadoPor}"/>
+
+                            <p:outputLabel value="Creado el: "/>
+                            <h:outputText
+                                    value="#{configApplicationBean.dateToDateTimeWithSeconds(auditoria.creadoEl)}"/>
+
+                            <p:outputLabel value="Última modificación por: "/>
+                            <h:outputText value="#{auditoria.modificadoPor}"/>
+
+                            <p:outputLabel value="Última modificación el: "/>
+                            <h:outputText
+                                    value="#{configApplicationBean.dateToDateTimeWithSeconds(auditoria.modificadoEl)}"/>
+
+                        </h:panelGrid>
+                        <p:outputPanel id="detalleAuditoria" rendered="#{auditoria.mostrarDetalleAuditoria}"
+                                       style="padding: 0px;margin: 0px;width: 99.5%">
+                            <p:dataTable id="auditoriaTable"
+                                         scrollHeight="300"
+                                         style="width: 99.5%;overflow-y: auto;"
+                                         var="r"
+                                         value="#{auditoria.auditTrailList}"
+                                         paginatorPosition="top"
+                                         paginator="true"
+                                         emptyMessage="#{labelName.tableEmptyMessage}"
+                                         rows="8"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="Auditoría"/>
+                                </f:facet>
+
+                                <!-- Evento doble click sobre una fila
+                                <p:ajax event="rowDblselect" listener="#{dialogAuditoriaBackBean.obtenerDetalleAuditoria}" update=":detalle" />
+-->
+                                <p:ajax
+                                        event="rowToggle"
+                                        global="false"
+                                        async="false"
+                                        process="auditoriaTable"
+                                        listener="#{dialogAuditoriaBackBean.obtenerDetalleAuditoria}"/>
+
+                                <p:column width="16">
+                                    <p:rowToggler/>
+                                </p:column>
+
+                                <p:column headerText="Fecha Hora" width="150" style="text-align: center">
+                                    <h:outputText value="#{configApplicationBean.dateToDateTimeWithSeconds(r.fecha)}"/>
+                                </p:column>
+
+                                <p:column headerText="Operación" width="100" style="text-align: center">
+                                    <h:outputText value="#{r.operacion}"/>
+                                </p:column>
+
+                                <p:column headerText="Usuario">
+                                    <h:outputText value="#{r.nombreUsuario}"/>
+                                </p:column>
+
+                                <p:rowExpansion>
+                                    <p:dataTable value="#{dialogAuditoriaBackBean.detalleAuditoria}"
+                                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                                 var="ad"
+                                    >
+
+                                        <p:column headerText="Columna" width="120">
+                                            <h:outputText value="#{ad.columna}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Valor Anterior" width="150">
+                                            <h:outputText value="#{ad.valorAnterior}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Nuevo Valor" width="150">
+                                            <h:outputText value="#{ad.valorNuevo}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:rowExpansion>
+
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:tab>
+                </p:tabView>
+
+            </p:dialog>
+        </div>
+    </h:form>
+</composite:implementation>
+
+</html>

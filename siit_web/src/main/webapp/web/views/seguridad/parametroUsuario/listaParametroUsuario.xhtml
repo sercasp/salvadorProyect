@@ -1,0 +1,363 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaParametroUsuarioBackBean}"/>
+
+    <ui:define name="headerContent">
+        Parámetros Usuarios
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .size {
+                height: 25px !important;
+                margin-left: 50px;
+            }
+
+            .size2 {
+                height: 25px !important;
+            }
+
+            .size3 {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+        </style>
+        <h:form id="formLista">
+            <p:dataTable var="parametroUsuario"
+                         value="#{listaParametroUsuarioBackBean.listaParametrosUsuarios}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaParametroUsuarioBackBean.parametroUsuarioSeleccionado}"
+                         rowKey="#{parametroUsuario.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="10"
+                         scrollable="true"
+                         reflow="true"
+                         scrollHeight="400"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <div class="ui-g-12 ui-md-6 ui-lg-9" style="padding-top: 16px;">
+                                            <span class="md-inputfield">
+                                                  <p:inputText value="#{listaParametroUsuarioBackBean.itBuscar}"
+                                                               autocomplete="off"/>
+                                                <label>#{labelName.placeholderBuscar}</label>
+                                            </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}" styleClass="teal-btn"
+                                                 ajax="true"
+                                                 update="formLista"
+                                                 action="#{listaParametroUsuarioBackBean.cargarLista}"/>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3"></div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3">
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="fa fa-plus-circle"
+                                                 value="#{labelName.btnAgregar}" ajax="true"
+                                                 update=":formLista :formDetalle" resetValues="true"
+                                                 styleClass="green-btn"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 actionListener="#{listaParametroUsuarioBackBean.limpiar}"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="ui-icon-pencil" value="#{labelName.btnEditar}"
+                                                 ajax="true"
+                                                 update=":formDetalle"
+                                                 action="#{listaParametroUsuarioBackBean.editarOEliminar}"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <!-- Evento doble click sobre una fila -->
+                <p:ajax event="rowSelect" listener="#{listaParametroUsuarioBackBean.editarOEliminar}"
+                        update=":formDetalle" resetValues="true"/>
+
+                <p:column headerText="Usuario">
+                    <h:outputText value="#{parametroUsuario.usuarioIdByUsuarioId.username}"/>
+                </p:column>
+
+                <p:column headerText="Parámetro">
+                    <h:outputText value="#{parametroUsuario.parametroIdByParametroId.descriptor}"/>
+                </p:column>
+
+                <p:column headerText="Valor">
+                    <h:outputText value="#{parametroUsuario.valor}"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog id="dlgFormDetalle" modal="true" resizable="false" width="90%" height="250px" responsive="true"
+                  showEffect="clip" hideEffect="fold" styleClass="disable-scroll"
+                  widgetVar="wvDlgFormDetalle" closable="false" style="padding: 0">
+            <h:form id="formDetalle" style="width: 100%;">
+                <p:inputText type="hidden" value="#{listaParametroUsuarioBackBean.itId}"/>
+                <p:panel style="height: auto" styleClass="fondoPaneles">
+                    <f:facet name="header">
+                        <h:outputText value="ID: #{listaParametroUsuarioBackBean.itId}"
+                                      rendered="#{!listaParametroUsuarioBackBean.nuevoRegistro}"/>
+                        <p:outputPanel styleClass="ui-g-12" style="float: right;padding: 0;">
+                            <div class="p-grid">
+                                <p:outputPanel styleClass="p-col">
+                                    <div class="box">
+                                        <p:commandButton icon="fa fa-clipboard fa-lg"
+                                                         value="#{labelName.btnAuditoria}"
+                                                         oncomplete="PF('tipoCatalogoAuditWV').show();"
+                                                         process="@this"
+                                                         update=":tipoCatalogoAudit"
+                                                         rendered="#{listaParametroUsuarioBackBean.btnAuditoriaVisible}"
+                                                         action="#{listaParametroUsuarioBackBean.cargarAuditoria}"/>
+                                    </div>
+                                </p:outputPanel>
+
+                                <p:outputPanel styleClass="p-col">
+                                    <div class="box">
+                                        <p:commandButton icon="ui-icon-trash" styleClass="red-btn" value="#{labelName.btnEliminar}"
+                                                         actionListener="#{listaParametroUsuarioBackBean.eliminar}"
+                                                         update=":formDetalle :formLista" resetValues="true"
+                                                         rendered="#{!listaParametroUsuarioBackBean.nuevoRegistro}">
+                                            <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                       message="#{dialogText.deleteConfirmationTextContent}"
+                                                       icon="ui-icon-alert"/>
+                                        </p:commandButton>
+                                    </div>
+                                </p:outputPanel>
+
+                                <p:outputPanel styleClass="p-col">
+                                    <div class="box">
+                                        <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                         actionListener="#{listaParametroUsuarioBackBean.guardar}"
+                                                         update=":formLista :formDetalle"/>
+                                    </div>
+                                </p:outputPanel>
+
+                                <p:outputPanel styleClass="p-col">
+                                    <div class="box">
+                                        <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                         actionListener="#{listaParametroUsuarioBackBean.limpiar}"
+                                                         update=":formDetalle"
+                                                         onclick="PF('wvDlgFormDetalle').hide()"
+                                                         resetValues="true" process="@this"/>
+                                    </div>
+                                </p:outputPanel>
+                            </div>
+                        </p:outputPanel>
+
+                    </f:facet>
+
+                    <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid30, Wid70">
+
+                        <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid30, Wid70">
+                            <h:panelGroup styleClass="md-inputfield size3">
+                                <p:inputText id="usuario" value="#{listaParametroUsuarioBackBean.itNombreUsuario}"
+                                             readonly="true" required="true" label="Usuario"
+                                             style="width: 460px"
+                                             styleClass="size3"/>
+                                <label>Usuario:</label>
+                            </h:panelGroup>
+                            <p:commandButton icon="ui-icon-search" styleClass="size3"
+                                             type="image" immediate="true"
+                                             actionListener="#{listaParametroUsuarioBackBean.abrirModalUsuarios}"
+                                             update=":formUsuarios"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid30, Wid70"
+                                     style="margin-left: 100px">
+                            <h:panelGroup styleClass="md-inputfield size3">
+                                <p:inputText id="parametro" value="#{listaParametroUsuarioBackBean.itParametro}"
+                                             readonly="true" required="true" label="Parámetro" style="width: 460px"
+                                             styleClass="size3"/>
+                                <label>Parámetro:</label>
+                            </h:panelGroup>
+                            <p:commandButton icon="ui-icon-search" styleClass="size3"
+                                             type="image" immediate="true"
+                                             actionListener="#{listaParametroUsuarioBackBean.abrirModalParametros}"
+                                             update=":formParametros"/>
+                        </h:panelGrid>
+
+                        <h:panelGroup styleClass="md-inputfield size3">
+                            <p:inputText id="valor" value="#{listaParametroUsuarioBackBean.itValor}" required="true"
+                                         style="width: 500px"
+                                         label="Valor" styleClass="size3" autocomplete="off"/>
+                            <label>Valor:</label>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgAgregarUsuarios" width="90%" height="auto" widgetVar="wvDlgAgregarUsuarios" responsive="true"
+                  closable="false" modal="true" resizable="false" maximizable="false">
+            <h:form id="formUsuarios">
+                <p:panel>
+                    <p:outputPanel>
+                        <p:dataTable var="usuarios"
+                                     value="#{listaParametroUsuarioBackBean.listaUsuarios}"
+                                     paginatorPosition="top"
+                                     selectionMode="single"
+                                     selection="#{listaParametroUsuarioBackBean.usuarioSeleccionado}"
+                                     rowKey="#{usuarios.id}"
+                                     emptyMessage="#{labelName.tableEmptyMessage}"
+                                     paginator="true"
+                                     rowIndexVar="rowIndex"
+                                     rows="8"
+                                     reflow="true"
+                                     pageLinks="3"
+                                     paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                     currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                            <f:facet name="header">
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-md-12 ui-lg-6">
+                                        <div class="ui-g-12 ui-md-6 ui-lg-9" style="padding-top: 16px;">
+                                    <span class="md-inputfield">
+                                      <p:inputText value="#{listaParametroUsuarioBackBean.itBuscarUsuario}"
+                                                   autocomplete="off"
+                                      />
+                                        <label>#{labelName.placeholderBuscar}</label>
+                                    </span>
+
+                                        </div>
+                                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                            <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}" styleClass="teal-btn"
+                                                             ajax="true"
+                                                             actionListener="#{listaParametroUsuarioBackBean.cargarListaUsuarios}"
+                                                             update=":formUsuarios"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-3"></div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-3">
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:commandButton icon="ui-icon-check"
+                                                             value="Seleccionar"
+                                                             action="#{listaParametroUsuarioBackBean.seleccionarUsuario}"
+                                                             update=":formDetalle:usuario"/>
+                                        </div>
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:commandButton icon="ui-icon-close" value="#{labelName.btnCerrarModal}"
+                                                             action="#{listaParametroUsuarioBackBean.cerrarModal}"
+                                                             oncomplete="PF('wvDlgAgregarUsuarios').hide()"
+                                                             update=":formDetalle"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </f:facet>
+
+                            <p:ajax event="rowSelect" listener="#{listaParametroUsuarioBackBean.seleccionarUsuario}"
+                                    update=":formDetalle" resetValues="true"/>
+
+                            <p:column headerText="Usuario">
+                                <h:outputText value="#{usuarios.username}"/>
+                            </p:column>
+
+                            <p:column headerText="Nombres">
+                                <h:outputText value="#{usuarios.nombres}"/>
+                            </p:column>
+
+                            <p:column headerText="Apellidos">
+                                <h:outputText value="#{usuarios.apellidos}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgAgregarParametros" width="90%" height="auto" widgetVar="wvDlgAgregarParametros"
+                  responsive="true"
+                  closable="false" modal="true" resizable="false" maximizable="false">
+            <h:form id="formParametros">
+                <p:panel>
+                    <p:outputPanel>
+                        <p:dataTable var="parametros"
+                                     value="#{listaParametroUsuarioBackBean.listaParametros}"
+                                     paginatorPosition="top"
+                                     selectionMode="single"
+                                     selection="#{listaParametroUsuarioBackBean.parametroSeleccionado}"
+                                     rowKey="#{parametros.id}"
+                                     emptyMessage="#{labelName.tableEmptyMessage}"
+                                     paginator="true"
+                                     rowIndexVar="rowIndex"
+                                     rows="5"
+                                     reflow="true"
+                                     pageLinks="3"
+                                     scrollable="true"
+                                     scrollHeight="303"
+                                     paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                     currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                            <f:facet name="header">
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-md-12 ui-lg-6">
+                                        <div class="ui-g-12 ui-md-6 ui-lg-9" style="padding-top: 16px;">
+                                    <span class="md-inputfield">
+                                     <p:inputText value="#{listaParametroUsuarioBackBean.itBuscarParametro}"
+                                                  autocomplete="off"
+                                     />
+                                        <label>#{labelName.placeholderBuscar}</label>
+                                    </span>
+
+                                        </div>
+                                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                            <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}" styleClass="teal-btn"
+                                                             ajax="true"
+                                                             actionListener="#{listaParametroUsuarioBackBean.cargarListaParametros}"
+                                                             update=":formParametros"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-3"></div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-3">
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:commandButton icon="ui-icon-check"
+                                                             value="Seleccionar"
+                                                             action="#{listaParametroUsuarioBackBean.seleccionarParametro}"
+                                                             update=":formDetalle:parametro"/>
+                                        </div>
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:commandButton icon="ui-icon-close" value="#{labelName.btnCerrarModal}"
+                                                             action="#{listaParametroUsuarioBackBean.cerrarModalPara}"
+                                                             oncomplete="PF('wvDlgAgregarParametros').hide()"
+                                                             update=":formDetalle"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </f:facet>
+
+                            <p:ajax event="rowDblselect"
+                                    listener="#{listaParametroUsuarioBackBean.seleccionarParametro}"
+                                    update=":formDetalle" resetValues="true"/>
+
+                            <p:column headerText="Código">
+                                <h:outputText value="#{parametros.codigo}"/>
+                            </p:column>
+
+                            <p:column headerText="Descriptor">
+                                <h:outputText value="#{parametros.descriptor}"/>
+                            </p:column>
+
+                            <p:column headerText="Valor">
+                                <h:outputText value="#{parametros.valor}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <mc:dialogAuditoria id="tipoCatalogoAudit" auditoriaId="tipoCatalogoAuditWV"
+                            auditoriaList="#{listaParametroUsuarioBackBean.listaAuditoria}"/>
+    </ui:define>
+</ui:composition>

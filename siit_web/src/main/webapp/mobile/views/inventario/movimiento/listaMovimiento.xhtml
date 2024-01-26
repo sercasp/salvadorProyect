@@ -1,0 +1,125 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:pm="http://primefaces.org/mobile">
+
+    <style type="text/css">
+        .ui-datepicker {
+            z-index: 2070 !important;
+        }
+    </style>
+
+    <h:form id="editForm">
+        <span style="font-size: large;text-align: center">
+            <p:outputLabel id="cantidad" value="Histórico de Movimientos(#{listaMovimientoLineaTiempoMobileBackBean.cantidad})"/>
+        </span>
+
+        <h:panelGrid columns="5" styleClass="formMovimiento" columnClasses="width15,width10,width10 center,width10,width50">
+            <p:outputLabel for="calendarTag" value="Con Fecha del:" />
+            <p:calendar id="calendarTag" value="#{listaMovimientoLineaTiempoMobileBackBean.calendarioBusqueda}" pattern="dd/MM/yyyy"
+                        maxdate="#{listaMovimientoLineaTiempoMobileBackBean.maxFecha1}"
+                        mindate="#{listaMovimientoLineaTiempoMobileBackBean.minFecha1}"
+                        style="width: 90%;" readonly="readonly">
+                <p:ajax event="dateSelect" listener="#{listaMovimientoLineaTiempoMobileBackBean.onDateSelect}" update="calendarTag2" />
+            </p:calendar>
+            <p:outputLabel for="calendarTag2" value="Al:" />
+            <p:calendar id="calendarTag2" value="#{listaMovimientoLineaTiempoMobileBackBean.calendarioBusqueda2}" pattern="dd/MM/yyyy"
+                        maxdate="#{listaMovimientoLineaTiempoMobileBackBean.maxFecha2}"
+                        mindate="#{listaMovimientoLineaTiempoMobileBackBean.minFecha2}"
+                        style="width: 90%">
+                <p:ajax event="dateSelect" listener="#{listaMovimientoLineaTiempoMobileBackBean.onDateSelect2}" update="calendarTag" />
+            </p:calendar>
+
+            <p:selectOneMenu id="selectOneMenu" value="#{listaMovimientoLineaTiempoMobileBackBean.cmbBodega}">
+                <f:selectItem itemLabel="Seleccione una Bodega" itemValue="#{null}"/>
+                <f:selectItems var="md" value="#{listaMovimientoLineaTiempoMobileBackBean.listaBodegas}"
+                               itemLabel="#{md.nombre}"
+                               itemValue="#{md.id}"/>
+            </p:selectOneMenu>
+        </h:panelGrid>
+
+        <h:panelGrid columns="3" styleClass="personalized_panel2" columnClasses="width30 center,width30 center,width30 center">
+            <p:selectOneMenu id="proveedor" value="#{listaMovimientoLineaTiempoMobileBackBean.cmbProveedor}">
+                <f:selectItem itemLabel="Seleccione una Proveedor" itemValue="#{null}"/>
+                <f:selectItems var="mdp" value="#{listaMovimientoLineaTiempoMobileBackBean.listaProveedores}"
+                               itemLabel="#{mdp.nombre}"
+                               itemValue="#{mdp.id}"/>
+            </p:selectOneMenu>
+
+            <p:selectOneMenu id="programa" value="#{listaMovimientoLineaTiempoMobileBackBean.cmbPrograma}">
+                <f:selectItem itemLabel="Seleccione una Programa" itemValue="#{null}"/>
+                <f:selectItems var="mdpr" value="#{listaMovimientoLineaTiempoMobileBackBean.listaProgramas}"
+                               itemLabel="#{mdpr.nombre}"
+                               itemValue="#{mdpr.id}"/>
+            </p:selectOneMenu>
+
+            <p:commandButton value="Buscar" actionListener="#{listaMovimientoLineaTiempoMobileBackBean.cargarListaMovimientos}"
+                             update="listMedicamentosAgregados cantidad" icon="fa fa-search"/>
+        </h:panelGrid>
+
+        <p:dataList  var="prod" id="listMedicamentosAgregados" pt:data-inset="true"
+                     value="#{listaMovimientoLineaTiempoMobileBackBean.listaMovimientosInventarios}"
+                     paginator="true" rows="4">
+
+            <f:facet name="header">
+                    <span style="font-size: large;text-align: center">
+                        <p:outputLabel id="cantidadH" value="Listado de Movimientos(#{listaMovimientoLineaTiempoMobileBackBean.cantidad})"/>
+                    </span>
+            </f:facet>
+
+            <p:commandLink style="font-size: 15px !important;" id="btn-dynamic" onclick="PF('pnlDetalles').show()"
+                           action="#{listaMovimientoLineaTiempoMobileBackBean.detalleTipo()}" update="@form:listaDetalleMovimiento @form:cantidadDetalle">
+
+                <p:panelGrid columns="2" style="width: 100%" styleClass="panelGridClass" >
+                    <p:row>
+                        <p:column><p:outputLabel><span style="color: darkblue;padding-right: 35px;">Bodega:</span>#{prod.get('nombre_bodega')}</p:outputLabel></p:column>
+                        <p:column><p:outputLabel><span style="color: darkblue;padding-right: 19px;">Proveedor:</span>#{prod.get('nombre_proveedor')}</p:outputLabel></p:column>
+                        <p:column><p:outputLabel><span style="color: darkblue;padding-right: 19px;">Tipo de Movimiento:</span>#{prod.get('tipo')}</p:outputLabel></p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column></p:column>
+                        <p:column><p:outputLabel><span style="color: darkblue;padding-right: 50px;">Fecha:</span>#{prod.get('fecha')} - #{prod.get('hora')}</p:outputLabel></p:column>
+                        <p:column> <p:outputLabel><span style="color: darkblue;padding-right: 23px;">Programa:</span>#{prod.get('nombre_programa')}</p:outputLabel></p:column>
+                    </p:row>
+
+                </p:panelGrid>
+
+                <f:setPropertyActionListener target="#{listaMovimientoLineaTiempoMobileBackBean.movimientoSeleccionadoId}" value="#{prod.get('id')}"/>
+                <f:setPropertyActionListener target="#{listaMovimientoLineaTiempoMobileBackBean.movimientoSeleccionadoTipo}" value="#{prod.get('tipo')}"/>
+            </p:commandLink>
+
+            <f:facet name="footer">
+                    <span style="font-size: large;text-align: center">
+                        <p:outputLabel id="cantidadF" value="Listado de Movimientos(#{listaMovimientoLineaTiempoMobileBackBean.cantidad})"/>
+                    </span>
+            </f:facet>
+        </p:dataList>
+
+        <p:overlayPanel id="overlayMensaje" widgetVar="pnlDetalles" at="right" showEffect="overlay" dynamic="true" appendToBody="false">
+            <p:outputLabel id="cantidadDetalle"><span style="color: darkblue;padding-right: 12px;">Listado de Productos(#{listaMovimientoLineaTiempoMobileBackBean.listaDetalleTipo.size()})</span></p:outputLabel>
+            <p:scrollPanel style="width: 100%;height: 90vh;overflow-y: scroll;" mode="native">
+                <p:dataTable id="listaDetalleMovimiento" var="ldm"
+                             value="#{listaMovimientoLineaTiempoMobileBackBean.listaDetalleTipo}"
+
+                             rowKey="#{ldm.get('nombre')}"
+                             paginator="true"
+                             rows="18"
+                             tableStyleClass="ui-table-columntoggle">
+
+                    <p:column headerText="Producto" priority="2" style="width: 80%">
+                        <h:outputText value="#{ldm.get('nombre')}" />
+                    </p:column>
+
+                    <p:column headerText="Existencia" priority="3" style="width: 20%;text-align: right">
+                        <h:outputText value="#{ldm.get('cantidad')}" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:scrollPanel>
+        </p:overlayPanel>
+    </h:form>
+
+</ui:composition>

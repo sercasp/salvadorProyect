@@ -1,0 +1,502 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    #background: transparent;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+:focus {
+    outline: 0;
+}
+
+ins {
+    text-decoration: none;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+a {
+    color: blue;
+    outline: none;
+    text-decoration: underline;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+p {
+    margin: 0 0 18px
+}
+
+img {
+    border: none;
+}
+
+input {
+    vertical-align: middle;
+}
+
+#wrapper {
+    position: absolute;
+    top: 48px;
+    height: 590px;
+    width: 100%;
+}
+
+#wrapper-inner {
+    margin: auto;
+    width: 99.5%;
+    height: 100%;
+}
+
+/* Header
+-----------------------------------------------------------------------------*/
+html {
+    height: 100%;
+}
+
+label {
+    font-weight: bold;
+}
+
+body {
+    /*background-color: #0E5A93;*/
+    color: #0288D1;
+    background: url("#{resource['sim/1_0/img/aplicacion/marca_agua.png']}"), url("#{resource['sentinel-layout:images/blue-background.svg.xhtml.svg']}");
+    background-position: center;
+    background-repeat: no-repeat, no-repeat;
+    background-size: 20%, 100%;
+    background-size: auto, cover;
+    background-color: #0288D1;
+    font-family: "Helvetica Neue Regular", Helvetica, sans-serif !important;
+    font-size: 12px !important;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#header {
+    background-image: url("#{resource['sim/1_0/img/aplicacion/bg-header.png']}") !important;
+    /*height: 30px;*/
+    color: #000000;
+    background: none repeat scroll 0 0 #0E5A93;
+}
+
+#application_content {
+    /*height: 580px;*/
+    height: 86vh;
+    margin: 0 auto auto;
+}
+
+/* Footer
+-----------------------------------------------------------------------------*/
+#footer {
+    border-top: 1px solid #8EC2E8;
+    height: 20px;
+    position: relative;
+    color: #000000;
+}
+
+.menu-modulo table {
+    line-height: 20px;
+}
+
+#app-logo {
+    padding-right: 5px;
+    font-size: 2em;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #999;
+    float: left;
+    height: 34px;
+}
+
+#app-name {
+    overflow: hidden;
+}
+
+#app-description {
+    float: left;
+    font-size: 1.3em;
+    font-weight: bold;
+    /*padding: 2px 0 0 10px;*/
+}
+
+#nombre_modulo {
+    font-size: 0.8em;
+    color: #FFED3D;
+}
+
+#app-name a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 1.0em;
+    font-weight: bold;
+}
+
+#inner-content {
+    width: 99%;
+    margin: 5px auto auto;
+    background-color: #F1F1F1;
+    padding-top: 5px;
+}
+
+.sesion-modulo {
+    font-size: 0.8em;
+}
+
+.box {
+    margin: auto;
+    width: 99%;
+}
+
+.box .title-box {
+    float: left
+}
+
+.box .btns-box {
+    float: right;
+}
+
+.box .box-header {
+    background: none repeat scroll 0 0 #0E5A93;
+    /*background: none repeat scroll 0 0 #474544;*/
+    border-radius: 2px 2px 0 0;
+    color: #FFFFFF;
+    display: block;
+    font-weight: bold;
+    line-height: 24px;
+    margin: 0;
+    padding: 4px 8px 2px 9px;
+    overflow: hidden;
+}
+
+.box .box-content {
+    background-color: #E6E6E6;
+    border-bottom: 1px solid #777;
+    border-left: 1px solid #777;
+    border-radius: 0 0 2px 2px;
+    border-right: 1px solid #777;
+    overflow: hidden;
+    padding: 10px;
+
+}
+
+.form-table {
+    width: 100%;
+}
+
+.form-table label {
+    display: inline;
+    font-weight: bold;
+}
+
+.form-table input[type=text], .form-table input[type=password], .form-table textarea {
+    width: 90%;
+
+}
+
+div .content-columns {
+    overflow: hidden;
+}
+
+div .left {
+    float: left;
+}
+
+div .top {
+    float: top;
+}
+
+div .bottom {
+    float: bottom;
+}
+
+div .right {
+    float: right;
+}
+
+#top-menu {
+    float: right;
+}
+
+#top-menu ul li {
+    float: left;
+    padding: 1px 5px;
+}
+
+#top-menu ul li a {
+    font-size: 1em;
+    font-weight: normal;
+}
+
+.username {
+    padding-left: 20px;
+}
+
+.userpassword {
+    padding-left: 20px;
+}
+
+.inicio {
+    padding-left: 20px;
+}
+
+.calendar {
+    padding-left: 20px;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+.logout {
+    padding-left: 20px;
+
+}
+
+.menu-modulo {
+    font-size: 1em !important;
+    height: 54px;
+    padding: 5px;
+    width: 90%;
+    margin: 5px;
+    background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+    border: 1px solid #888888;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 0 0 #FFFFFF inset;
+    color: #4D404D !important;
+    display: inline-block;
+    font-weight: bold;
+    padding: 2px 5px;
+    text-decoration: none;
+    text-shadow: 1px 1px 0 #FFFFFF;
+    cursor: pointer
+}
+
+@media ( min-width: 1024px) {
+    .quitar-elemento-desktop {
+        visibility: hidden;
+        height: 0;
+    }
+}
+
+@media ( max-width: 1023px) {
+    .quitar-elemento-moviles {
+        display: none !important;
+    }
+}
+
+.ui-datagrid-content-empty {
+    padding: 0 !important;
+    text-align: center;
+}
+
+.fc-event-time, .fc-event-title {
+    font-size: 15px !important;
+}
+
+.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-icon-search {
+    width: 27px !important;
+    height: 19px !important;
+}
+
+.ui-fieldset {
+    background-color: #E8EEF4 !important;
+}
+
+.ui-splitbutton:hover, .ui-splitbutton:focus {
+    border: none !important;
+}
+
+.ui-state-hover {
+    transition: none !important;
+}
+
+/*---------------------------------------------------------------------
+
+Skip to content
+Sign up Sign in
+This repository
+Search
+Explore
+Features
+Enterprise
+Pricing
+Watch 6  Star 53  Fork 18 stefanocudini/leaflet-panel-layers
+                                        Branch: master  leaflet-panel-layers/dist/leaflet-panel-layers.src.css
+97f0181  on 24 Sep
+@stefanocudini stefanocudini fix adding with groups
+1 contributor
+RawBlameHistory     122 lines (120 sloc)  2.7 KB
+    /*
+     * Leaflet Panel Layers v0.1.3 - 2015-09-24
+     *
+     * Copyright 2015 Stefano Cudini
+     * stefano.cudini@gmail.com
+     * http://labs.easyblog.it/
+     *
+     * Licensed under the MIT license.
+     *
+     * Demos:
+     * http://labs.easyblog.it/maps/leaflet-panel-layers/
+     *
+     * Source:
+     * git@github.com:stefanocudini/leaflet-panel-layers.git
+     *
+     */
+
+/* PANEL LAYERS */
+.leaflet-panel-layers .leaflet-panel-layers-list,
+.leaflet-panel-layers-expanded .leaflet-panel-layers-toggle {
+    display: block;
+}
+
+.leaflet-panel-layers-expanded .leaflet-panel-layers-list {
+    display: block;
+}
+
+.leaflet-top.leaflet-right .leaflet-panel-layers {
+    margin: 0;
+}
+
+.leaflet-panel-layers {
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
+    padding: 4px;
+    width: 30px;
+    min-width: 30px;
+    overflow: hidden;
+}
+
+.leaflet-panel-layers-expanded {
+    width: auto;
+}
+
+.leaflet-panel-layers-expanded:hover {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/*.leaflet-panel-layers-expanded:hover .leaflet-panel-layers-list {
+	margin-right: 10px;
+}
+.leaflet-panel-layers-expanded:hover .leaflet-panel-layers-group {
+	margin-right: -10px
+}*/
+.leaflet-panel-layers-separator {
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    height: 8px;
+    margin: 12px 4px 0 4px;
+    clear: both;
+}
+
+.leaflet-panel-layers-group {
+    margin: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 3px;
+    position: relative;
+}
+
+.leaflet-panel-layers-grouplabel {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.leaflet-panel-layers-base .leaflet-panel-layers-item,
+.leaflet-panel-layers-overlays .leaflet-panel-layers-item {
+    display: block;
+    clear: both;
+    float: none;
+    line-height: 20px;
+    height: 22px;
+    white-space: nowrap;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.leaflet-panel-layers-overlays .leaflet-panel-layers-item {
+    margin-bottom: 4px;
+    padding: 2px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    width: auto;
+    overflow: hidden;
+    font-weight: bold;
+}
+
+.leaflet-panel-layers-overlays .leaflet-panel-layers-item:hover {
+    border: 1px solid #888;
+    cursor: pointer;
+}
+
+.leaflet-panel-layers-icon {
+    text-align: center;
+    line-height: 22px;
+    height: 22px;
+    width: 22px;
+    background: #fff;
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.leaflet-panel-layers-overlays span {
+    display: inline-block;
+    width: auto;
+    overflow: hidden;
+}
+
+.leaflet-panel-layers-overlays input {
+    float: right;
+    margin: 4px;
+    display: none;
+}
+
+.leaflet-panel-layers-expanded .leaflet-panel-layers-overlays input {
+    display: block;
+}
+
+.ui-inputfield {
+    text-transform: none !important;
+}
+
+.layout-topbar-destination.layout-menu-horizontal .layout-menu > li > a .menuitem-text {
+    color: #616161 !important;
+}
+
+.layout-topbar-destination.layout-menu-horizontal .layout-menu > li > a i{
+    color: #616161 !important;
+}

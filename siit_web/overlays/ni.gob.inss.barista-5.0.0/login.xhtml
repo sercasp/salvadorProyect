@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>#{configApplicationBean.aplicacionNombreEntidad}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <h:outputScript name="js/layout.js" library="sapphire-layout"/>
+    <h:outputScript name="js/ripple.js" library="sapphire-layout"/>
+
+    <link href="#{resource['default:img/aplicacion/favisco.ico']}" rel="shortcut icon" type="image/x-icon"/>
+
+    <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="sapphire-layout"/>
+</h:head>
+
+<h:body styleClass="login-body">
+    <f:view transient="true">
+        <h:form id="loginForm">
+            <p:remoteCommand name="obtenerIp" actionListener="#{sessionBean.establecerIp}"/>
+
+            <script type="application/javascript">
+                function getIp() {
+                    window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+                    var pc = new RTCPeerConnection({iceServers: []}),
+                        noop = function () {
+                        };
+
+                    pc.createDataChannel("");
+                    pc.createOffer(pc.setLocalDescription.bind(pc), noop);
+                    var myIP;
+                    pc.onicecandidate = function (ice) {
+                        if (!ice || !ice.candidate || !ice.candidate.candidate) return;
+
+                        myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+                        obtenerIp([{name: 'ip', value: myIP}]);
+                    };
+                }
+            </script>
+
+            <p:growl id="message" showDetail="true" showSummary="false" autoUpdate="true" severity="info,warn"/>
+            <p:growl id="messageError" showDetail="true" showSummary="false" sticky="true" autoUpdate="true"
+                     severity="error"/>
+
+            <div class="login-panel ui-fluid">
+                <div class="login-panel-header">
+                    <h:graphicImage library="default"
+                                    name="img/icons/login/logo.png"/>
+                </div>
+                <div class="login-panel-content">
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <h1>Barista</h1>
+                            <h2></h2>
+                        </div>
+                        <div class="ui-g-12">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:inputText label="Usuario" required="true" autocomplete="off"
+                                             style="text-align: center"
+                                             maxlength="20" styleClass="Container80 Fnone MarAuto Fs18"
+                                             id="username" placeholder="Usuario"
+                                             value="#{sessionBean.username}">
+                                    <f:validateLength minimum="3" maximum="20"/>
+                                    <f:validateRegex pattern="^[a-zA-Z0-9]+$"/>
+                                </p:inputText>
+                                <label>Username</label>
+                            </h:panelGroup>
+                        </div>
+                        <div class="ui-g-12">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:password label="Password" required="true" autocomplete="off"
+                                            maxlength="20" placeholder="Contraseña" style="text-align: center"
+                                            id="clave" styleClass="Container80 Fnone MarAuto Fs18"
+                                            value="#{sessionBean.password}">
+                                    <f:validateLength minimum="6" maximum="20"/>
+                                </p:password>
+                                <label>Password</label>
+                            </h:panelGroup>
+                            <!-- <h:panelGroup styleClass="md-inputfield">
+                                 <p:inputText label="Token" autocomplete="off" style="text-align: center"
+                                              maxlength="20"
+                                              styleClass="Container80 Fnone MarAuto Fs18 #{sessionBean.dobleAutenticacion == true ? 'mostrar' : 'ocultar'}"
+                                              id="token" placeholder="Token"
+                                              value="#{sessionBean.token}">
+                                 </p:inputText>
+                                 <label>Password</label>
+                             </h:panelGroup>-->
+                        </div>
+                        <div class="ui-g-12">
+                            <h2>
+                                <h:graphicImage library="default"
+                                                name="img/aplicacion/required-field.png"/>
+                                El acceso no autorizado o la divulgaci&oacute;n de
+                                informaci&oacute;n sensible puede resultar en medidas
+                                disciplinarias o legales.
+                            </h2>
+
+                            <p:commandButton ajax="false"
+                                             icon="ui-icon-check"
+                                             update="message messageError"
+                                             onclick="getIp();"
+                                             action="#{sessionBean.loginAction}"
+                                             value="Iniciar Sesión"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p:keyFilter for="username" regEx="/#{sessionBean.regExpUsuario}/"/>
+        </h:form>
+    </f:view>
+</h:body>
+</html>

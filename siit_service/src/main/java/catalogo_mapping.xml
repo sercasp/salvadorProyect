@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"  "http://castor.org/mapping.dtd">
+<!--
+BARISTA
+Copyright (c) 2014 INSS
+Todos los derechos reservados.
+CASTOR MAPPING PARA CATALOGOS DE APLICACION
+
+@author JUAN EVANGELISTA FLETES GARCIA
+@version 1.0, 18/03/2015
+@since 1.0 *
+-->
+<mapping>
+    <class name="ni.gob.inss.barista.businesslogic.service.core.catalogo.ListaCatalogo">
+        <map-to xml="ListaCatalogo" />
+        <field name="catalogos" type="ni.gob.inss.barista.businesslogic.service.core.catalogo.CatalogoAplicacion" collection="arraylist">
+            <bind-xml name="Catalogo"/>
+        </field>
+    </class>
+
+    <class name="ni.gob.inss.barista.businesslogic.service.core.catalogo.CatalogoAplicacion">
+        <map-to xml="Catalogo" />
+        <field name="codigo" type="java.lang.String">
+            <bind-xml name="codigo" node="attribute" />
+        </field>
+        <field name="descripcion" type="java.lang.String">
+            <bind-xml name="descripcion" node="attribute" />
+        </field>
+        <field name="items" type="ni.gob.inss.barista.businesslogic.service.core.catalogo.CatalogoAplicacionItem" collection="arraylist">
+            <bind-xml name="CatalogoItem"/>
+        </field>
+    </class>
+
+    <class name="ni.gob.inss.barista.businesslogic.service.core.catalogo.CatalogoAplicacionItem">
+        <map-to xml="CatalogoItem" />
+        <field name="codigo" type="java.lang.String">
+            <bind-xml name="codigo" node="attribute" />
+        </field>
+        <field name="valor" type="java.lang.String">
+            <bind-xml name="valor" node="attribute" />
+        </field>
+        <field name="orden" type="java.lang.Integer">
+            <bind-xml name="orden" node="attribute" />
+        </field>
+    </class>
+</mapping>

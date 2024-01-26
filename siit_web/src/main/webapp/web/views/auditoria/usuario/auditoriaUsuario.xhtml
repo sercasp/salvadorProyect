@@ -1,0 +1,398 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{auditoriaUsuarioBackBean}"/>
+
+    <ui:define name="headerContent">
+        Usuarios
+    </ui:define>
+    <ui:define name="content">
+        <div class="ContainerIndent">
+            <div class="Container100">
+                <h:form id="formDetalle" style="width: 100%;">
+                    <p:panel id="panelDetalle" styleClass="fondoPaneles" style="height: auto; ">
+                        <f:facet name="header">
+                            <div class="ui-g-3 ui-md-3 ui-lg-3">
+                                <h:outputText id="tituloPanelDetalle" style="color: white; "
+                                              value="#{auditoriaUsuarioBackBean.otTituloPanelDetalle}"/>
+
+                            </div>
+                            <p:outputPanel styleClass="ui-g-6" style="float: right;padding: 0;">
+                                <div class="p-grid">
+                                    <p:outputPanel styleClass="p-col">
+
+                                        <div class="box">
+                                            <p:commandButton id="btnLimpiar" icon="ui-icon-trash" styleClass="red-btn"
+                                                             style="float: right"
+                                                             update="panelDetalle"
+                                                             actionListener="#{auditoriaUsuarioBackBean.limpiar}"
+                                                             value="Limpiar Todo"/>
+                                        </div>
+                                    </p:outputPanel>
+
+                                    <p:outputPanel styleClass="p-col">
+
+                                        <div class="box">
+                                            <p:commandButton id="btnAbrirModalSelectUsuario" icon="ui-icon-search"
+                                                             onclick="PF('modalSelectUsuario').show();"
+                                                             styleClass="Rigth"
+                                                             style="margin-right:5px;float: right"
+                                                             value="Buscar"/>
+                                        </div>
+                                    </p:outputPanel>
+
+                                </div>
+                            </p:outputPanel>
+                        </f:facet>
+
+
+                        <p:tabView id="tabs" style="height:auto" rendered="#{auditoriaUsuarioBackBean.tab}">
+                            <p:tab id="tabDatosGenerales" title="Datos Generales"
+                                   disabled="#{!auditoriaUsuarioBackBean.registroSeleccionado}">
+                                <p:panel style="height: auto">
+                                    <f:facet name="header">
+                                        <h:outputText value="ID: #{auditoriaUsuarioBackBean.hfId}"/>
+                                    </f:facet>
+                                    <h:panelGrid style="width: 100%" columns="4" styleClass="Wid100"
+                                                 columnClasses="Wid20,Wid30,Wid20,Wid30">
+                                        <p:outputLabel value="Usuario:"/>
+                                        <h:outputText value="#{auditoriaUsuarioBackBean.txtUsername}"/>
+
+                                        <p:outputLabel value="Nombre:"/>
+                                        <h:outputText
+                                                value="#{auditoriaUsuarioBackBean.txtNombres} #{auditoriaUsuarioBackBean.txtApellidos}"/>
+
+                                        <p:outputLabel value="Referencia:"/>
+                                        <h:outputText value="#{auditoriaUsuarioBackBean.txtReferencia}"/>
+
+                                        <p:outputLabel value="Intentos Fallidos:"/>
+                                        <h:outputText value="#{auditoriaUsuarioBackBean.txtIntentosFallidos}"/>
+
+                                        <p:outputLabel value="Fecha Bloqueo:"/>
+                                        <h:outputText value="#{auditoriaUsuarioBackBean.txtFechaBloqueo}"/>
+
+                                        <p:outputLabel value="Cantidad inicio de sesión:"/>
+                                        <h:outputText
+                                                value="#{auditoriaUsuarioBackBean.txtCantidadInicioSesion}"/>
+
+                                        <p:outputLabel value="Última sesión:"/>
+                                        <h:outputText value="#{auditoriaUsuarioBackBean.txtSessionActual}"/>
+
+                                        <p:outputLabel value="IP última sesión:"/>
+                                        <h:outputText value="#{auditoriaUsuarioBackBean.txtIpActual}"/>
+
+                                        <p:outputLabel for="auditInicioSession"
+                                                       value="Auditar Inicio Sessión:"/>
+                                        <p:selectBooleanButton onLabel="Si" offLabel="No"
+                                                               id="auditInicioSession"
+                                                               disabled="true"
+                                                               styleClass="ui-linus-enabled"
+                                                               value="#{auditoriaUsuarioBackBean.rbAuditarInicioSession}"/>
+
+                                        <p:outputLabel for="auditNavegacion" value="Auditar Navegación:"/>
+                                        <p:selectBooleanButton onLabel="Si" offLabel="No" id="auditNavegacion"
+                                                               disabled="true"
+                                                               styleClass="ui-linus-enabled"
+                                                               value="#{auditoriaUsuarioBackBean.rbAuditarNavegacion}"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="tabInicioSesion"
+                                   title="Inicio de Sessión (#{auditoriaUsuarioBackBean.listaSession.size()})"
+                                   disabled="#{!auditoriaUsuarioBackBean.registroSeleccionado}">
+
+                                <p:outputPanel styleClass="tableClass" style="height: 630px">
+                                    <p:dataTable style="width: 99%;height: 625px;" var="s"
+                                                 value="#{auditoriaUsuarioBackBean.listaSession}"
+                                                 paginatorPosition="top"
+                                                 scrollable="true"
+                                                 scrollHeight="530"
+                                                 pageLinks="3"
+                                                 reflow="true"
+                                                 paginator="true"
+                                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                                 rows="15"
+                                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                        <p:column headerText="Fecha" style="text-align: center; width: 150px">
+                                            <h:outputText
+                                                    value="#{configApplicationBean.dateToDateTimeWithSeconds(s.fechaSesion)}"/>
+                                        </p:column>
+
+                                        <p:column headerText="IP" style="text-align: center; width: 130px">
+                                            <h:outputText value="#{s.ipSesion}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Navegador">
+                                            <h:outputText value="#{s.navegador}"/>
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </p:outputPanel>
+                            </p:tab>
+
+                            <p:tab id="tabNavegacion"
+                                   title="Navegación (#{auditoriaUsuarioBackBean.listaNavegacion.size()})"
+                                   disabled="#{!auditoriaUsuarioBackBean.registroSeleccionado}">
+
+                                <p:outputPanel styleClass="tableClass" style="height: 630px">
+                                    <p:dataTable style="width: 99%;height: 625px;" var="n"
+                                                 value="#{auditoriaUsuarioBackBean.listaNavegacion}"
+                                                 paginatorPosition="top"
+                                                 scrollable="true"
+                                                 scrollHeight="530"
+                                                 pageLinks="3"
+                                                 reflow="true"
+                                                 paginator="true"
+                                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                                 rows="15"
+                                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                        <p:column headerText="Fecha" style="text-align: center; width: 150px">
+                                            <h:outputText
+                                                    value="#{configApplicationBean.dateToDateTimeWithSeconds(n.fechaNavegacion)}"/>
+                                        </p:column>
+
+                                        <p:column headerText="IP" style="text-align: center; width: 120px">
+                                            <h:outputText value="#{n.ipSesion}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Recurso" style="width: 500px">
+                                            <h:outputText value="#{n.url}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Navegador">
+                                            <h:outputText value="#{n.navegador}"/>
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </p:outputPanel>
+
+                            </p:tab>
+                            <p:tab id="tabDatos" title="Datos"
+                                   disabled="#{!auditoriaUsuarioBackBean.registroSeleccionado}">
+                                <p:panel style="height: 630px">
+                                    <f:facet name="header">
+                                        <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid20, Wid80">
+                                            <p:calendar id="fecha" pattern="#{configApplicationBean.formatoFecha}"
+                                                        showOn="button"
+                                                        mask="true"
+                                                        value="#{auditoriaUsuarioBackBean.calFechaInicio}"
+                                                        style="margin-left: 5px;float: left;width: 700px"
+                                                        styleClass="green-btn"
+                                                        maxdate="#{auditoriaUsuarioBackBean.now}"
+                                                        placeholder="Desde Fecha"
+                                                        disabled="#{!auditoriaUsuarioBackBean.registroSeleccionado}">
+                                                <p:ajax event="dateSelect" update="listaAuditoria esquema tabla"
+                                                        process="@form"
+                                                        listener="#{auditoriaUsuarioBackBean.fechaEvent}"/>
+                                            </p:calendar>
+                                            <p:calendar id="fechafin"
+                                                        pattern="#{configApplicationBean.formatoFecha}"
+                                                        mask="true"
+                                                        value="#{auditoriaUsuarioBackBean.calFechaFinal}"
+                                                        style="margin-left:100px;float: left;width: 700px"
+                                                        maxdate="#{auditoriaUsuarioBackBean.now}"
+                                                        placeholder="Hasta Fecha"
+                                                        showOn="button"
+                                                        disabled="#{!auditoriaUsuarioBackBean.registroSeleccionado}">
+
+                                                <p:ajax event="dateSelect" update="listaAuditoria esquema tabla"
+                                                        process="@form"
+                                                        listener="#{auditoriaUsuarioBackBean.fechaEvent1}"/>
+                                            </p:calendar>
+                                            <p:selectOneMenu id="esquema" label="Esquema"
+                                                             value="#{auditoriaUsuarioBackBean.esquemaSeleccionado}"
+                                                             valueChangeListener="#{auditoriaUsuarioBackBean.esquemaEvent}"
+                                                             style="width: 700px;margin-left: 5px;float: left"
+                                                             disabled="#{!auditoriaUsuarioBackBean.registroSeleccionado}">
+                                                <p:ajax event="change" update="listaAuditoria tabla"
+                                                        process="@form"/>
+
+                                                <f:selectItem itemLabel="Seleccione Esquema" itemValue="#{null}"/>
+                                                <f:selectItems var="e"
+                                                               value="#{auditoriaUsuarioBackBean.listaEsquema}"
+                                                               itemLabel="#{e}" itemValue="#{e}"/>
+                                            </p:selectOneMenu>
+                                            <p:selectOneMenu id="tabla" label="Tabla"
+                                                             style="width: 700px;margin-left: 100px;float: left"
+                                                             valueChangeListener="#{auditoriaUsuarioBackBean.tablaEvent}"
+                                                             value="#{auditoriaUsuarioBackBean.tablaSeleccionada}"
+                                                             disabled="#{!auditoriaUsuarioBackBean.registroSeleccionado}">
+                                                <p:ajax event="change" update="listaAuditoria" process="@form"/>
+
+                                                <f:selectItem itemLabel="Seleccione Tabla" itemValue="#{null}"/>
+                                                <f:selectItems var="t"
+                                                               value="#{auditoriaUsuarioBackBean.listaTabla}"
+                                                               itemLabel="#{t}" itemValue="#{t}"/>
+                                            </p:selectOneMenu>
+                                        </h:panelGrid>
+                                        <p:commandButton id="btnLimpiarDatosNavegacion" icon="ui-icon-cancel"
+                                                         value="Quitar Filtros"
+                                                         actionListener="#{auditoriaUsuarioBackBean.quitarFiltros}"
+                                                         update="fecha fechafin esquema tabla listaAuditoria"
+                                                         process="@this"
+                                                         style="padding: 0px;vertical-align: middle;width: 212px;margin-bottom: 12px;margin-top: 15px;margin-left: 93px; float: right;"
+                                                         disabled="#{!auditoriaUsuarioBackBean.registroSeleccionado}"/>
+                                    </f:facet>
+
+                                    <p:outputPanel styleClass="tableClass">
+                                        <p:dataTable style="width: 99.5%;height: 560px;" var="a"
+                                                     id="listaAuditoria"
+                                                     value="#{auditoriaUsuarioBackBean.listaAuditTrail}"
+                                                     paginatorPosition="top"
+                                                     scrollable="true"
+                                                     scrollHeight="474"
+                                                     pageLinks="3"
+                                                     reflow="true"
+                                                     paginator="true"
+                                                     emptyMessage="#{labelName.tableEmptyMessage}"
+                                                     rows="15"
+                                                     paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                                     currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                                            <p:ajax
+                                                    event="rowToggle"
+                                                    global="false"
+                                                    async="false"
+                                                    process="listaAuditoria"
+                                                    listener="#{auditoriaUsuarioBackBean.obtenerDetalleAuditoria}"/>
+
+                                            <p:column width="16">
+                                                <p:rowToggler/>
+                                            </p:column>
+
+                                            <p:column headerText="Fecha" style="text-align: center; width: 150px">
+                                                <h:outputText
+                                                        value="#{configApplicationBean.dateToDateTimeWithSeconds(a.fecha)}"/>
+                                            </p:column>
+
+                                            <p:column headerText="Operación" style="text-align: center; width: 120px">
+                                                <h:outputText value="#{a.operacion}"/>
+                                            </p:column>
+
+                                            <p:column headerText="Esquema" style="text-align: center; width: 120px">
+                                                <h:outputText value="#{a.schema}"/>
+                                            </p:column>
+
+                                            <p:column headerText="Tabla" style="text-align: center;width: 200px">
+                                                <h:outputText value="#{a.tabla}"/>
+                                            </p:column>
+
+                                            <p:column headerText="Id" style="text-align: center; width: 120px">
+                                                <h:outputText value="#{a.filaId}"/>
+                                            </p:column>
+
+                                            <p:rowExpansion>
+                                                <p:dataTable value="#{auditoriaUsuarioBackBean.detalleAuditoria}"
+                                                             emptyMessage="#{labelName.tableEmptyMessage}"
+                                                             var="ad">
+
+                                                    <p:column headerText="Columna" width="50">
+                                                        <h:outputText value="#{ad.columna}"/>
+                                                    </p:column>
+
+                                                    <p:column headerText="Valor Anterior" width="200">
+                                                        <h:outputText value="#{ad.valorAnterior}"/>
+                                                    </p:column>
+
+                                                    <p:column headerText="Nuevo Valor" width="200">
+                                                        <h:outputText value="#{ad.valorNuevo}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:rowExpansion>
+
+                                        </p:dataTable>
+                                    </p:outputPanel>
+                                </p:panel>
+
+                            </p:tab>
+                        </p:tabView>
+
+                    </p:panel>
+                </h:form>
+            </div>
+        </div>
+
+        <p:dialog id="modalSelectUsuario" widgetVar="modalSelectUsuario" closable="false"
+                  modal="true" width="90%" height="500px" responsive="true"
+                  resizable="false" appendToBody="true" styleClass="fondoPaneles">
+            <h:form id="formLista" style="width: 100%">
+                <p:panel styleClass="fondoPaneles" style="height: 500px">
+                    <p:outputPanel styleClass="tableClass">
+                        <p:dataTable style="width: 100%; height: auto;" var="r"
+                                     value="#{auditoriaUsuarioBackBean.listaUsuarios}"
+                                     paginatorPosition="top"
+                                     selectionMode="single"
+                                     selection="#{auditoriaUsuarioBackBean.selectedRow}"
+                                     rowKey="#{r.id}"
+                                     paginator="true"
+                                     emptyMessage="#{labelName.tableEmptyMessage}"
+                                     rows="7"
+                                     reflow="true"
+                                     pageLinks="3"
+                                     paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                     currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                            <f:facet name="header">
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-md-12 ui-lg-6">
+                                        <div class="ui-g-12 ui-md-6 ui-lg-9" style="padding-top: 16px;">
+                                            <span class="md-inputfield">
+                                                  <p:inputText maxlength="100" autocomplete="off"
+                                                               value="#{auditoriaUsuarioBackBean.txtBuscar}"
+                                                  />
+                                                <label>#{labelName.placeholderBuscar}</label>
+                                            </span>
+
+                                        </div>
+                                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                            <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}" styleClass="teal-btn"
+                                                             update="formLista"
+                                                             action="#{auditoriaUsuarioBackBean.cargarLista}"
+                                                             style="margin-left: 5px"/>
+                                        </div>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 ui-lg-3"></div>
+                                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                        <div class="ui-g-12 ui-md-3 ui-lg-6">
+                                            <p:commandButton icon="ui-icon-check" value="#{labelName.btnSeleccionar}"
+                                                             update=":formDetalle"
+                                                             action="#{auditoriaUsuarioBackBean.editar}"/>
+                                        </div>
+                                        <div class="ui-g-12 ui-md-3 ui-lg-6">
+                                            <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                             actionListener="#{listaRoleBackBean.limpiar}"
+                                                             update="formDetalle"
+                                                             onclick="PF('modalSelectUsuario ').hide()"
+                                                             resetValues="true"
+                                                             process="@this"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </f:facet>
+
+                            <p:ajax event="rowSelect" listener="#{auditoriaUsuarioBackBean.editar}"
+                                    update=":formDetalle" resetValues="true"/>
+                            <p:column headerText="Usuario" style="width: 30%">
+                                <h:outputText value="#{r.username}"/>
+                            </p:column>
+
+                            <p:column headerText="Nombre">
+                                <h:outputText value="#{r.nombres} #{r.apellidos}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

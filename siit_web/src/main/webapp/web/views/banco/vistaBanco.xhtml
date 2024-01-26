@@ -1,0 +1,284 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/web/template/innerLayout.xhtml">
+    <ui:param name="paramBackBean" value="#{bancoController}"/>
+
+    <ui:define name="headerContent">
+        Página Principal
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="formPaginaPrincipal">
+
+            <div class="ui-grid">
+
+                <div class="ui-g-12 ui-md-6 ui-lg-12">
+                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                    </div>
+                    <div class="ui-g-12 ui-md-6 ui-lg-2">
+
+                    </div>
+
+                    <div class="ui-g-12 ui-md-6 ui-lg-2">
+
+                    </div>
+
+                    <div class="ui-g-12 ui-md-6 ui-lg-2">
+                        <p:menuButton value="Nuevo" id="nuevoId" style="width: 80%">
+
+                            <p:menuitem style="width: 100% !important;" value="Readers"
+                                        actionListener="#{bancoController.levantarModal(1)}">
+                            </p:menuitem>
+
+                            <p:menuitem style="width: 100% !important;" value="Blogs"
+                                         actionListener="#{bancoController.levantarModal(2)}">
+                            </p:menuitem>
+                        </p:menuButton>
+                    </div>
+                </div>
+                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                    <p:growl id="messages" showDetail="false"/>
+
+                    <p:menu>
+                        <p:submenu label="Menú">
+                            <p:menuitem value="Readers" actionListener="#{bancoController.mostrarReaders}"
+                                        update="formPaginaPrincipal"/>
+                            <p:menuitem value="Blogs" actionListener="#{bancoController.mostrarBlogs}"
+                                        update="formPaginaPrincipal"/>
+                            <p:menuitem value="Readers by blog"
+                                        actionListener="#{bancoController.mostrarBlogsReaders}"
+                                        update="formPaginaPrincipal"/>
+                        </p:submenu>
+                    </p:menu>
+                </div>
+
+                <p:panel id="readersId" style="margin-bottom:20px" rendered="#{bancoController.mostarPanel == 1}">
+                    READERS
+                    <p:dataTable id="dtReaderes"
+                                 style="height: auto !important;"
+                                 var="r"
+                                 widgetVar="dtReaderes"
+                                 value="#{bancoController.listaReaders}"
+                                 paginatorPosition="top"
+                                 paginator="true"
+                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                 rows="10"
+                                 pageLinks="5"
+                                 reflow="true"
+                                 scrollable="false"
+                                 scrollWidth="100%"
+                                 scrollHeight="100%"
+                                 expandedRow="false"
+                                 styleClass="ui-paginator-current"
+                                 rowKey="#{r.id}"
+                                 editable="true"
+                                 editMode="cell"
+                                 selection="#{bancoController.seleccionarReaders}"
+                                 selectionMode="single"
+                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                        <p:ajax event="rowSelect"/>
+
+                        <p:column headerText="id" width="2%">
+                            <h:outputText value="#{r.id}"/>
+                        </p:column>
+
+                        <p:column headerText="Name" style="text-align: center">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText
+                                            value="#{r.name}">
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{r.name}"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Editar">
+                            <p:commandButton icon="fa fa-pencil"
+                                             actionListener="#{bancoController.editarReaders}"
+                                             update="dtReaderes"/>
+                        </p:column>
+
+                        <p:column headerText="Eliminar">
+                            <p:commandButton icon="fa fa-trash-o"
+                                             actionListener="#{bancoController.eliminar(r.id)}"
+                                             update="dtReaderes"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:panel>
+
+                <p:panel id="blogsId" rendered="#{bancoController.mostarPanel == 2}">
+                    BLOGS
+                    <p:dataTable id="dtBlogs"
+                                 style="height: auto !important;"
+                                 var="b"
+                                 widgetVar="dtBlogs"
+                                 value="#{bancoController.listaBlogs}"
+                                 paginatorPosition="top"
+                                 paginator="true"
+                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                 rows="10"
+                                 pageLinks="5"
+                                 reflow="true"
+                                 scrollable="false"
+                                 scrollWidth="100%"
+                                 scrollHeight="100%"
+                                 expandedRow="false"
+                                 styleClass="ui-paginator-current"
+                                 rowKey="#{b.id}"
+                                 editable="true"
+                                 editMode="cell"
+                                 selection="#{bancoController.seleccionarBlogs}"
+                                 selectionMode="single"
+                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                        <p:ajax event="rowSelect"/>
+
+                        <p:column headerText="id" width="2%">
+                            <h:outputText value="#{b.id}"/>
+                        </p:column>
+
+                        <p:column headerText="Title" style="text-align: center">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText
+                                            value="#{b.title}">
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{b.title}"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Description" style="text-align: center">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText
+                                            value="#{b.description}">
+                                    </h:outputText>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{b.description}"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Editar">
+                            <p:commandButton icon="fa fa-pencil"
+                                             actionListener="#{bancoController.editarBlogs}"
+                                             update="dtBlogs"/>
+                        </p:column>
+
+                        <p:column headerText="Eliminar">
+                            <p:commandButton icon="fa fa-trash-o"
+                                             actionListener="#{bancoController.eliminarBlog(r.id)}"
+                                             update="dtBlogs"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+
+                <p:panel id="blogsReadersId" rendered="#{bancoController.mostarPanel == 3}">
+                    BLOGS - READERS
+                    <p:dataTable id="dtBlogReaders"
+                                 style="height: auto !important;"
+                                 var="br"
+                                 widgetVar="dtBlogReaders"
+                                 value="#{bancoController.listaBlosgReaders}"
+                                 paginatorPosition="top"
+                                 paginator="true"
+                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                 rows="10"
+                                 pageLinks="5"
+                                 reflow="true"
+                                 scrollable="false"
+                                 scrollWidth="100%"
+                                 scrollHeight="100%"
+                                 expandedRow="false"
+                                 styleClass="ui-paginator-current"
+                                 rowKey="#{br.br_id}"
+                                 editable="true"
+                                 editMode="cell"
+                                 selection="#{bancoController.seleccionarBlogsReaders}"
+                                 selectionMode="single"
+                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                        <p:ajax event="rowSelect"/>
+
+                        <p:column headerText="id" width="2%">
+                            <h:outputText value="#{br.br_id}"/>
+                        </p:column>
+
+                        <p:column headerText="Title" style="text-align: center">
+                            <h:outputText value="#{br.titulo}"/>
+                        </p:column>
+                        <p:column headerText="Description" style="text-align: center">
+                            <h:outputText value="#{br.des}"/>
+                        </p:column>
+                        <p:column headerText="Name" style="text-align: center">
+                            <h:outputText value="#{br.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Eliminar">
+                            <p:commandButton icon="fa fa-trash-o"
+                                             actionListener="#{bancoController.eliminarBlogReaders}"
+                                             update="formPaginaPrincipal:dtBlogReaders"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+
+            </div>
+
+        </h:form>
+
+        <p:dialog header="Readers" id="modalReadersId"
+                  widgetVar="modalReadersId" modal="true" resizable="true" width="35%" closable="true" position="top">
+            <h:form id="formAgregarReaders">
+
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <p:commandButton value="Agregar" styleClass="green-btn" actionListener="#{bancoController.guardar}"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <p:inputText value="#{bancoController.nombre}"/>
+                    </div>
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Blogs" id="modalBlogs"
+                  widgetVar="modalBlogs" modal="true" resizable="true" width="35%" closable="true" position="top">
+            <h:form id="formAgregarBlogs">
+
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <p:commandButton value="Agregar" id="btnGuardarBlog" ajax="false" styleClass="green-btn" actionListener="#{bancoController.guardarBlogs}"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <p:inputText  value="#{bancoController.titulo}"/>
+                    </div>
+
+                    <div class="ui-g-12 ui-md-3 ui-lg-3">
+                        <p:inputText value="#{bancoController.descripcion}"/>
+                    </div>
+
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

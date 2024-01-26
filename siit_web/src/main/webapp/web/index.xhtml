@@ -1,0 +1,442 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+<!--
+  * Creado por jvillanueva 23/01/2024
+-->
+
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <link href="#{facesContext.externalContext.requestContextPath}/resources/siit/1_0/img/aplicacion/favintur.ico"
+              rel="shortcut icon" type="image/x-icon"/>
+    </f:facet>
+
+    <title>#{configApplicationBean.aplicacionNombreEntidad}</title>
+    <h:outputStylesheet name="theme.css" library="primefaces-sapphire-bluegray"/>
+    <h:outputScript name="js/nanoscroller.js" library="sapphire-layout"/>
+    <h:outputScript name="js/layout.js" library="sapphire-layout"/>
+    <h:outputScript name="js/ripple.js" library="sapphire-layout"/>
+
+    <h:outputStylesheet name="css/nanoscroller.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/ripple.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/grid.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/style.css" library="siit"/>
+    <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="sapphire-layout"/>
+</h:head>
+
+<h:body>
+    <style type="text/css">
+        .layout-menu-horizontal .layout-menu > li > a {
+            padding: 0.61em;
+        }
+
+        .layout-menu > li > a .menuitem-text {
+            /*Color de letra en el menu*/
+            color: #000;
+        }
+
+        .layout-topbar-destination .layout-breadcrumb li {
+            /*Color de letra en el submenu*/
+            color: #000000;
+        }
+
+        body .ui-dialog .ui-dialog-titlebar {
+            padding: 0;
+        }
+
+        .layout-topbar .layout-topbar-grid {
+            min-height: 0.1em;
+        }
+
+
+        body .ui-datatable .ui-paginator {
+            padding: 0.0714em 0.1em;
+        }
+
+        .layout-breadcrumb ul {
+            padding: .3em;
+        }
+
+        .layout-content {
+            /*Margenes en el contenido*/
+            padding: 0;
+            margin-top: -1px;
+        }
+
+        .layout-top {
+            /*margenes en la parte superior*/
+            padding: 5px 1px 1px 1px;
+        }
+
+        .ui-dialog .ui-dialog-content {
+            padding: 0;
+        }
+
+        #application_content {
+            /*Fondo del aplicativo*/
+            margin: 0 0 0;
+            background-image: url("#{resource['sapphire-layout:images/special/destination-topbar.jpg']}");
+        }
+
+        .card {
+            background-image: url("#{resource['sapphire-layout:images/special/destination-topbar.jpg']}");
+            padding: 0.5em;
+        }
+
+        .card .card-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0.7em 0;
+        }
+
+        body .ui-steps {
+            position: relative;
+        }
+
+        body .ui-steps ul {
+            display: -ms-flexbox;
+            display: flex;
+        }
+
+        body .ui-steps .ui-steps-item {
+            flex: 1 1 0;
+            -ms-flex: 1 1 0;
+            background: transparent;
+            text-align: center;
+            float: none;
+            opacity: 1;
+        }
+
+        body .ui-steps .ui-steps-item .ui-menuitem-link {
+            display: block;
+            text-align: center;
+            background: transparent;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        body .ui-steps .ui-steps-item .ui-menuitem-link .ui-steps-number {
+            border: 1px solid transparent;
+            width: 2rem;
+            height: 2rem;
+            font-size: 1.143rem;
+            padding: 0;
+            margin-top: 2rem;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 50%;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+        }
+
+        body .ui-steps .ui-steps-item .ui-menuitem-link .ui-steps-title {
+            display: block;
+            padding-top: 0.5rem;
+            color: rgba(0, 0, 0, 0.87);
+        }
+
+        body .ui-steps .ui-steps-item.ui-state-highlight .ui-steps-title {
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.87);
+        }
+
+        body .ui-steps .ui-steps-item:not(.ui-state-highlight) {
+            opacity: 0.85;
+        }
+
+        body .ui-steps:before {
+            content: " ";
+            border-top: 1px solid #e5e5e5;
+            width: 100%;
+            top: 50%;
+            left: 0;
+            display: block;
+            position: absolute;
+        }
+
+       @media only screen and (max-width: 640px) {
+            tr td {
+                width: 100% !important;
+                display: inline;
+            }
+
+            body .ui-steps .ui-steps-item:not( .ui-state-highlight ) {
+                opacity: 0.85;
+                display: none;
+            }
+        }
+
+
+    </style>
+
+    <div class="layout-container layout-menu-#{guestPreferences.menuTheme} layout-topbar-destination #{guestPreferences.horizontal ? 'layout-menu-horizontal' : ''} layout-top-small">
+        <div class="layout-top">
+
+            <ui:include src="template/topbar.xhtml"/>
+
+            <div class="layout-breadcrumb">
+                <ul>
+                    <p:outputPanel id="panelBreadcrum" style="display: unset">
+                        <li><h:outputText id="nombreModuloActual" style="color: #616161;"
+                                          value="#{sessionBean.nombreModuloActual}"/></li>
+                        <li><i class="material-icons" style="color: #616161;">chevron_right</i></li>
+
+                        <h:outputText id="breadcrum_menu" style="color: #616161" value="#{sessionBean.breadcrum}"
+                                      escape="false"/>
+
+                        <li style="float: right;font-weight: bolder; color: #616161;">
+                            <h:outputText id="usuarioLabel" style="text-transform: uppercase"
+                                          value="#{sessionBean.usuarioActual.username}"/>
+                            <h:outputText id="nombreEntidadActual" value=""/>
+
+                        </li>
+                    </p:outputPanel>
+                </ul>
+            </div>
+        </div>
+        <div class="layout-main">
+            <p:outputPanel id="application_content">
+                <ui:include src="#{indexBackBean.paginaActual}"/>
+            </p:outputPanel>
+        </div>
+
+        <div class="layout-mask"></div>
+
+    </div>
+
+    <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+        <f:facet name="start">
+            <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"/>
+        </f:facet>
+
+        <f:facet name="complete">
+            <h:outputText value=""/>
+        </f:facet>
+    </p:ajaxStatus>
+
+    <!-- ajax status para toda la aplicación -->
+    <p:dialog widgetVar="statusDialog" draggable="false" closable="false"
+              resizable="false" showHeader="false" position="center middle">
+        <div class="TexAlCenter">
+            <div class="ContainerIndent">
+                <span style="display: block;" class="fondo">Cargando...</span>
+            </div>
+        </div>
+    </p:dialog>
+    <p:ajaxStatus onstart="tiempoInicio();" oncomplete="PF('statusDialog').hide(); tiempoFin();"/>
+    <!-- fin ajax status para toda la aplicación -->
+
+    <!-- mensajes para toda la aplicación -->
+    <p:growl id="message" showDetail="true" showSummary="false" autoUpdate="true" severity="info,warn">
+        <p:autoUpdate/>
+    </p:growl>
+    <p:growl id="messageError" showDetail="true" showSummary="false" sticky="true" autoUpdate="true" severity="error">
+        <p:autoUpdate/>
+    </p:growl>
+
+    <!-- diálogo de confirmación para toda la aplicación -->
+    <h:form>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="#{dialogText.deleteConfirmationTextYesButton}" type="button"
+                             icon="fa fa-check-circle-o" styleClass="green-btn ui-confirmdialog-yes"/>
+            <p:commandButton value="#{dialogText.deleteConfirmationTextNoButton}" type="button"
+                             icon="fa fa-close" styleClass="blue-grey-btn ui-confirmdialog-no"/>
+        </p:confirmDialog>
+    </h:form>
+
+    <!-- Enable ajaxErrorHandler -->
+    <p:ajaxExceptionHandler widgetVar="ajaxErrorHandler" button="Cerrar" buttonOnclick="ajaxErrorHandler.hide();"/>
+    <p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException" button="Iniciar sessión"
+                            onexception="PF('sesionExpirada').show();"
+                            buttonOnclick="document.location.href=document.location.href;"
+                            body="Su sessión ha expirado!!." title="Sessión expirada ..."/>
+    <p:ajaxExceptionHandler type="ni.gob.inss.barista.view.security.SystemSecurityException" button="Aceptar"
+                            buttonOnclick="document.location.href=document.location.href;"
+                            body="No esta autorizado para ver este recurso!!." title="Seguridad"/>
+
+
+    <!--Diálogo de notificación de Sesión Expirada -->
+    <p:dialog header="Sesión expirada" width="400" closable="false" closeOnEscape="false" resizable="false"
+              widgetVar="sesionExpirada" modal="true">
+        <h:panelGrid columns="2" styleClass="panelGridClass" style="width: 100%;text-align: center;">
+            <h:outputText value="La sesión ha expirado, debe recargar la página para ingresar nuevamente."
+                          style="font-size: 1.2em;font-weight: bold;text-align: justify !important;"/>
+        </h:panelGrid>
+        <p:outputPanel style="padding: 0 0 7px 0;text-align: center;width: 100%;">
+            <h:form>
+                <p:commandButton value="Recargar"
+                                 onclick="login()"/>
+            </h:form>
+        </p:outputPanel>
+    </p:dialog>
+
+    <p:dialog id="dlgCambiarClave" width="50%" modal="true" resizable="false" responsive="true"
+              widgetVar="wvDlgCambiarClave" closable="false" style="padding: 0">
+        <h:form id="formularioCambiarClave">
+            <p:panel>
+                <f:facet name="header">
+                    <p:outputPanel style="display: block;float: left">
+                        <h:outputText value="Cambiar contraseña"/>
+                    </p:outputPanel>
+
+                    <p:outputPanel style="display: block;float: right">
+                        <p:commandButton icon="fa fa-check" styleClass="cyan-btn" value="Guardar"
+                                         update="message messageError"
+                                         action="#{indexBackBean.cambiarClave}"/>
+                        <p:commandButton icon="fa fa-close" styleClass="blue-grey-btn" value="Cerrar"
+                                         immediate="true"
+                                         update="message messageError"
+                                         action="#{indexBackBean.cerrarModalContraseña}"
+                                         resetValues="true"/>
+                    </p:outputPanel>
+                </f:facet>
+
+                <h:panelGrid columns="2">
+                    <p:outputLabel for="claveActual" value="Contraseña actual:"/>
+                    <p:password id="claveActual"
+                                autocomplete="off"
+                                maxlength="50"
+                                required="true"
+                                value="#{indexBackBean.claveActual}"
+                                label="Current password">
+                        <f:validateLength minimum="0" maximum="50"/>
+                    </p:password>
+
+                    <p:outputLabel for="cambiarClave" value="Nueva contraseña:"/>
+                    <p:password id="cambiarClave"
+                                autocomplete="off"
+                                maxlength="50"
+                                required="true"
+                                value="#{indexBackBean.claveNueva}"
+                                label="New password"
+                                feedback="true"
+                                promptLabel="Ingrese su nueva contrasña">
+
+                        <f:validateLength minimum="0" maximum="50"/>
+                    </p:password>
+
+                    <p:outputLabel for="cambiarClaveConfirmacion" value="Confirmación de la contraseña:"/>
+                    <p:password id="cambiarClaveConfirmacion"
+                                autocomplete="off"
+                                maxlength="50"
+                                required="true"
+                                value="#{indexBackBean.claveConfirmacion}"
+                                label="Password confirmation"
+                                feedback="true"
+                                promptLabel="Ingrese su nueva contraseña de nuevo:">
+
+                        <f:validateLength minimum="0" maximum="50"/>
+                    </p:password>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog id="dlgRenovarSesion" width="50%" height="auto" header="Alerta!" responsive="true"
+              modal="true" resizable="false" closable="false"
+              widgetVar="wvDlgRenovarSesion">
+        <h:form id="formSesion">
+            <p:panel styleClass="ui-grid-col-12">
+                <h:inputHidden id="tiempoSesion" value="#{indexBackBean.getSessionMaxInactiveInterval() - 600}"/>
+                <p style="margin-top: 30px; text-align: center;">
+                    La sesión del usuario esta apunto de acabar desea Renovar?
+                </p>
+                <p style="margin-top: 5px;text-align: center">
+                    <span id="cuenta_regresiva"></span>
+                    <span>seg.</span>
+                </p>
+                <p:panelGrid columns="2" columnClasses="ui-grid-col-6,ui-grid-col-6" style="border: none;width: 100%">
+                    <p:commandButton icon="fa fa-check-circle-o" styleClass="green-btn" value="Renovar"
+                                     immediate="true" oncomplete="PF('wvDlgRenovarSesion').hide()"
+                                     resetValues="true"/>
+                    <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+                       onclick="bandMostrarRenovacion=false;PF('wvDlgRenovarSesion').hide();logout();">
+                        <span class="ui-button-icon-left ui-icon ui-c fa fa-close"></span>
+                        <span class="ui-button-text ui-c">Cerrar</span>
+                    </a>
+                </p:panelGrid>
+            </p:panel>
+        </h:form>
+    </p:dialog>
+
+    <script type="application/javascript">
+        function mostrarMensajeEntidad() {
+            PF('notificacionEntidad').show();
+        }
+
+        function mostrarMensajeSesion() {
+            PF('sesionExpirada').show();
+        }
+
+        function login() {
+            window.location = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 2)) + '/login.html';
+        }
+
+        var tiempoSesion = $("input[name*='tiempoSesion']").val();
+        var bandMostrarRenovacion = true;
+
+        function cuentaRegresiva() {
+            try {
+                if (30 >= tiempoSesion) {
+                    if (bandMostrarRenovacion) {
+                        PF('wvDlgRenovarSesion').show();
+                        bandMostrarRenovacion = false;
+                    }
+                }
+                if (tiempoSesion > 0)
+                    tiempoSesion -= 1;
+                else
+                    logout();
+                $("#cuenta_regresiva").text(tiempoSesion);
+                setTimeout("cuentaRegresiva()", 1000);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        function reiniciarContadorRegresiva() {
+            try {
+                bandMostrarRenovacion = true;
+                tiempoSesion = $("input[name*='tiempoSesion']").val();
+                $("#cuenta_regresiva").text(tiempoSesion);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        $(document).ready(function () {
+            reiniciarContadorRegresiva();
+            cuentaRegresiva();
+        });
+
+        var tiempo;
+
+        function tiempoInicio() {
+            tiempo = setTimeout("PF('statusDialog').show()", 1000);
+        }
+
+        function tiempoFin() {
+            clearTimeout(tiempo);
+        }
+    </script>
+
+    <h:outputStylesheet name="css/nanoscroller.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/ripple.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/grid.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="sapphire-layout"/>
+
+</h:body>
+</html>

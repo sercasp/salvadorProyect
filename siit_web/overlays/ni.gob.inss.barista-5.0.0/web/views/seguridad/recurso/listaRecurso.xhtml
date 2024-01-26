@@ -1,0 +1,389 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaRecursoBackBean}"/>
+
+    <ui:define name="headerContent">
+        Recursos
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .size {
+                margin-left: 100px;
+            }
+
+            .size2 {
+                height: 25px !important;
+            }
+
+            .size3 {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+
+            .size4 {
+                margin-bottom: 10px;
+                margin-top: 5px !important;
+                margin-left: 25px;
+            }
+
+            .width {
+                width: 350px;
+            }
+
+            .pasivo {
+                background-color: red !important;
+            }
+
+            .titulo {
+                font-weight: 500;
+                font-size: 20px;
+                line-height: 32px;
+                margin: 0;
+                color: white;
+            }
+
+            .margin {
+                margin-left: 60px !important;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 3px !important;
+            }
+
+            .btn-width-auto {
+                width: auto !important;
+            }
+
+            .float-left {
+                float: left !important;
+            }
+
+            .float-right {
+                float: right !important;
+            }
+
+            .clear-fix {
+                clear: both;
+            }
+
+            .m-b-10 {
+                margin-bottom: 10px !important;
+            }
+
+            .m-t-10 {
+                margin-top: 10px !important;
+            }
+
+            .font color {
+                font-weight: bold;
+                color: #000000;
+            }
+
+            .font-color-pasivo {
+                font-weight: bold;
+                color: #ff0c0c;
+            }
+
+            .cuadrado {
+                width: 20px;
+                height: 20px;
+                background: red;
+                position: center;
+            }
+        </style>
+
+        <h:form id="formLista" style="height: 500px">
+
+            <p:dataTable var="r"
+                         value="#{listaRecursoBackBean.listaRecursos}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaRecursoBackBean.selectedRow}"
+                         rowKey="#{r.id}"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         paginator="true"
+                         rows="10"
+                         pageLinks="3"
+                         scrollHeight="400"
+                         scrollable="true"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <!--                Columnas   -->
+                <!--                 Evento doble click sobre una fila -->
+                <!--                <p:ajax event="rowSelect" listener="#{listaRecursoBackBean.editar}"-->
+                <!--                        update=":formDetalle"-->
+                <!--                        resetValues="true"/>-->
+                <f:facet name="header">
+                    <!--            botones-->
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen">
+                                <p:outputPanel style="display: block; text-align: left;">
+                                    <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                 style="width: 60%"
+                                                 value="#{listaRecursoBackBean.txtBuscar}"
+                                                 id="buscar" autocomplete="off"/>
+                                    <p:commandButton icon="ui-icon-search"
+                                                     style="margin-left: 5px"
+                                                     update="formLista"
+                                                     action="#{listaRecursoBackBean.cargarLista}"/>
+                                </p:outputPanel>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-plus"
+                                                 value="#{labelName.btnAgregar}" ajax="true"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 update=":formLista :formDetalle"
+                                                 action="#{listaRecursoBackBean.limpiar}"
+                                                 resetValues="true"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-pencil" value="#{labelName.btnEditar}"
+                                                 ajax="true"
+                                                 update=":formDetalle"
+                                                 action="#{listaRecursoBackBean.editar}"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <p:column headerText="Codigo" styleClass="Wid10">
+                    <h:outputText value="#{r.codigo}"/>
+                </p:column>
+
+                <p:column headerText="Nombre" styleClass="Wid70">
+                    <h:outputText value="#{r.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Tipo" styleClass="Wid10">
+                    <h:outputText value="#{r.tipo}"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+
+        <!--  Modal Agregar-->
+        <p:dialog id="dlgFormDetalle" widgetVar="wvDlgFormDetalle" modal="true"
+                  width="70%" height="auto" closable="false" resizable="false" showEffect="clip"
+                  hideEffect="fold" styleClass="disable-scroll" style="padding: 10px">
+
+            <h:form id="formDetalle" style="width: 100%;">
+                <p:inputText type="hidden" value="#{listaRecursoBackBean.hfId}"/>
+                <p:panel style="height: auto" styleClass="fondoPaneles">
+                    <f:facet name="header">
+                        <!--                        Botones-->
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                    <h:outputText value="ID: #{listaRecursoBackBean.hfId}"
+                                                  rendered="#{!listaRecursoBackBean.nuevoRegistro}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="fa fa-clipboard fa-lg"
+                                                     value="#{labelName.btnAuditoria}"
+                                                     oncomplete="PF('tipoCatalogoAuditWV').show();"
+                                                     process="@this"
+                                                     update=":tipoCatalogoAudit"
+                                                     rendered="#{listaRecursoBackBean.btnAuditoriaVisible}"
+                                                     action="#{listaRecursoBackBean.cargarAuditoria}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-trash" value="#{labelName.btnEliminar}"
+                                                     actionListener="#{listaRecursoBackBean.elminar}"
+                                                     update="formDetalle :formLista"
+                                                     rendered="#{listaRecursoBackBean.btnElminiarVisible}">
+                                        <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                   message="#{dialogText.deleteConfirmationTextContent}"
+                                                   icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                     actionListener="#{listaRecursoBackBean.guardar}"
+                                                     update="formDetalle :formLista"
+                                                     rendered="#{listaRecursoBackBean.btnGuardarVisible}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-cancel"
+                                                     value="#{labelName.btnCerrarModal}"
+                                                     onclick="PF('wvDlgFormDetalle').hide()"
+                                                     actionListener="#{listaRecursoBackBean.limpiar}"
+                                                     update="formDetalle :formLista"
+                                                     resetValues="true" process="@this"/>
+                                </div>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <div class="ui-g-12 sinMargen">
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="tipo" value="Tipo:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                            <p:selectOneMenu id="tipo" label="Tipo"
+                                             value="#{listaRecursoBackBean.cmbTipo}"
+                                             style="width: 90%!important;"
+                                             valueChangeListener="#{listaRecursoBackBean.seleccionarTipoEvent}">
+                                <p:ajax event="change" update="codigo"/>
+                                <f:selectItem itemLabel="Seleccione Tipo:" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="PANTALLA" itemValue="P"/>
+                                <f:selectItem itemLabel="REPORTE" itemValue="R"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="codigo" value="Código:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                            <p:inputText id="codigo" label="Código" required="true"
+                                         value="#{listaRecursoBackBean.txtCodigo}" autocomplete="off"
+                                         style="width: 100%!important;"
+                                         readonly="#{listaRecursoBackBean.disableTxtCodigo}">
+                                <f:validateLength minimum="0" maximum="100"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+
+                    <div class="ui-g-12 sinMargen">
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="nombre" value="Nombre:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                            <p:inputText id="nombre" label="Nombre" style="width: 90%!important;"
+                                         value="#{listaRecursoBackBean.txtNombre}" autocomplete="off">
+                                <f:validateRegex pattern="#{listaRecursoBackBean.regExpDescriptor}"/>
+                                <f:validateLength minimum="0" maximum="100"/>
+                                <p:ajax event="blur" process="@this"
+                                        listener="#{listaRecursoBackBean.cargarTxtAyuda}"
+                                        update="textoAyuda"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="url" value="Url:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                            <p:inputText id="url" value="#{listaRecursoBackBean.txtUrl}"
+                                             label="Url" autoResize="true"
+                                             style="width: 100%!important;"
+                                             required="true">
+                                <f:validateLength minimum="0" maximum="1000"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+
+                    <div class="ui-g-12 sinMargen">
+                        <!-- Iconos y Miembros-->
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="iconoCSS" value="Icono CSS:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                            <p:inputText id="iconoCSS" style="width: 90%!important;"
+                                         value="#{listaRecursoBackBean.txtIconoCss}"
+                                         label="iconoCSS" required="false"
+                                         autocomplete="off">
+                                <f:validateLength minimum="0" maximum="50"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="miembro" value="Miembro:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                            <p:selectOneMenu id="miembro" label="Miembro" required="true"
+                                             value="#{listaRecursoBackBean.cmbMiembro}"
+                                             style="width: 100%!important;">
+                                <f:selectItem itemLabel="Seleccione Miembro:" itemValue="#{null}"/>
+                                <f:selectItems var="md" value="#{listaRecursoBackBean.listaMiembros}"
+                                               itemLabel="#{md.primerNombre} #{md.segundoNombre} #{md.primerApellido} #{md.segundoApellido}"
+                                               itemValue="#{md.id}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 sinMargen">
+                        <!-- texto de ayuda, url de ayuda-->
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="textoAyuda" value="Texto de Ayuda:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                            <p:inputText id="textoAyuda" style="width: 90%!important;"
+                                         value="#{listaRecursoBackBean.txtTextoAyuda}"
+                                         label="Texto Ayuda" required="true" autocomplete="off">
+                                <f:validateLength minimum="0" maximum="500"/>
+                            </p:inputText>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="urlAyuda" value="Url de Ayuda:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                            <p:inputText id="urlAyuda" style="width: 100%!important;"
+                                         value="#{listaRecursoBackBean.txtUrlAyuda}"
+                                         label="Url Ayuda" required="false"
+                                         autocomplete="off">
+                                <f:validateLength minimum="0" maximum="1000"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 sinMargen">
+                        <!-- Descripcion-->
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="descripcion" value="Descripción:"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-10 sinMargen">
+                            <p:inputTextarea id="descripcion" style="width: 100%!important;"
+                                             value="#{listaRecursoBackBean.txtDescripcion}"
+                                             label="Descripcion"
+                                             required="false">
+                                <f:validateLength minimum="0" maximum="1000"/>
+                            </p:inputTextarea>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 sinMargen">
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="pasivo" value="Pasivo:"
+                                           rendered="#{!listaRecursoBackBean.nuevoRegistro}"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3 sinMargen">
+                            <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                                   style="width: 25%!important;"
+                                                   value="#{listaRecursoBackBean.rbPasivo}"
+                                                   rendered="#{!listaRecursoBackBean.nuevoRegistro}"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen"/>
+                        <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                            <p:outputLabel for="auditable" value="Auditable:"
+                                           rendered="#{!listaRecursoBackBean.nuevoRegistro}"/>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3 sinMargen">
+                            <p:selectBooleanButton onLabel="Si" offLabel="No" id="auditable"
+                                                   rendered="#{!listaRecursoBackBean.nuevoRegistro}"
+                                                   style="width: 25%!important;"
+                                                   value="#{listaRecursoBackBean.rbAuditable}"/>
+                        </div>
+                    </div>
+
+                    <p:keyFilter for="codigo" regEx="/#{listaRecursoBackBean.regExpCodigo}/"/>
+                    <p:keyFilter for="descripcion" regEx="/#{listaRecursoBackBean.regExpDescriptor}/"/>
+                    <p:keyFilter for="nombre" regEx="/#{listaRecursoBackBean.regExpDescriptor}/"/>
+                    <p:keyFilter for="textoAyuda" regEx="/#{listaRecursoBackBean.regExpDescriptor}/"/>
+                    <p:keyFilter for="textoAyuda" regEx="/#{listaRecursoBackBean.regExpDescriptor}/"/>
+                    <p:keyFilter for="urlAyuda" regEx="/#{listaRecursoBackBean.regExpCodigo}/"/>
+                    <p:keyFilter for="iconoCSS" regEx="/#{listaRecursoBackBean.regExpCodigo}/"/>
+
+                </p:panel>
+
+            </h:form>
+        </p:dialog>
+
+        <mc:dialogAuditoria id="tipoCatalogoAudit" auditoriaId="tipoCatalogoAuditWV"
+                            auditoriaList="#{listaRecursoBackBean.listaAuditoria}"/>
+
+    </ui:define>
+</ui:composition>

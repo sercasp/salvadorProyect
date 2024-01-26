@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="NewPersistenceUnit">
+        <class>ni.gob.inss.siit.model.entity.contabilidadauxiliar.Minuta</class>
+        <properties>
+            <property name="toplink.jdbc.url" value="jdbc:postgresql://siit-bd-des.intur.gob.ni:5432/siit_desarrollo"/>
+            <property name="toplink.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="hibernate.connection.url"
+                      value="jdbc:postgresql://siit-bd-des.intur.gob.ni:5432/siit_desarrollo"/>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="openjpa.ConnectionURL"
+                      value="jdbc:postgresql://siit-bd-des.intur.gob.ni:5432/siit_desarrollo"/>
+            <property name="openjpa.ConnectionDriverName" value="org.postgresql.Driver"/>
+            <property name="eclipselink.jdbc.url"
+                      value="jdbc:postgresql://siit-bd-des.intur.gob.ni:5432/siit_desarrollo"/>
+            <property name="eclipselink.jdbc.driver" value="org.postgresql.Driver"/>
+        </properties>
+    </persistence-unit>
+</persistence>

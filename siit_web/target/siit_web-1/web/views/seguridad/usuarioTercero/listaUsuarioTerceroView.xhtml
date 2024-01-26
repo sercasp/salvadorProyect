@@ -1,0 +1,1121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{listaUsuarioTerceroBackBean}"/>
+    <ui:define name="headerContent">
+        Usuario Empresa Turística
+    </ui:define>
+
+    <ui:define name="content" styleClass="ContainerIndent">
+        <h:outputStylesheet name="css/leaflet.css" library="siit"/>
+        <h:outputScript name="js/leaflet.js" library="siit"/>
+
+        <h:outputScript name="plugins/LeafletExtraMarkers/src/assets/js/leaflet.extra-markers.js" library="siit"/>
+        <h:outputStylesheet name="plugins/LeafletExtraMarkers/src/assets/css/leaflet.extra-markers.css" library="siit"/>
+        <!--        <style type="text/css">-->
+        <!--            @media (max-width: 1200px) and (min-width: 640px) {-->
+        <!--                .Responsive {-->
+        <!--                    width: 100% !important;-->
+        <!--                }-->
+
+        <!--                #formDetalle\:datosG {-->
+        <!--                    height: auto !important;-->
+        <!--                }-->
+
+        <!--                .container2 {-->
+        <!--                    margin-top: 10px;-->
+        <!--                }-->
+        <!--            }-->
+
+        <!--            @media (max-width: 640px) {-->
+        <!--                #formDetalle input, #formDetalle .ui-selectcheckboxmenu {-->
+        <!--                    width: 90% !important;-->
+        <!--                }-->
+
+        <!--                #formDetalle .ui-selectonemenu {-->
+        <!--                    width: 90% !important;-->
+        <!--                    max-width: none !important;-->
+        <!--                    min-width: auto !important;-->
+        <!--                }-->
+
+        <!--                #formDetalle\:datosG {-->
+        <!--                    height: auto !important;-->
+        <!--                }-->
+
+        <!--                #formDetalle\:dtListaEmpresaTuristica .ui-datatable-data td {-->
+        <!--                    width: 95% !important;-->
+        <!--                }-->
+
+        <!--                #formularioAgregarEmpresaTuristica\:dtListaTercero .ui-datatable-data td {-->
+        <!--                    width: 95% !important;-->
+        <!--                }-->
+        <!--            }-->
+
+        <!--            .ui-inputfield {-->
+        <!--                text-transform: none !important;-->
+        <!--            }-->
+
+        <!--            .ui-selectonemenu {-->
+        <!--                max-width: 400px !important;-->
+        <!--                min-width: 150px !important;-->
+        <!--            }-->
+
+        <!--            .customActionsPanel {-->
+        <!--                text-decoration: none;-->
+        <!--                color: white !important;-->
+        <!--            }-->
+
+        <!--            #modalEmpresasDetalle .ui-dialog-titlebar {-->
+        <!--                display: none;-->
+        <!--            }-->
+
+        <!--            .ui-selectonemenu label.ui-selectonemenu-label {-->
+        <!--                text-transform: none !important;-->
+        <!--            }-->
+
+        <!--            input[disabled="disabled"], input[type="radio"], select[disabled="disabled"], textarea[disabled="disabled"] {-->
+        <!--                background: bisque !important;-->
+        <!--                color: black !important;-->
+        <!--            }-->
+
+        <!--            input[type="text"] {-->
+        <!--                text-transform: none !important;-->
+        <!--            }-->
+
+        <!--            .ui-selectonemenu.ui-state-disabled .ui-selectonemenu-trigger, .ui-selectonemenu.ui-state-disabled .ui-selectonemenu-label {-->
+        <!--                background: bisque !important;-->
+        <!--                color: black !important;-->
+        <!--            }-->
+
+        <!--            .unselectable {-->
+        <!--                -webkit-touch-callout: none;-->
+        <!--                -webkit-user-select: none;-->
+        <!--                -khtml-user-select: none;-->
+        <!--                -moz-user-select: none;-->
+        <!--                -ms-user-select: none;-->
+        <!--                user-select: none;-->
+        <!--            }-->
+
+        <!--            .alingCenter {-->
+        <!--                text-align: center !important;-->
+        <!--                font-weight: bold;-->
+        <!--            }-->
+
+        <!--            .enllavado {-->
+        <!--                background: #f77979 !important;-->
+        <!--            }-->
+
+        <!--            .color-box {-->
+        <!--                width: 15px;-->
+        <!--                height: 15px;-->
+        <!--                display: inline-block;-->
+        <!--            }-->
+
+        <!--            .ui-inputtextarea-resizable {-->
+        <!--                text-transform: none !important;-->
+        <!--            }-->
+
+        <!--            /*slides*/-->
+        <!--            /* Slideshow container */-->
+        <!--            .slideshow-container {-->
+        <!--                max-width: 1000px;-->
+        <!--                position: relative;-->
+        <!--                margin: auto;-->
+        <!--                text-align: left;-->
+        <!--            }-->
+
+        <!--            .mySlides {-->
+        <!--                display: none;-->
+        <!--            }-->
+
+        <!--            .prev {-->
+        <!--                text-align: left !important;-->
+        <!--            }-->
+
+        <!--            /* Next and previous buttons */-->
+        <!--            .prev, .next {-->
+        <!--                cursor: pointer;-->
+        <!--                position: absolute;-->
+        <!--                top: 50%;-->
+        <!--                width: auto;-->
+        <!--                margin-top: -22px;-->
+        <!--                padding: 16px;-->
+        <!--                color: white;-->
+        <!--                font-weight: bold;-->
+        <!--                font-size: 18px;-->
+        <!--                transition: 0.6s ease;-->
+        <!--                border-radius: 0 3px 3px 0;-->
+        <!--            }-->
+
+        <!--            /* Position the "next button" to the right */-->
+        <!--            .next {-->
+        <!--                right: 0;-->
+        <!--                border-radius: 3px 0 0 3px;-->
+        <!--            }-->
+
+        <!--            /* On hover, add a black background color with a little bit see-through */-->
+        <!--            .prev:hover, .next:hover {-->
+        <!--                background-color: rgba(0, 0, 0, 0.8);-->
+        <!--            }-->
+
+        <!--            /* Caption text */-->
+        <!--            .text {-->
+        <!--                color: #f2f2f2;-->
+        <!--                font-size: 15px;-->
+        <!--                padding: 8px 12px;-->
+        <!--                position: absolute;-->
+        <!--                bottom: 8px;-->
+        <!--                width: 100%;-->
+        <!--                text-align: center;-->
+        <!--            }-->
+
+        <!--            /* Number text (1/3 etc) */-->
+        <!--            .numbertext {-->
+        <!--                color: #f2f2f2;-->
+        <!--                font-size: 12px;-->
+        <!--                padding: 8px 12px;-->
+        <!--                position: absolute;-->
+        <!--                top: 0;-->
+        <!--            }-->
+
+        <!--            /* The dots/bullets/indicators */-->
+        <!--            .dot {-->
+        <!--                cursor: pointer;-->
+        <!--                height: 13px;-->
+        <!--                width: 13px;-->
+        <!--                margin: 0 2px;-->
+        <!--                background-color: #bbb;-->
+        <!--                border-radius: 50%;-->
+        <!--                display: inline-block;-->
+        <!--                transition: background-color 0.6s ease;-->
+        <!--            }-->
+
+        <!--            .active, .dot:hover {-->
+        <!--                background-color: #717171;-->
+        <!--            }-->
+
+        <!--            /* Fading animation */-->
+        <!--            .fade {-->
+        <!--                -webkit-animation-name: fade;-->
+        <!--                -webkit-animation-duration: 1.5s;-->
+        <!--                animation-name: fade;-->
+        <!--                animation-duration: 1.5s;-->
+        <!--            }-->
+
+        <!--            @-webkit-keyframes fade {-->
+        <!--                from {-->
+        <!--                    opacity: .4-->
+        <!--                }-->
+        <!--                to {-->
+        <!--                    opacity: 1-->
+        <!--                }-->
+        <!--            }-->
+
+        <!--            @keyframes fade {-->
+        <!--                from {-->
+        <!--                    opacity: .4-->
+        <!--                }-->
+        <!--                to {-->
+        <!--                    opacity: 1-->
+        <!--                }-->
+        <!--            }-->
+
+        <!--            .Container50 {-->
+        <!--                width: 49.5%;-->
+        <!--            }-->
+
+        <!--        </style>-->
+
+
+        <div class="ContainerIndent">
+            <div class="Container50 Responsive">
+                <h:form id="formLista">
+                    <p:panel styleClass="fondoPaneles" style="height: 545px; overflow-y: auto ">
+
+                        <p:outputPanel>
+                            <p:dataTable var="r"
+                                         id="dtListaUsuarioTercero"
+                                         widgetVar="dtListaUsuarioTercero"
+                                         value="#{listaUsuarioTerceroBackBean.listaUsuarios}"
+                                         scrollable="false"
+                                         scrollHeight="100%"
+                                         scrollWidth="100%"
+                                         paginatorPosition="top"
+                                         selectionMode="single"
+                                         selection="#{listaUsuarioTerceroBackBean.selectedRow}"
+                                         rowKey="#{r.get('id')}"
+                                         paginator="true"
+                                         emptyMessage="#{labelName.tableEmptyMessage}"
+                                         rows="10"
+                                         reflow="true"
+                                         lazy="true"
+                                         pageLinks="5"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                <f:facet name="header">
+
+                                    <div class="ui-g">
+                                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                            <p:selectOneMenu id="delegacionFilter" style="width:100%"
+                                                             label="Delegación"
+                                                             value="#{listaUsuarioTerceroBackBean.cmbDelegacion}"
+                                                             rendered="#{sessionBean.entidadActual.id == 1 ? true : false}"
+                                                             filter="true"
+                                                             filterMatchMode="contains">
+                                                <p:ajax event="change" update=":formLista :formDetalle"
+                                                        listener="#{listaUsuarioTerceroBackBean.cargarLista(false)}"/>
+
+                                                <f:selectItem itemLabel="Seleccione una Delegación"
+                                                              itemValue="#{null}"/>
+                                                <f:selectItems var="cmbdelegacion"
+                                                               value="#{listaUsuarioTerceroBackBean.listaEntidadModalTercero}"
+                                                               itemLabel="#{cmbdelegacion.nombre}"
+                                                               itemValue="#{cmbdelegacion.id}"/>
+                                            </p:selectOneMenu></div>
+                                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                            <p:inputText maxlength="100"
+                                                         placeholder="#{labelName.placeholderBuscar}"
+                                                         styleClass="Wid80" style="width: 86%"
+                                                         value="#{listaUsuarioTerceroBackBean.txtBuscar}"
+                                                         autocomplete="off"/>
+                                            <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                             update="formLista"
+                                                             actionListener="#{listaUsuarioTerceroBackBean.cargarLista(false)}"/>
+                                        </div>
+
+                                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                            <p:commandButton icon="fa fa-plus-circle" styleClass="cyan-btn"
+                                                             value="#{labelName.btnAgregar}" style="width: 100%"
+                                                             disabled="#{listaUsuarioTerceroBackBean.autoriza}"
+                                                             actionListener="#{listaUsuarioTerceroBackBean.editarAgregarTercero(true)}"
+                                                             update=":formLista :formDetalle"
+                                                             resetValues="true"/></div>
+                                    </div>
+                                </f:facet>
+
+                                <p:ajax event="rowSelect"
+                                        listener="#{listaUsuarioTerceroBackBean.editarAgregarTercero(false)}"
+                                        update=":formDetalle"
+                                        resetValues="true"/>
+
+                                <p:column headerText="Usuario" styleClass="Wid25">
+                                    <h:outputText value="#{r.username}"/>
+                                </p:column>
+
+                                <p:column headerText="Ruc" styleClass="Wid25">
+                                    <h:outputText value="#{r.no_ruc}"/>
+                                </p:column>
+
+                                <p:column headerText="Tercero" styleClass="Wid40">
+                                    <h:outputText value="#{r.nombre_agrupador_tercero}"/>
+                                </p:column>
+
+                                <p:column headerText="Pasivo" styleClass="Wid10 TexAlCenter">
+                                    <p:selectBooleanCheckbox value="#{r.usuario_tercero_pasivo}"
+                                                             disabled="true"
+                                                             styleClass="ui-linus-enabled"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:panel>
+                </h:form>
+            </div>
+
+            <div class="Container50 Responsive container2">
+                <h:form id="formDetalle">
+                    <p:tab id="tabDatos" title="Datos Generales">
+                        <p:panel style="height: 545px; overflow-y: auto " id="datosG">
+                            <f:facet name="header">
+                                <h:outputText value="ID: #{listaUsuarioTerceroBackBean.usuarioTercero.id}"
+                                              rendered="#{!listaUsuarioTerceroBackBean.nuevoRegistro}"/>
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                        <p:commandButton icon="fa fa-save" styleClass="green-btn"
+                                                         value="#{labelName.btnGuardar}" style="width: 100%"
+                                                         disabled="#{listaUsuarioTerceroBackBean.autoriza}"
+                                                         actionListener="#{listaUsuarioTerceroBackBean.guardar}"/></div>
+                                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                        <p:commandButton icon="fa fa-refresh"
+                                                         style="color: white; width: 100% "
+                                                         value="Refrescar Rol"
+                                                         disabled="#{listaUsuarioTerceroBackBean.autoriza}"
+                                                         rendered="#{!listaUsuarioTerceroBackBean.nuevoRegistro}"
+                                                         actionListener="#{listaUsuarioTerceroBackBean.refrescarRol}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                        <p:commandButton icon="fa fa-ban" styleClass="orange-btn"
+                                                         value="#{labelName.btnCancelar}"
+                                                         update=":formLista :formDetalle" style="width: 100%"
+                                                         disabled="#{listaUsuarioTerceroBackBean.autoriza}"
+                                                         immediate="true"
+                                                         actionListener="#{listaUsuarioTerceroBackBean.editarAgregarTercero(true)}"
+                                                         resetValues="true" process="@this"/></div>
+                                </div>
+
+                            </f:facet>
+
+                            <p:panelGrid columns="2" styleClass="panelPMD" style="border: none;"
+                                         columnClasses="ui-grid-col-2,ui-grid-col-8"
+                                         layout="grid">
+                                <p:outputLabel for="noRuc" value="Tercero:"/>
+                                <p:outputPanel>
+                                    <p:inputText maxlength="50" id="noRuc" label="No Ruc"
+                                                 style="width: 90%" readonly="true"
+                                                 value="#{listaUsuarioTerceroBackBean.usuarioTercero.agrupadorTerceroId.noRuc}"
+                                                 required="true" autocomplete="off"/>
+                                    <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                     actionListener="#{listaUsuarioTerceroBackBean.cargarModalTercero}"
+                                                     rendered="#{listaUsuarioTerceroBackBean.nuevoRegistro}"
+                                                     update=":dlgAgregarEmpresaTuristica"
+                                                     immediate="true"/>
+                                </p:outputPanel>
+
+                                <p:outputLabel for="nombreAgrupadorTercero" value="Nombre Tercero:"/>
+                                <p:inputText maxlength="50" id="nombreAgrupadorTercero" autocomplete="off"
+                                             readonly="true"
+                                             style="width: 90%"
+                                             value="#{listaUsuarioTerceroBackBean.usuarioTercero.agrupadorTerceroId.nombre}"
+                                             label="Tercero"/>
+                            </p:panelGrid>
+
+                            <p:panel id="toggleable" header="Empresas Turisticas"
+                                     toggleable="true" toggleSpeed="500" closeSpeed="300"
+                                     widgetVar="panel">
+                                <f:facet name="actions">
+                                    <div class="ui-g">
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                             value="Ver Expediente"
+                                                             update=":tabViewCustom"
+                                                             process="@this"
+                                                             actionListener="#{listaUsuarioTerceroBackBean.verExpedienteEt}"
+                                                             style="color: white; width: 100%"/></div>
+                                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                            <p:commandButton icon="fa fa-paper-plane"
+                                                             value="Enviar correo"
+                                                             update=":formDetalle"
+                                                             style="color: white; width: 100%"/></div>
+                                    </div>
+                                </f:facet>
+
+                                <p:dataTable var="ret"
+                                             id="dtListaEmpresaTuristica"
+                                             widgetVar="dtListaEmpresaTuristica"
+                                             value="#{listaUsuarioTerceroBackBean.listMapETAgrupadorTercero}"
+                                             paginatorPosition="top"
+                                             rowKey="#{ret.id}"
+                                             paginator="true"
+                                             emptyMessage="#{labelName.tableEmptyMessage}"
+                                             selectionMode="single"
+                                             selection="#{listaUsuarioTerceroBackBean.mapETAgrupadorTerceroSeleccionado}"
+                                             rows="5"
+                                             reflow="true"
+                                             pageLinks="3"
+                                             paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                             currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                                    <p:ajax event="rowSelect"
+                                            update="@this"/>
+                                    <p:column headerText="Id" style="width: 5%">
+                                        <h:outputText value="#{ret.id}"/>
+                                    </p:column>
+
+                                    <p:column headerText="No Único" style="width: 20%">
+                                        <h:outputText value="#{ret.no_unico}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Empresa" style="width: 35%">
+                                        <h:outputText value="#{ret.nombre_establecimiento}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Actividad" style="width: 20%">
+                                        <h:outputText value="#{ret.actividad}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Municipio" style="width: 20%">
+                                        <h:outputText value="#{ret.municipio}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+
+
+                            <p:panelGrid columns="2" styleClass="panelPMD" style="border: none;"
+                                         columnClasses="ui-grid-col-2,ui-grid-col-8"
+                                         layout="grid">
+
+                                <p:outputLabel for="username" value="Usuario:"/>
+                                <p:inputText id="username" autocomplete="off"
+                                             label="Usuario" maxlength="30"
+                                             style="width: 50%; text-transform: uppercase!important;"
+                                             required="true"
+                                             value="#{listaUsuarioTerceroBackBean.userName}"
+                                             disabled="#{!listaUsuarioTerceroBackBean.nuevoRegistro}">
+                                    <p:keyFilter for="username" regEx="/[a-zA-Z]+/"/>
+                                    <f:validateLength minimum="0" maximum="30"/>
+                                </p:inputText>
+
+                                <p:outputLabel for="email" value="E-mail:"/>
+                                <p:inputText id="email" style="width: 50%;text-transform: lowercase!important;"
+                                             autocomplete="off" label="E-mail" maxlength="60"
+                                             validatorMessage="Email: Formato Inválido" required="true"
+                                             value="#{listaUsuarioTerceroBackBean.email}" type="email">
+                                    <f:validateLength maximum="60"/>
+                                    <f:validateRegex
+                                            pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"/>
+                                </p:inputText>
+
+                                <p:outputLabel for="entidad" value="Delegaciones:" rendered="false"/>
+
+                                <p:inputText id="entidad" style="width: 50%;" rendered="false"
+                                             autocomplete="off" label="Delegaciones para el usuario tercero"
+                                             value="#{listaUsuarioTerceroBackBean.listMapEntidadString}">
+                                </p:inputText>
+
+                                <!--<p:selectCheckboxMenu id="entidad1" style="width:50%;"
+                                                      required="true"
+                                                      value="#{listaUsuarioTerceroBackBean.entidadId}"
+                                                      label="Delegaciones para el usuario tercero"
+                                                      filter="true" filterMatchMode="startsWith">
+                                    <p:ajax update="formDetalle:dtListaEmpresaTuristica" event="change"
+                                            listener="#{listaUsuarioTerceroBackBean.seleccionarEntidad}"/>
+                                    <p:ajax event="toggleSelect" update="formDetalle:dtListaEmpresaTuristica"
+                                            listener="#{listaUsuarioTerceroBackBean.seleccionarEntidad}"/>
+                                    <f:selectItems var="cmb"
+                                                   value="#{listaUsuarioTerceroBackBean.listMapEntidad}"
+                                                   itemLabel="#{cmb.nombre}"
+                                                   itemValue="#{cmb.id}"/>
+                                </p:selectCheckboxMenu>
+-->
+
+                                <p:outputLabel for="pasivo" value="Pasivo:"
+                                               rendered="#{!listaUsuarioTerceroBackBean.nuevoRegistro}"/>
+                                <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                                       value="#{listaUsuarioTerceroBackBean.usuarioTercero.pasivo}"
+                                                       rendered="#{!listaUsuarioTerceroBackBean.nuevoRegistro}"/>
+
+                            </p:panelGrid>
+
+                            <h3 style="margin-top:0;padding-left: 5px;">Contraseña</h3>
+                            <p:separator/>
+
+                            <p:panelGrid columns="3" styleClass="panelPMD" style="border: none;"
+                                         id="tipoClaveSeleccion"
+                                         columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-1"
+                                         layout="grid">
+                                <p:outputLabel for="tipoClave" value="Tipo:"/>
+                                <p:selectOneMenu id="tipoClave" style="width:100%" label="Tipo Clave:"
+                                                 value="#{listaUsuarioTerceroBackBean.tipoClave}"
+                                                 required="#{listaUsuarioTerceroBackBean.nuevoRegistro}"
+                                                 requiredMessage="Tipo Clave: Requerido">
+                                    <f:selectItem itemLabel="Tipo Clave:" itemValue="#{null}"/>
+                                    <f:selectItems value="#{listaUsuarioTerceroBackBean.listaTipoClave}"/>
+                                    <p:ajax update="formDetalle:claveGenerada formDetalle:tipoClaveSeleccion formDetalle:panelContra"
+                                            event="change"
+                                            listener="#{listaUsuarioTerceroBackBean.seleccionarTipoGeneracionClave}"/>
+                                </p:selectOneMenu>
+
+                                <p:commandButton icon="fa fa-refresh" id="btnClave"
+                                                 update="formDetalle:panelContra"
+                                                 immediate="true"
+                                                 actionListener="#{listaUsuarioTerceroBackBean.seleccionarTipoGeneracionClave}"
+                                                 rendered="#{!empty listaUsuarioTerceroBackBean.tipoClave ? listaUsuarioTerceroBackBean.tipoClave.equals('Aleatoria') : false}"/>
+                            </p:panelGrid>
+
+                            <p:outputPanel id="panelContra">
+                                <p:panelGrid columns="2" styleClass="panelPMD" style="border: none;"
+                                             id="claveGenerada"
+                                             columnClasses="ui-grid-col-2,ui-grid-col-8"
+                                             rendered="#{!empty listaUsuarioTerceroBackBean.tipoClave}"
+                                             layout="grid">
+                                    <p:outputLabel value="Clave Aleatoria Generada:"
+                                                   rendered="#{!empty listaUsuarioTerceroBackBean.tipoClave ? listaUsuarioTerceroBackBean.tipoClave.equals('Aleatoria') : false}"/>
+                                    <p:outputLabel id="labelClave"
+                                                   value="#{listaUsuarioTerceroBackBean.pwConfirmacionContrasenia}"
+                                                   rendered="#{!empty listaUsuarioTerceroBackBean.tipoClave ? listaUsuarioTerceroBackBean.tipoClave.equals('Aleatoria') : false}"/>
+
+                                    <p:outputLabel for="cambiarClave" value="Clave:"
+                                                   rendered="#{!empty listaUsuarioTerceroBackBean.tipoClave ? listaUsuarioTerceroBackBean.tipoClave.equals('Manual') : false}"/>
+                                    <p:password id="cambiarClave"
+                                                rendered="#{!empty listaUsuarioTerceroBackBean.tipoClave ? listaUsuarioTerceroBackBean.tipoClave.equals('Manual') : false}"
+                                                style="width:50%" autocomplete="off" required="true"
+                                                redisplay="true" maxlength="20"
+                                                value="#{listaUsuarioTerceroBackBean.pwContrasenia}"
+                                                feedback="true" promptLabel="Ingrese una contraseña"
+                                                weakLabel="Debil" goodLabel="Buena"
+                                                strongLabel="Excelente" match="claveConfirmacion"
+                                                label="Clave">
+                                        <p:keyFilter regEx="/#{indexBackBean.regExpClave}/"/>
+                                    </p:password>
+
+                                    <p:outputLabel for="claveConfirmacion" value="Confirmación Clave:"
+                                                   rendered="#{!empty listaUsuarioTerceroBackBean.tipoClave ? listaUsuarioTerceroBackBean.tipoClave.equals('Manual') : false}"/>
+                                    <p:password id="claveConfirmacion" styleClass="Wid50" required="true"
+                                                rendered="#{!empty listaUsuarioTerceroBackBean.tipoClave ? listaUsuarioTerceroBackBean.tipoClave.equals('Manual') : false}"
+                                                autocomplete="off" redisplay="true"
+                                                maxlength="20" feedback="true"
+                                                value="#{listaUsuarioTerceroBackBean.pwConfirmacionContrasenia}"
+                                                promptLabel="Ingrese una contraseña" weakLabel="Débil"
+                                                goodLabel="Buena" strongLabel="Excelente"
+                                                label="Clave Confirmación">
+                                        <p:keyFilter regEx="/#{indexBackBean.regExpClave}/"/>
+                                    </p:password>
+
+                                    <p:outputLabel for="claveTemporal" value="Clave Temporal"/>
+                                    <p:selectBooleanButton id="claveTemporal" onLabel="Si" offLabel="No"
+                                                           value="#{listaUsuarioTerceroBackBean.claveTemporal}"/>
+
+                                </p:panelGrid>
+                            </p:outputPanel>
+
+                        </p:panel>
+                    </p:tab>
+                </h:form>
+            </div>
+        </div>
+
+        <!--<h:outputText value="&#160;" styleClass="classwhiteSpace"/>-->
+
+        <p:dialog id="dlgAgregarEmpresaTuristica" width="90%" widgetVar="wvDlgAgregarEmpresaTuristica" closable="false"
+                  style=" height: 800px !important;" height="800" modal="true" resizable="false" maximizable="false"
+                  fitViewport="true" responsive="true"
+                  header="Agregar Empresa Turística">
+
+            <h:form id="formularioAgregarEmpresaTuristica">
+                <p:panel>
+                    <f:facet name="header">
+                        <p:outputPanel style="display: block">
+                            <p:panelGrid columns="2" styleClass="panelPMD" style="border: none; background: none;"
+                                         id="gridFiltroInspeccionModal"
+                                         columnClasses="ui-grid-col-12,ui-grid-col-12"
+                                         layout="grid">
+
+                                <p:selectOneMenu id="delegacionModal" style="width:95%"
+                                                 label="delegacion"
+                                                 value="#{listaUsuarioTerceroBackBean.entidadIdModalTercero}"
+                                                 rendered="#{sessionBean.entidadActual.id == 1 ? true : false}"
+                                                 filter="true"
+                                                 filterMatchMode="contains">
+                                    <p:ajax listener="#{listaUsuarioTerceroBackBean.cargarListaTercero}"
+                                            update=":formularioAgregarEmpresaTuristica dtListaTercero"/>
+                                    <f:selectItem itemLabel="Seleccione una Delegación" itemValue="#{null}"/>
+                                    <f:selectItems var="cmbdelegacion"
+                                                   value="#{listaUsuarioTerceroBackBean.listaEntidadModalTercero}"
+                                                   itemLabel="#{cmbdelegacion.nombre}"
+                                                   itemValue="#{cmbdelegacion.id}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputPanel style="text-align: right">
+                                    <p:commandButton icon="fa fa-check-square-o" styleClass="teal-btn"
+                                                     value="#{labelName.btnSeleccionar}"
+                                                     id="btnSeleccionar"
+                                                     actionListener="#{listaUsuarioTerceroBackBean.seleccionandoTercero}"
+                                                     update=":formDetalle"/>
+
+                                    <p:commandButton icon="fa fa-close" styleClass="blue-grey-btn"
+                                                     value="#{labelName.btnCerrarModal}"
+                                                     immediate="true"
+                                                     onclick="PF('wvDlgAgregarEmpresaTuristica').hide()">
+                                    </p:commandButton>
+                                </p:outputPanel>
+
+
+                            </p:panelGrid>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:dataTable
+                            var="rr"
+                            id="dtListaTercero"
+                            widgetVar="dtListaTercero"
+                            value="#{listaUsuarioTerceroBackBean.listaTercero}"
+                            scrollable="false"
+                            paginatorPosition="top"
+                            selectionMode="single"
+                            selection="#{listaUsuarioTerceroBackBean.terceroSeleccionado}"
+                            rowKey="#{rr.id}"
+                            paginator="true"
+                            emptyMessage="#{labelName.tableEmptyMessage}"
+                            rows="10"
+                            reflow="true"
+                            lazy="true"
+                            pageLinks="3"
+                            paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                            currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Buscar por todas las columnas:   "/>
+                                <p:inputText id="busquedaGeneral" autocomplete="off"
+                                             value="#{listaUsuarioTerceroBackBean.txtBuscarModalTercero}"
+                                             style="width:300px" maxlength="100"
+                                             placeholder="Escriba la palabra">
+                                </p:inputText>
+                                <p:defaultCommand target="cmbBusqueda"/>
+                                <p:commandButton icon="fa fa-search" styleClass="teal-btn" value="Buscar"
+                                                 id="cmbBusqueda"
+                                                 update="dtListaTercero"
+                                                 actionListener="#{listaUsuarioTerceroBackBean.cargarListaTercero}">
+                                </p:commandButton>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:ajax event="rowDblselect"
+                                listener="#{listaUsuarioTerceroBackBean.seleccionandoTercero}"
+                                update=":formDetalle"/>
+                        <p:ajax event="rowToggle"
+                                process="dtListaTercero"
+                                global="false"
+                                onstart="return cfg.ext.params[0].name.indexOf('_rowExpansion') != -1"
+                                listener="#{listaUsuarioTerceroBackBean.onRowToggleAgrupadorTercero}"/>
+
+                        <p:column exportable="false" style="width: 3%">
+                            <p:rowToggler/>
+                        </p:column>
+
+                        <p:column headerText="Id" style="width: 12%">
+                            <h:outputText value="#{rr.id}"/>
+                        </p:column>
+
+                        <p:column headerText="Ruc" style="width: 35%">
+                            <h:outputText value="#{rr.no_ruc}"/>
+                        </p:column>
+
+                        <p:column headerText="Razón Social" style="width: 50%">
+                            <h:outputText value="#{rr.nombre}"/>
+                        </p:column>
+
+                        <p:rowExpansion>
+                            <p:dataTable
+                                    var="rdte"
+                                    id="dtListaEtModal"
+                                    widgetVar="dtListaEtModal"
+                                    styleClass="classDtListaEtModal"
+                                    value="#{listaUsuarioTerceroBackBean.listMapETAgrupadorTerceroModal}"
+                                    scrollable="false"
+                                    paginatorPosition="top"
+                                    rowKey="#{rdte.id}"
+                                    paginator="true"
+                                    emptyMessage="#{labelName.tableEmptyMessage}"
+                                    rows="5"
+                                    reflow="true"
+                                    pageLinks="3"
+                                    paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                    currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                <p:column headerText="Id" style="width: 5%">
+                                    <h:outputText value="#{rdte.id}"/>
+                                </p:column>
+
+                                <p:column headerText="No Único" style="width: 20%">
+                                    <h:outputText value="#{rdte.no_unico}"/>
+                                </p:column>
+
+                                <p:column headerText="Empresa" style="width: 35%">
+                                    <h:outputText value="#{rdte.nombre_establecimiento}"/>
+                                </p:column>
+
+                                <p:column headerText="Actividad" style="width: 20%">
+                                    <h:outputText value="#{rdte.actividad}"/>
+                                </p:column>
+
+                                <p:column headerText="Municipio" style="width: 20%">
+                                    <h:outputText value="#{rdte.municipio}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:rowExpansion>
+
+                    </p:dataTable>
+
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Detalle Empresa Turística" id="modalEmpresasDetalle" widgetVar="modal" responsive="true" modal="true" resizable="false"
+                  closable="false" width="98%" height="630">
+
+            <p:tabView id="tabViewCustom" activeIndex="#{listaUsuarioTerceroBackBean.indiceTabActivo}">
+                <p:ajax event="tabChange" listener="#{listaUsuarioTerceroBackBean.onTabChange}"/>
+                <p:tab title="Datos generales">
+                    <ui:include src="/web/views/expedienteET/parcialDatosCustomGeneralesView.xhtml">
+                        <ui:param name="parcialCustomDatosGeneralesBackBean"
+                                  value="#{parcialDatosGeneralesCustomBackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabFuerzaLaboal" title="Fuerza laboral"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabFuerzaLaboral}">
+                    <ui:include src="/web/views/expedienteET/parcialCustomFuerzaLaboralView.xhtml">
+                        <ui:param name="parcialCustomFuerzaLaboralBackBean"
+                                  value="#{parcialCustomFuerzaLaboralBackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabEmpresasTuristicaDatosContacto" title="Datos de contactos"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabDatosContacto}">
+                    <ui:include src="/web/views/expedienteET/parcialCustomDatosContactosView.xhtml">
+                        <ui:param name="parcialCustomDatosContactosBackBean"
+                                  value="#{parcialCustomDatosContactosBackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabEmpresasTuristicaOtrosDatos" title="Otros datos del guía" styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabOtrosDatosGuia}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomOtrosDatosGuiaView.xhtml">
+                        <ui:param name="parcialCustomOtrosDatosGuiaBackBean"
+                                  value="#{parcialCustomOtrosDatosGuiaBackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabCapacidadInstaladaSA" title="Capacidad instalada"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabCapacidadInstaladaSA}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomCapacidadInstaladaSAView.xhtml">
+                        <ui:param name="parcialCustomCapacidadInstaladaSABackBean"
+                                  value="#{parcialCustomCapacidadInstaladaSABackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabCapacidadInstaladaSABECN" title="Capacidad instalada"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabCapacidadInstaladaSABECN}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomCapacidadInstaladaSABECNView.xhtml">
+                        <ui:param name="parcialCustomCapacidadInstaladaSABECNBackBean"
+                                  value="#{parcialCustomCapacidadInstaladaSABECNBackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabCapacidadInstaladaOVETTT" title="Capacidad instalada"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabCapacidadInstaladaOVETTT}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomCapacidadInstaladaOVETTTView.xhtml">
+                        <ui:param name="parcialCustomCapacidadInstaladaOVETTTBackBean"
+                                  value="#{parcialCustomCapacidadInstaladaOVETTTBackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabCapacidadInstaladaETTA" title="Capacidad instalada"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabCapacidadInstaladaETTA}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomCapacidadInstaladaETTAView.xhtml">
+                        <ui:param name="parcialCustomCapacidadInstaladaETTABackBean"
+                                  value="#{parcialCustomCapacidadInstaladaETTABackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabCapacidadInstaladaRA" title="Capacidad instalada"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabCapacidadInstaladaRA}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomCapacidadInstaladaRAView.xhtml">
+                        <ui:param name="parcialCustomCapacidadInstaladaRABackBean"
+                                  value="#{parcialCustomCapacidadInstaladaRABackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabCapacidadInstaladaCC" title="Capacidad instalada"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabCapacidadInstaladaCC}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomCapacidadInstaladaCCView.xhtml">
+                        <ui:param name="parcialCustomCapacidadInstaladaCCBackBean"
+                                  value="#{parcialCustomCapacidadInstaladaCCBackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabCapacidadInstaladaLA" title="Capacidad instalada"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabCapacidadInstaladaLA}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomCapacidadInstaladaLAView.xhtml">
+                        <ui:param name="parcialCustomCapacidadInstaladaLABackBean"
+                                  value="#{parcialCustomCapacidadInstaladaLABackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabCapacidadInstaladaAV" title="Capacidad instalada"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabCapacidadInstaladaAV}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomCapacidadInstaladaAVView.xhtml">
+                        <ui:param name="parcialCustomCapacidadInstaladaAVBackBean"
+                                  value="#{parcialCustomCapacidadInstaladaAVBackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabCapacidadInstaladaHC" title="Capacidad instalada"
+                       styleClass="fondoPaneles"
+                       rendered="#{listaUsuarioTerceroBackBean.renderTabCapacidadInstaladaHC}">
+                    <ui:include
+                            src="/web/views/expedienteET/parcialCustomCapacidadInstaladaHCView.xhtml">
+                        <ui:param name="parcialCustomCapacidadInstaladaHCBackBean"
+                                  value="#{parcialCustomCapacidadInstaladaHCBackBean}"/>
+                    </ui:include>
+                </p:tab>
+
+                <p:tab id="TabMapa" title="Mapa" styleClass="fondoPaneles">
+                    <h:form id="formMapaEmpresa">
+                        <p:remoteCommand name="rcImagenesEmpresa"
+                                         actionListener="#{listaUsuarioTerceroBackBean.cargarImagenesPorEmpresa}"/>
+                        <p:panel id="panelMapa" style="height: 580px">
+                            <f:facet name="header">
+                                <p:outputPanel style="display: block" styleClass="right">
+                                    <p:commandButton icon="fa fa-close" styleClass="blue-grey-btn" value="Cerrar"
+                                                     immediate="true"
+                                                     onclick="PF('modal').hide()">
+                                    </p:commandButton>
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:panel id="map" style="height: 485px"/>
+                        </p:panel>
+                    </h:form>
+                </p:tab>
+
+                <p:tab id="TabImagenes" title="Fotos" styleClass="fondoPaneles">
+                    <h:form id="formSubirImagenes">
+                        <p:panel id="panelImgenes" styleClass="fondoPaneles" style="height: 580px">
+                            <f:facet name="header">
+                                <p:outputPanel style="display: block" styleClass="right">
+                                    <p:commandButton icon="fa fa-close" styleClass="blue-grey-btn" value="Cerrar"
+                                                     immediate="true"
+                                                     onclick="PF('modal').hide()">
+                                    </p:commandButton>
+                                </p:outputPanel>
+                            </f:facet>
+                            <h:panelGrid columns="1" columnClasses="Wid100" styleClass="Wid100"
+                                         style="margin-bottom: 5px">
+                                <p:dataGrid var="car"
+                                            value="#{parcialDatosGeneralesCustomBackBean.listaImagenes}"
+                                            columns="4" layout="grid"
+                                            rows="4" paginator="true" id="cars"
+                                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+                                    <p:panel style="text-align:center">
+                                        <h:panelGrid columns="1" style="width:100%">
+                                            <p:graphicImage id="imagen"
+                                                            value="#{parcialDatosGeneralesCustomBackBean.rutaArchivo}#{car.nombreArchivo}"
+                                                            height="200" width="170"/>
+                                        </h:panelGrid>
+
+                                    </p:panel>
+                                </p:dataGrid>
+
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:tab>
+
+            </p:tabView>
+        </p:dialog>
+
+        <!--  Redes Sociales   -->
+        <p:dialog id="modalRedSocial" widgetVar="modalRedSocial" modal="true" closable="true" draggable="false" header="Redes Sociales"
+                  responsive="true"
+                  resizable="false" width="60%" height="500px" style="min-width: 500px !important;">
+
+            <h:form id="formRedSocial" style="width: 100%;">
+                <p:panel id="contenedorRedSocial" styleClass="fondoPaneles">
+                    <f:facet name="header">
+
+                        <p:outputPanel style="display: block" styleClass="left Wid50">Redes Sociales</p:outputPanel>
+
+                    </f:facet>
+
+                    <p:dataTable var="dtRedSocial" id="dtRedSocial"
+                                 widgetVar="dtRedSocial"
+                                 value="#{parcialDatosGeneralesCustomBackBean.listMapRedSocialET}"
+                                 rowKey="#{dtRedSocial.id}"
+                                 selectionMode="single"
+                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                 reflow="true"
+                                 scrollable="false"
+                                 scrollHeight="150"
+                                 paginator="true"
+                                 paginatorPosition="top"
+                                 rows="5"
+                                 pageLinks="5"
+                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}">
+
+                        <p:column headerText="Red Social" style="width: 35%">
+                            <h:outputText value="#{dtRedSocial.tipo_red_social}"/>
+                        </p:column>
+
+                        <p:column headerText="URL" style="width: 65%">
+                            <h:outputText value="#{dtRedSocial.url}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--  Datos de Ubicación   -->
+        <p:dialog id="modalDatosUbicacion" header="Datos de Ubicación" widgetVar="modalDatosUbicacion" modal="true" closable="true"
+                  responsive="true" draggable="false" resizable="false" width="70%" height="500px"
+                  style="min-width: 500px !important;">
+
+            <h:form id="formDatosUbicacion" style="width: 100%;">
+                <p:panel id="contenedorDatosUbicacion" styleClass="fondoPaneles">
+                    <f:facet name="header">
+
+                        <p:outputPanel style="display: block" styleClass="left Wid50">Datos de Ubicación</p:outputPanel>
+
+                    </f:facet>
+                    <p:panelGrid columns="4" styleClass="panelModificado"
+                                 columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-2,ui-grid-col-5"
+                                 layout="grid">
+                        <p:outputLabel for="delegacion" value="Delegación:"/>
+                        <p:inputText autocomplete="off"
+                                     id="delegacion"
+                                     style="width: 60%; text-transform: none!important; background-color: #F7E3A4; color: #000000;"
+                                     disabled="true"
+                                     label="delegacion"
+                                     value="#{parcialDatosGeneralesCustomBackBean.OET.delegacionId.entidadId.nombre}">
+                        </p:inputText>
+
+                        <p:outputLabel for="municipio" value="Municipio:"/>
+                        <p:inputText autocomplete="off"
+                                     id="municipio"
+                                     style="width: 60%; text-transform: none!important; background-color: #F7E3A4; color: #000000;"
+                                     disabled="true"
+                                     label="municipio"
+                                     value="#{parcialDatosGeneralesCustomBackBean.OET.delegacionId.nombre}">
+                        </p:inputText>
+
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="2" styleClass="panelModificado"
+                                 columnClasses="ui-grid-col-2,ui-grid-col-10"
+                                 layout="grid">
+                        <p:outputLabel id="direc" for="direccionE"
+                                       value="#{parcialDatosGeneralesCustomBackBean.OET.clasificacionesId.id != 7 ?'Dirección de la empresa:':'Dirección domiciliar:'}"/>
+                        <p:inputText id="direccionE"
+                                     style="width: 99%"
+                                     label="Dirección de la empresa"
+                                     disabled="true"
+                                     value="#{parcialDatosGeneralesCustomBackBean.OET.direccion}">
+                        </p:inputText>
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="4" styleClass="panelModificado"
+                                 columnClasses="ui-grid-col-2,ui-grid-col-3,ui-grid-col-2,ui-grid-col-5"
+                                 layout="grid">
+                        <p:outputLabel for="latitudLoc" value="Latitud:"/>
+                        <p:inputText autocomplete="off"
+                                     id="latitudLoc"
+                                     style="width: 30%; text-transform: none!important; background-color: #F7E3A4; color: #000000;"
+                                     disabled="true"
+                                     label="latitudLoc"
+                                     value="#{parcialDatosGeneralesCustomBackBean.OET.latitud}">
+                        </p:inputText>
+
+                        <p:outputLabel for="longitudLoc" value="Longitud:"/>
+                        <p:inputText autocomplete="off"
+                                     id="longitudLoc"
+                                     style="width: 30%; text-transform: none!important; background-color: #F7E3A4; color: #000000;"
+                                     disabled="true"
+                                     label="longitudLoc"
+                                     value="#{parcialDatosGeneralesCustomBackBean.OET.longitud}">
+                        </p:inputText>
+                    </p:panelGrid>
+
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--  Mapa   -->
+        <script type="application/javascript">
+            //<![CDATA[
+            var map;
+            var slideIndex = 1;
+
+            function limpiarMapa() {
+                map.remove();
+            }
+
+            function actualizarMedidas() {
+                // 1.
+                map.invalidateSize();
+                // 2. prueba modificando los milisegundos
+                //setTimeout(function () {
+                //    map.invalidateSize();
+                //}, 500);
+            }
+
+            function mapa(valores) {
+                var SplitValores = valores.split("+++");
+
+                // Declaracion de las leyendas
+                var mbAttr = "Instituto Nicaragüense de Turismo - INTUR www.mapanicaragua.com";
+                //Mapa
+                var mbMapView = 'https://sig.intur.gob.ni/osm/{z}/{x}/{y}.png';
+                // var mbCarl = 'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                var northEast = new L.LatLng(6.65673828125, -97.30810546875);
+                var southWest = new L.LatLng(19.05126953125, -75.265625);
+
+                var bounds = new L.LatLngBounds(southWest, northEast);
+
+                map = L.map('tabViewCustom:formMapaEmpresa:map').setView([SplitValores[7], SplitValores[8]], 17);
+
+                L.tileLayer(mbMapView, {
+                    attribution: mbAttr,
+                    bounds: bounds,
+                    minZoom: 16,
+                    maxZoom: 20
+                }).addTo(map);
+
+                map.setMaxBounds(bounds);
+
+                L.marker([SplitValores[7], SplitValores[8]], {
+                    customId: SplitValores[0],
+                    icon: L.ExtraMarkers.icon({
+                        icon: '',
+                        markerColor: 'blue',
+                        shape: 'circle',
+                        prefix: 'fa'
+                    })
+                }).bindPopup(
+                    '<table>' +
+                    '<tr><td style="text-align: center" colspan="2" id="verimgd"><div class="slideshow-container" id="contenedor"></div></td></tr>' +
+                    '<tr><td style="width: 23%"><strong>Nombre:</strong></td><td>' + SplitValores[1] + ' </td></tr>' +
+                    '<tr><td><strong>Actividad:</strong></td><td>' + SplitValores[2] + ' </td></tr>' +
+                    '<tr><td><strong>Categoría:</strong></td><td>' + SplitValores[3] + ' </td></tr>' +
+                    '<tr><td><strong>Dirección:</strong></td><td>' + SplitValores[4] + ' </td></tr>' +
+                    '<tr><td><strong>Teléfono:</strong></td><td>' + SplitValores[5] + '</td></tr>' +
+                    '<tr><td><strong>Correo:</strong></td><td><a href="mailto:' + SplitValores[6] + '">' + SplitValores[6] + '</a></td></tr></table>' +
+                    '<table style="width: 100%"><tr>' +
+                    '<td><strong>Lat:</strong></td><td>' + SplitValores[7] + '</td>' +
+                    '<td><strong> Long:</strong></td><td>' + SplitValores[8] + '</td></tr> ' +
+                    '<tr><td><strong>Facebook:</strong></td><td><a href="' + SplitValores[9] + '" target="_blank">' + SplitValores[9] + '</a></td></tr>' +
+                    '<tr><td><strong>Twitter:</strong></td><td><a href="' + SplitValores[10] + '" target="_blank">' + SplitValores[11] + '</a></td></tr>' +
+                    '<tr><td><strong>Instagram:</strong></td><td><a href="' + SplitValores[11] + '" target="_blank">' + SplitValores[10] + '</a></td></tr>' +
+                    '</table>'
+                ).addTo(map).on("click", onClickMarker);
+            }
+
+            function onClickMarker(e) {
+                rcImagenesEmpresa([{name: 'ids', value: this.options.customId}]);
+            }
+
+            function plusSlides(n) {
+                showSlides(slideIndex += n);
+            }
+
+            function currentSlide(n) {
+                showSlides(slideIndex = n);
+            }
+
+            //]]>
+        </script>
+
+    </ui:define>
+</ui:composition>

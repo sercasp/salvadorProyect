@@ -1,0 +1,103 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:pm="http://primefaces.org/mobile">
+
+    <style type="text/css">
+        .ui-datepicker {
+            z-index: 2070 !important;
+        }
+    </style>
+
+    <h:form id="editForm">
+        <h:panelGrid columns="6" styleClass="personalized_panel">
+            <p:outputLabel for="calendarTag" value="Con Fecha del:" />
+            <p:calendar id="calendarTag" value="#{listaNotificacionMobileBackBean.calendarioBusqueda}" pattern="dd/MM/yyyy"
+                        maxdate="#{listaNotificacionMobileBackBean.maxFecha1}" mindate="#{listaNotificacionMobileBackBean.minFecha1}">
+                <p:ajax event="dateSelect" listener="#{listaNotificacionMobileBackBean.onDateSelect}" update="calendarTag2" />
+            </p:calendar>
+            <p:outputLabel for="calendarTag" value="Al:" />
+            <p:calendar id="calendarTag2" value="#{listaNotificacionMobileBackBean.calendarioBusqueda2}" pattern="dd/MM/yyyy"
+                        maxdate="#{listaNotificacionMobileBackBean.maxFecha2}" mindate="#{listaNotificacionMobileBackBean.minFecha2}">
+                <p:ajax event="dateSelect" listener="#{listaNotificacionMobileBackBean.onDateSelect2}" update="calendarTag" />
+            </p:calendar>
+            <p:outputLabel for="buscarTag" value="Búsqueda por Contenido:"/>
+            <p:inputText id="buscarTag" style="text-transform: uppercase !important;width: 84%"
+                         value="#{listaNotificacionMobileBackBean.txtBuscarTag}" autocomplete="off"/>
+        </h:panelGrid>
+
+
+        <h:panelGrid columns="3" styleClass="personalized_panel2">
+                <p:outputLabel for="selectOneMenu" value="Búsqueda por Categoría:" />
+                <p:selectOneMenu id="selectOneMenu" value="#{listaNotificacionMobileBackBean.cmbCategoria}">
+                    <f:selectItem itemLabel="Seleccione una Categoría" itemValue="null" />
+                    <f:selectItems var="md" value="#{listaNotificacionMobileBackBean.listaCategorias}" itemLabel="#{md.nombre}"
+                                   itemValue="#{md.codigo}"/>
+                </p:selectOneMenu>
+
+                <p:commandButton value="Buscar Nuevas Noticias " actionListener="#{listaNotificacionMobileBackBean.cargarBuscarTag}" update="listMedicamentosAgregados" icon="fa fa-search"/>
+        </h:panelGrid>
+
+        <p:dataList  var="cliente" id="listMedicamentosAgregados" pt:data-inset="true" value="#{listaNotificacionMobileBackBean.listaNotificaciones}"
+                         paginator="true" rows="4">
+                <f:facet name="header">
+                    <span style="font-size: large;text-align: center">
+                        <p:outputLabel id="cantidad" value="Listado de Mensajes(#{listaNotificacionMobileBackBean.cantidad})"/>
+                    </span>
+                </f:facet>
+
+                <p:commandLink style="font-size: 15px !important;" id="btn-dynamic" onclick="PF('pnlDetalles').show()"
+                               action="#{listaNotificacionMobileBackBean.detalleMensaje()}" update="@form:mensaje">
+
+                    <p:panelGrid columns="3" style="width: 100%" styleClass="panelGridClass" >
+                        <p:row>
+                            <p:column rowspan="4">
+                                <p:graphicImage library="#{configApplicationBean.temaAplicacion}" name="img/flag/azul.png"
+                                        style="width: 10px;height: 76px" rendered="#{cliente.categoriaByCategoriaCodigo.codigo == 'CAT|LL' ? true : false}"/>
+                                <p:graphicImage library="#{configApplicationBean.temaAplicacion}" name="img/flag/rojo.png"
+                                                style="width: 10px;height: 76px" rendered="#{cliente.categoriaByCategoriaCodigo.codigo == 'CAT|AV' ? true : false}"/>
+                                <p:graphicImage library="#{configApplicationBean.temaAplicacion}" name="img/flag/gris.png"
+                                                style="width: 10px;height: 76px" rendered="#{cliente.categoriaByCategoriaCodigo.codigo == 'CAT|SE' ? true : false}"/>
+                                <p:graphicImage library="#{configApplicationBean.temaAplicacion}" name="img/flag/cafe.png"
+                                                style="width: 10px;height: 76px" rendered="#{cliente.categoriaByCategoriaCodigo.codigo == 'CAT|TE' ? true : false}"/>
+                                <p:graphicImage library="#{configApplicationBean.temaAplicacion}" name="img/flag/verde.png"
+                                                style="width: 10px;height: 76px" rendered="#{cliente.categoriaByCategoriaCodigo.codigo == 'CAT|OT' ? true : false}"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column></p:column>
+                            <p:column><p:outputLabel><span style="color: darkblue;padding-right: 35px;">Título:</span>#{cliente.titulo}</p:outputLabel></p:column>
+                            <p:column><p:outputLabel><span style="color: darkblue;padding-right: 11px;">Categoría:</span>#{cliente.categoriaByCategoriaCodigo.nombre}</p:outputLabel></p:column>
+                            <p:column><p:outputLabel><span style="color: darkblue;padding-right: 19px;">Etiqueta:</span>#{cliente.tag}</p:outputLabel></p:column>
+                            <p:column><p:outputLabel><span style="color: darkblue;padding-right: 26px;">Fuente:</span>#{cliente.fuente}</p:outputLabel></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column></p:column>
+                            <p:column><p:outputLabel><span style="color: darkblue;padding-right: 12px;">Fecha:</span>#{configApplicationBean.dateToString(cliente.fecha)} - #{configApplicationBean.dateToTime(cliente.hora)}</p:outputLabel></p:column>
+                            <p:column> <p:outputLabel><span style="color: darkblue;padding-right: 23px;">Tipo:</span>#{cliente.tipo == 'N' ? 'NACIONAL' : 'INTERNACIONAL'}</p:outputLabel></p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                    <f:setPropertyActionListener target="#{listaNotificacionMobileBackBean.mensajeSeleccionado}" value="#{cliente}"/>
+                </p:commandLink>
+
+            <f:facet name="footer">
+                    <span style="font-size: large;text-align: center">
+                        <p:outputLabel id="cantidadF" value="Listado de Mensajes(#{listaNotificacionMobileBackBean.cantidad})"/>
+                    </span>
+            </f:facet>
+            </p:dataList>
+
+        <p:overlayPanel id="overlayMensaje" widgetVar="pnlDetalles" at="right" showEffect="overlay" dynamic="true" appendToBody="false">
+            <p:outputLabel><span style="color: darkblue;padding-right: 12px;">Mensaje:</span></p:outputLabel>
+            <p:scrollPanel style="width: 100%;height: 90vh;overflow-y: scroll;" mode="native">
+                <p:inputTextarea rows="50" id="mensaje" value="#{listaNotificacionMobileBackBean.txtMensaje}" style="border: none;" readonly="true"/>
+            </p:scrollPanel>
+        </p:overlayPanel>
+    </h:form>
+
+</ui:composition>

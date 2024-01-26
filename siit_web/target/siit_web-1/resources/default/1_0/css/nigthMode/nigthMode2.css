@@ -1,0 +1,493 @@
+/*:root {*/
+  /*--main-bg-color: #121212;*/
+  /*--main-pnl-color: #2c2c2c;*/
+  /*--main-higligth-color: #4e4e4e;*/
+  /*--main-active-color: #555555;*/
+  /*--main-font-color: #eeeeee;*/
+  /*--main-border-color: #262626;*/
+  /*--main-error-color: rgb(255, 44, 49);*/
+  /*--main-success-color: #0099ff;*/
+  /*--main-info-color: #ff9900;*/
+  /*--main-menu-color: #3f3f3f;*/
+/*}*/
+
+/*Body Dark*/
+body {
+  background-color: var(--main-bg-color) !important;
+}
+
+/*Barra de Menus*/
+body .layout-menu {
+  background-color: var(--main-menu-color) !important;
+}
+
+body .layout-menu ul {
+  background-color: var(--main-menu-color) !important;
+}
+
+/*item del menu principal*/
+body .layout-menu li {
+  background-color: var(--main-menu-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+body .layout-menu li a {
+  background-color: transparent !important;
+  color: var(--main-font-color) !important;
+}
+
+body .layout-menu li:hover {
+  background-color: var(--main-higligth-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+body .layout-menu li:active {
+  background-color: var(--main-higligth-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+body .layout-menu > li > a:hover {
+  background-color: var(--main-higligth-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+body .layout-menu > li > a:active {
+  background-color: var(--main-higligth-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+body .layout-menu .active-menuitem {
+  background-color: var(--main-active-color) !important;
+}
+
+/*Cuerpo y contenedor Principal*/
+body .layout-main {
+  background-color: var(--main-bg-color) !important;
+}
+
+/*titulos de tablas*/
+.ui-datatable-header > * {
+  color: var(--main-font-color) !important;
+}
+
+/*Divs Internos a layout main*/
+body .layout-main div:not(.marker-cluster-small):not(.dashboard), fieldset, table, thead, tr, th {
+  background-color: var(--main-pnl-color) !important;
+}
+
+body .layout-main legend {
+  background-color: var(--main-theme-color) !important;
+  border: none !important;
+}
+
+/*Etiquetas internas a layout main*/
+body .layout-main > span, a, label, h1, h2, h3, h4, h5, li:not(.step), legend, th, td {
+  color: var(--main-font-color) !important;
+}
+
+body .layout-main input, textarea {
+  background-color: var(--main-pnl-color) !important;
+  border: 1px solid var(--main-higligth-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+body input[value], textarea[value] {
+  color: var(--main-font-color) !important;
+}
+
+body .layout-main .ui-tabs-nav {
+  background-color: var(--main-higligth-color) !important;
+}
+
+body .layout-main ul {
+  background-color: var(--main-higligth-color) !important;
+  border: none !important;
+}
+
+body .layout-main ul li {
+  background-color: var(--main-theme-color) !important;
+  border: 1px solid var(--main-pnl-color) !important;
+}
+
+body .layout-main ul .ui-state-active {
+  background-color: var(--main-theme-color) !important;
+  border-top: 1px solid white !important;
+  border-left: 1px solid white !important;
+  border-right: 1px solid white !important;
+}
+
+/*treenode*/
+body .ui-tree ul {
+  background-color: transparent !important;
+}
+
+body .ui-tree .ui-treenode {
+  background-color: transparent !important;
+}
+
+body .ui-tree li, span .ui-state-hover {
+  background-color: var(--main-higligth-color) !important;
+}
+
+/*Combos*/
+body .ui-selectonemenu div {
+  border-color: var(--main-pnl-color);
+}
+
+.ui-selectonemenu label {
+  background-color: var(--main-pnl-color);
+}
+
+.ui-selectonemenu .ui-selectonemenu-trigger span {
+  /*border-color: var(--main-higligth-color);*/
+  color: var(--main-font-color) !important;
+}
+
+body .ui-selectonemenu-panel .ui-selectonemenu-items {
+  background-color: var(--main-pnl-color);
+}
+
+.ui-selectonemenu-item.ui-selectonemenu-list-item.ui-corner-all.ui-state-highlight {
+  background-color: var(--main-theme-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+body .ui-selectonemenu-panel .ui-selectonemenu-items .ui-selectonemenu-item.ui-state-hover {
+  background-color: var(--main-higligth-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+/*Color de bordes para todos los controles*/
+body .layout-main * {
+  border-color: var(--main-higligth-color) !important;
+}
+
+/*Paginador para todas las tablas*/
+.ui-datatable .ui-paginator {
+  text-align: center !important;
+  border: none !important;
+}
+
+.ui-datatable .ui-paginator a {
+  border: none !important;
+  color: var(--main-theme-color) !important;
+}
+
+.ui-datatable .ui-paginator .ui-state-active {
+  border: none !important;
+  color: var(--main-font-color) !important;
+}
+
+.ui-datatable .ui-paginator .ui-state-hover {
+  background-color: var(--main-higligth-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+
+.ui-datatable .ui-paginator a:before {
+  border: none !important;
+  color: var(--main-theme-color) !important;
+}
+
+.ui-datatable .ui-paginator .ui-paginator-top {
+  border: none !important;
+}
+
+.ui-datatable.ui-paginator > span {
+  text-align: left !important;
+  border: none !important;
+
+}
+
+.ui-datatable.ui-widget-header {
+  border: none !important;
+}
+
+/*efectos para todas las tablas**/
+.ui-datatable .ui-datatable-data > tr.ui-state-highlight {
+  background-color: var(--main-theme-color) !important;
+  color: var(--main-font-color) !important;
+  border-color: var(--main-theme-color) !important;
+}
+
+.ui-datatable .ui-datatable-data > tr.ui-state-highlight div {
+  background-color: var(--main-theme-color) !important;
+  color: var(--main-font-color) !important;
+  border-color: var(--main-theme-color) !important;
+}
+
+.ui-datatable .ui-datatable-data > tr.ui-state-hover {
+  background-color: var(--main-higligth-color) !important;
+  border-color: var(--main-higligth-color) !important;
+}
+
+.ui-datatable .ui-datatable-data > tr.ui-state-hover div {
+  background-color: var(--main-higligth-color) !important;
+  border-color: var(--main-higligth-color) !important;
+}
+
+/*Botones*/
+button {
+  border: none !important;
+}
+
+/*titulos de los facet*/
+.ui-panel-title {
+  color: var(--main-font-color) !important;
+}
+
+/*fondos de los dialog*/
+.ui-dialog div {
+  background-color: var(--main-pnl-color) !important;
+}
+
+.ui-dialog * {
+  border-color: var(--main-higligth-color) !important;
+}
+
+.ui-dialog > span, a, label, h1, h2, h3, h4, h5, li, legend, th, td {
+  color: var(--main-font-color) !important;
+}
+
+.ui-dialog input, textarea {
+  background-color: var(--main-pnl-color) !important;
+  border: 1px solid var(--main-higligth-color) !important;
+  color: var(--main-font-color) !important;
+}
+
+.ui-dialog input[value], textarea[value] {
+  color: var(--main-font-color) !important;
+}
+
+.ui-dialog .ui-tabs-nav {
+  background-color: var(--main-higligth-color) !important;
+}
+
+.ui-dialog ul {
+  background-color: var(--main-higligth-color) !important;
+  border: none !important;
+}
+
+.ui-dialog ul li {
+  background-color: var(--main-theme-color) !important;
+  border: 1px solid var(--main-pnl-color) !important;
+}
+
+.ui-dialog ul .ui-state-active {
+  background-color: var(--main-theme-color) !important;
+  border-top: 1px solid white !important;
+  border-left: 1px solid white !important;
+  border-right: 1px solid white !important;
+}
+
+/**Historial*/
+
+.ui-dialog .titulosHistorial div {
+  background-color: var(--main-theme-color) !important;
+}
+
+.ui-dialog span, a {
+  color: var(--main-font-color) !important;
+}
+
+.ui-dialog .columnLabel, .columnData {
+  color: var(--main-font-color) !important;
+}
+
+.list-group.vertical-steps .list-group-item.completed::before {
+  background-color: var(--main-pnl-color) !important;
+}
+
+/**Tabla Visor flujo*/
+.visorFlujo.iu-datatable table {
+  border: none !important;
+
+}
+
+.visorFlujo.ui-datatable .ui-datatable-scrollable-header-box thead {
+  border-right: none !important;
+  border-bottom: 3px solid var(--main-higligth-color) !important;
+  border-left: none !important;
+  border-top: 3px solid var(--main-higligth-color) !important;
+}
+
+.visorFlujo.ui-datatable thead tr {
+  border: none !important;
+}
+
+.visorFlujo.ui-datatable thead tr th {
+  text-align: left !important;
+}
+
+.visorFlujo.ui-datatable .ui-selection-column .ui-chkbox-all {
+  display: inline-table !important;
+
+}
+
+.visorFlujo.ui-datatable .ui-datatable-data > tr.ui-datatable-even {
+  background-color: var(--main-pnl-color) !important;
+}
+
+.visorFlujo.ui-datatable .ui-datatable-data > tr.ui-state-highlight {
+  background-color: var(--main-theme-color) !important;
+  color: var(--main-font-color) !important;
+  border-color: var(--main-theme-color) !important;
+}
+
+.visorFlujo.ui-datatable .ui-datatable-data > tr.ui-state-hover {
+  background-color: var(--main-higligth-color) !important;
+  border-color: var(--main-higligth-color) !important;
+}
+
+.visorFlujo.ui-datatable thead tr th {
+  border: none !important;
+
+}
+
+.visorFlujo.ui-datatable-scrollable table,
+.visorFlujo.ui-datatable-sticky table {
+  border: none !important;
+  background-color: unset !important;
+}
+
+.visorFlujo .ui-datatable-scrollable-body {
+  border: none !important;
+}
+
+.visorFlujo .ui-datatable-scrollable-body {
+  border-left: none !important;
+  border-rigth: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+.visorFlujo .iu-datatable .ui-datatable-scrollable-body {
+  border-left: none !important;
+  border-rigth: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+.visorFlujo.ui-datatable-scrollable-theadclone {
+  visibility: collapse !important;
+}
+
+.visorFlujo.ui-datatable tbody {
+  border: none !important;
+
+}
+
+.visorFlujo.ui-datatable tbody tr {
+  border-bottom: 0px solid #dddddd !important;
+  border-top: 1px solid var(--main-higligth-color) !important;
+  border-right: 0px solid #dddddd !important;
+  border-left: 0px solid #dddddd !important;
+  background-color: var(--main-pnl-color) !important;
+}
+
+.visorFlujo.ui-datatable tbody tr:nth-child(1) {
+  border: none !important;
+}
+
+.visorFlujo.ui-datatable tbody td {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.visorFlujo .ui-paginator {
+  text-align: center !important;
+  border: none !important;
+}
+
+.visorFlujo .ui-paginator a {
+  border: none !important;
+}
+
+.visorFlujo .ui-paginator .ui-paginator-top {
+  border: none !important;
+}
+
+.visorFlujo.ui-paginator > span {
+  text-align: left !important;
+  border: none !important;
+}
+
+.visorFlujo.ui-widget-header {
+  border: none !important;
+}
+
+li[data-step]:after {
+  color: var(--main-font-color) !important;
+  /*background-color: var(--main-bg-color) !important;*/
+}
+
+li[data-step]:before {
+  color: var(--main-pnl-color) !important;
+  /*background-color: var(--main-bg-color) !important;*/
+}
+
+/*Dashboard*/
+.dashboard .overview-boxes .overview-box.overview-box-1 {
+  background-color: #007bff !important;
+  border: solid 1px #007bff !important;
+}
+
+.dashboard .overview-boxes .overview-box.overview-box-1 * {
+  background-color: #007bff !important;
+  border: solid 1px #007bff !important;
+}
+
+.dashboard .overview-boxes .overview-box.overview-box-2 {
+  background-color: #28a745 !important;
+  border: solid 1px #28a745 !important;
+}
+
+.dashboard .overview-boxes .overview-box.overview-box-2 * {
+  background-color: #28a745 !important;
+  border: solid 1px #28a745 !important;
+}
+
+.dashboard .overview-boxes .overview-box.overview-box-3 {
+  background-color: #fd7e14 !important;
+  border: solid 1px #fd7e14 !important;
+}
+
+.dashboard .overview-boxes .overview-box.overview-box-3 * {
+  background-color: #fd7e14 !important;
+  border: solid 1px #fd7e14 !important;
+}
+
+.dashboard .overview-boxes .overview-box.overview-box-4 {
+  background-color: #6f42c1 !important;
+  border: solid 1px #6f42c1 !important;
+}
+
+.dashboard .overview-boxes .overview-box.overview-box-4 * {
+  background-color: #6f42c1 !important;
+  border: solid 1px #6f42c1 !important;
+}
+
+/*Mapa*/
+#mapContainer div:not(.marker-cluster-small) {
+  background-color: transparent !important;
+
+}
+
+#mapContainer a {
+  color: var(--main-pnl-color) !important;
+  border: none !important;
+}
+
+/*Acordion Panel*/
+.ui-accordion-header span:before {
+  color: var(--main-font-color) !important;
+}
+
+.ui-accordion-header {
+  color: var(--main-font-color) !important;
+}
+
+.ui-accordion-header.ui-helper-reset.ui-state-default.ui-state-active.ui-corner-top {
+  background-color: var(--main-higligth-color) !important;
+}
+

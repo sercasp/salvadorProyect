@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+>
+    <ui:param name="paramBackBean" value="#{logBackBean}"/>
+    <ui:define name="headerContent">
+        Logs del Sistema
+    </ui:define>
+    <ui:define name="content">
+        <div class="ContainerIndent">
+            <div class="Container20 Responsive">
+                <h:form id="formLista">
+                    <p:panel style="height: auto">
+                        <p:outputPanel styleClass="tableClass">
+                            <p:dataTable style="width: 100%;margin: auto;height: auto;padding: 0px;" var="r"
+                                         value="#{logBackBean.logFileNames}"
+                                         paginatorPosition="top"
+                                         scrollable="true"
+                                         scrollHeight="540"
+                                         selectionMode="single"
+                                         selection="#{logBackBean.logSelected}"
+                                         rowKey="#{r}"
+                                         paginator="true"
+                                         emptyMessage="#{labelName.tableEmptyMessage}"
+                                         rows="25"
+                                         pageLinks="3"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                                <f:facet name="header">
+                                    <p:outputPanel styleClass="ui-grid-col-2" style="float: right;padding: 6px;">
+                                        <div class="p-grid">
+                                            <p:outputPanel styleClass="p-col">
+
+                                                <div class="box">
+                                                    <p:commandButton icon="ui-icon-check"
+                                                                     value="#{labelName.btnSeleccionar}"
+                                                                     action="#{logBackBean.cargarLog}"
+                                                                     resetValues="true" update=":formDetalle"/>
+                                                </div>
+                                            </p:outputPanel>
+
+                                        </div>
+                                    </p:outputPanel>
+                                </f:facet>
+                                <!-- Evento doble click sobre una fila -->
+                                <p:ajax event="rowDblselect" listener="#{logBackBean.cargarLog}"
+                                        update=":formDetalle" resetValues="true"/>
+                                <p:column headerText="Nombre Archivo">
+                                    <h:outputText value="#{r}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:panel>
+                </h:form>
+            </div>
+            <div class="Container80 Responsive">
+                <p:dialog id="dlgFormDetalle" modal="true" resizable="false" width="70%" showEffect="clip"
+                          hideEffect="fold" styleClass="disable-scroll"
+                          widgetVar="wvDlgFormDetalle" closable="false" style="padding: 0">
+                    <h:form id="formDetalle" style="width: 100%;float: right">
+                        <p:panel style="width: 100%;background-color: white;height: 720px">
+                            <f:facet name="header">
+                                <p:selectOneMenu id="tipoLogFiltro"
+                                                 style="width: 200px;margin: 0;padding: 0; float: right"
+                                                 label="Tipo de Log:"
+                                                 value="#{logBackBean.tipoLOGSelected}"
+                                                 valueChangeListener="#{logBackBean.seleccionandoLOG}"
+                                                 disabled="#{!logBackBean.registroSeleccionado}">
+                                    <f:selectItem itemLabel="Seleccione un tipo de Log" itemValue="#{null}"/>
+                                    <f:selectItem itemLabel="Todo" itemValue="TODO"/>
+                                    <f:selectItem itemLabel="Warnings" itemValue="WARNING"/>
+                                    <f:selectItem itemLabel="Errores" itemValue="ERROR"/>
+                                    <f:selectItem itemLabel="Limpiar" itemValue="CLR"/>
+                                    <p:ajax update="formDetalle: detalleLogs formDetalle: tipoLogFiltro"
+                                            event="change"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                            <p:panel style="width: 99.5%;overflow-y: auto;height: 660px;padding: 0;">
+                                <p:outputPanel styleClass="tableClass"
+                                               style="width:100%;margin-top: 180px;background-color: transparent;border: none; "
+                                               rendered="#{!logBackBean.registroSeleccionado}">
+                                    <div style="color:gray;width:99.5%;text-align:center;margin-top:300px;font-size:16px">
+                                        <br>SELECCIONE UN REGISTRO
+                                        </br></div>
+                                </p:outputPanel>
+                                <h:outputText id="detalleLogs" style="font-size: 12px;"
+                                              escape="false"
+                                              value="#{logBackBean.logSelectedText}"
+                                              rendered="#{logBackBean.registroSeleccionado}"/>
+                            </p:panel>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+            </div>
+        </div>
+
+    </ui:define>
+</ui:composition>

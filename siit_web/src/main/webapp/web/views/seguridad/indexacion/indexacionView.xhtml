@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{indexacionBackBean}"/>
+
+    <ui:define name="headerContent">
+        Indexación de Entidades
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .ui-inputfield.ui-widget.ui-state-default.ui-corner-all.hasDatepicker {
+                width: 19% !important;
+            }
+
+            .ui-selectoneradio label {
+                color: black;
+            }
+        </style>
+        <h:form id="formIndexacion" style="width: 100%;float: left">
+            <p:panel id="panelIndexacion" styleClass="fondoPaneles" style="height: 530px">
+                <f:facet name="header">
+                </f:facet>
+
+                <h:panelGrid id="panelGridEntidades" columns="3" style="width: 50%"
+                             columnClasses="Wid20,Wid60,Wid20">
+
+                    <h:outputLabel value="Entidad a indexar: "/>
+
+                    <p:selectOneMenu id="entidadIndexar" style="width:90%" label="Entidad a indexar"
+                                     required="true" styleClass="left"
+                                     filter="true" filterMatchMode="contains"
+                                     value="#{indexacionBackBean.somEntidad}">
+                        <f:selectItem itemLabel="Seleccione una entidad" itemValue="#{0}"/>
+                        <f:selectItems var="ent" value="#{indexacionBackBean.lstEntidades}"
+                                       itemLabel="#{ent.nombre}" itemValue="#{ent.nombre}"/>
+                    </p:selectOneMenu>
+
+                    <p:commandButton icon="ui-icon-refresh" actionListener="#{indexacionBackBean.indexarEntidad}"
+                                     value="INDEXAR"/>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

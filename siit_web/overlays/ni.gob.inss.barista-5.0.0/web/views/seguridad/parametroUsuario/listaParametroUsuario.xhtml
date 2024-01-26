@@ -1,0 +1,413 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaParametroUsuarioBackBean}"/>
+
+    <ui:define name="headerContent">
+        Parámetros Usuarios
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .size {
+                margin-left: 100px;
+            }
+
+            .size2 {
+                height: 25px !important;
+            }
+
+            .size3 {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+
+            .width {
+                width: 350px;
+            }
+
+            .pasivo {
+                background-color: red !important;
+            }
+
+            .titulo {
+                font-weight: 500;
+                font-size: 20px;
+                line-height: 32px;
+                margin: 0;
+                color: white;
+            }
+
+            .margin {
+                margin-left: 60px !important;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 3px !important;
+            }
+
+            .btn-width-auto {
+                width: auto !important;
+            }
+
+            .float-left {
+                float: left !important;
+            }
+
+            .float-right {
+                float: right !important;
+            }
+
+            .clear-fix {
+                clear: both;
+            }
+
+            .m-b-10 {
+                margin-bottom: 10px !important;
+            }
+
+            .m-t-10 {
+                margin-top: 10px !important;
+            }
+
+            .font color {
+                font-weight: bold;
+                color: #000000;
+            }
+
+            .font-color-pasivo {
+                font-weight: bold;
+                color: #ff0c0c;
+            }
+
+            .cuadrado {
+                width: 20px;
+                height: 20px;
+                background: red;
+                position: center;
+            }
+
+            .sinMargenTotal {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        </style>
+
+        <h:form id="formLista" style="height: 500px">
+            <p:dataTable var="parametroUsuario"
+                         value="#{listaParametroUsuarioBackBean.listaParametrosUsuarios}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaParametroUsuarioBackBean.parametroUsuarioSeleccionado}"
+                         rowKey="#{parametroUsuario.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="10"
+                         scrollable="true"
+                         scrollHeight="400"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                <!--                Columnas-->
+                <!-- Evento doble click sobre una fila -->
+                <!--                <p:ajax event="rowSelect" listener="#{listaParametroUsuarioBackBean.editarOEliminar}"-->
+                <!--                        update=":formDetalle" resetValues="true"/>-->
+
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen">
+                                <p:outputPanel style="display: block; text-align: left;">
+                                    <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                 style="width: 60%"
+                                                 value="#{listaParametroUsuarioBackBean.itBuscar}"
+                                                 id="buscar" autocomplete="off"/>
+                                    <p:commandButton icon="ui-icon-search"
+                                                     style="margin-left: 5px"
+                                                     update="formLista"
+                                                     action="#{listaParametroUsuarioBackBean.cargarLista}"/>
+                                </p:outputPanel>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-plus"
+                                                 value="#{labelName.btnAgregar}" ajax="true"
+                                                 update=":formLista :formDetalle" resetValues="true"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 action="#{listaParametroUsuarioBackBean.limpiar}"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-pencil" value="#{labelName.btnEditar}"
+                                                 ajax="true" update=":formDetalle"
+                                                 action="#{listaParametroUsuarioBackBean.editarOEliminar}"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <p:column headerText="Usuario">
+                    <h:outputText value="#{parametroUsuario.usuarioIdByUsuarioId.username}"/>
+                </p:column>
+
+                <p:column headerText="Parametro">
+                    <h:outputText value="#{parametroUsuario.parametroIdByParametroId.descriptor}"/>
+                </p:column>
+
+                <p:column headerText="Valor">
+                    <h:outputText value="#{parametroUsuario.valor}"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+        <!--Modal Agragar -->
+        <p:dialog id="dlgFormDetalle" widgetVar="wvDlgFormDetalle" modal="true" width="60%"
+                  closable="false" resizable="false" showEffect="clip" hideEffect="fold" styleClass="disable-scroll"
+                  style="padding: 10px" onShow="PF('wvDlgFormDetalle').initPosition()">
+
+            <h:form id="formDetalle" style="height: auto; width: 100%">
+                <p:inputText type="hidden" value="#{listaParametroUsuarioBackBean.itId}"/>
+                <p:panel style="height: auto" styleClass="fondoPaneles">
+                    <f:facet name="header">
+                        <!--                        Botones-->
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                    <h:outputText value="ID: #{listaParametroUsuarioBackBean.itId}"
+                                                  rendered="#{!listaParametroUsuarioBackBean.nuevoRegistro}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="fa fa-clipboard fa-lg"
+                                                     value="#{labelName.btnAuditoria}"
+                                                     oncomplete="PF('tipoCatalogoAuditWV').show();"
+                                                     process="@this"
+                                                     update=":tipoCatalogoAudit"
+                                                     rendered="#{listaParametroUsuarioBackBean.btnAuditoriaVisible}"
+                                                     action="#{listaParametroUsuarioBackBean.cargarAuditoria}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-trash" value="#{labelName.btnEliminar}"
+                                                     actionListener="#{listaParametroUsuarioBackBean.eliminar}"
+                                                     update=":formDetalle :formLista" resetValues="true"
+                                                     rendered="#{!listaParametroUsuarioBackBean.nuevoRegistro}">
+                                        <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                   message="#{dialogText.deleteConfirmationTextContent}"
+                                                   icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                     actionListener="#{listaParametroUsuarioBackBean.guardar}"
+                                                     update=":formLista :formDetalle"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                     actionListener="#{listaParametroUsuarioBackBean.limpiar}"
+                                                     update=":formDetalle"
+                                                     onclick="PF('wvDlgFormDetalle').hide()"
+                                                     resetValues="true" process="@this"/>
+                                </div>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid30, Wid70">
+                        <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid30, Wid70">
+                            <h:panelGroup styleClass="md-inputfield size3">
+                                <p:inputText id="usuario" value="#{listaParametroUsuarioBackBean.itNombreUsuario}"
+                                             readonly="true" required="true" label="Usuario"
+                                             style="width: 300px"
+                                             styleClass="size3"/>
+                                <label>Usuario:</label>
+                            </h:panelGroup>
+                            <p:commandButton icon="ui-icon-search" styleClass="size3"
+                                             type="image" immediate="true"
+                                             actionListener="#{listaParametroUsuarioBackBean.abrirModalUsuarios}"
+                                             update=":formUsuarios"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid30, Wid70"
+                                     style="margin-left: 100px">
+                            <h:panelGroup styleClass="md-inputfield size3">
+                                <p:inputText id="parametro" value="#{listaParametroUsuarioBackBean.itParametro}"
+                                             readonly="true" required="true" label="Parametro" style="width: 300px"
+                                             styleClass="size3"/>
+                                <label>Parametro:</label>
+                            </h:panelGroup>
+                            <p:commandButton icon="ui-icon-search" styleClass="size3"
+                                             type="image" immediate="true"
+                                             actionListener="#{listaParametroUsuarioBackBean.abrirModalParametros}"
+                                             update=":formParametros"/>
+                        </h:panelGrid>
+                        <h:panelGroup styleClass="md-inputfield size3">
+                            <p:inputText id="valor" value="#{listaParametroUsuarioBackBean.itValor}"
+                                         style="width: 300px"
+                                         label="Valor" styleClass="size3" autocomplete="off"/>
+                            <label>Valor:</label>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--  Modal Usuario -->
+        <p:dialog id="dlgAgregarUsuarios" header="Listado de Usuarios" widgetVar="wvDlgAgregarUsuarios"
+                  modal="true" height="500" width="60%" closable="false" resizable="false">
+
+            <h:form id="formUsuarios">
+                <p:panel>
+
+                    <p:dataTable var="usuarios"
+                                 value="#{listaParametroUsuarioBackBean.listaUsuarios}"
+                                 paginatorPosition="top"
+                                 selectionMode="single"
+                                 selection="#{listaParametroUsuarioBackBean.usuarioSeleccionado}"
+                                 rowKey="#{usuarios.id}"
+                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                 paginator="true"
+                                 rowIndexVar="rowIndex"
+                                 scrollHeight="400"
+                                 rows="8"
+                                 pageLinks="3"
+                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                        <f:facet name="header">
+                            <!--                Botones-->
+                            <div class="ui-g">
+                                <div class="ui-g-12 ui-md-12 sinMargen">
+                                    <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen">
+                                        <p:outputPanel style="display: block; text-align: left">
+                                            <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                         style="width: 60%"
+                                                         value="#{listaParametroUsuarioBackBean.itBuscarUsuario}"
+                                                         id="buscarUsuario" autocomplete="off"/>
+                                            <p:commandButton icon="ui-icon-search" ajax="true"
+                                                             style="margin-left: 5px"
+                                                             actionListener="#{listaParametroUsuarioBackBean.cargarListaUsuarios}"
+                                                             update=":formUsuarios"/>
+                                        </p:outputPanel>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="ui-icon-plus" value="#{labelName.btnAgregar}"
+                                                         ajax="true"
+                                                         action="#{listaParametroUsuarioBackBean.seleccionarUsuario}"
+                                                         update=":formDetalle:usuario"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                         action="#{listaParametroUsuarioBackBean.cerrarModal}"
+                                                         oncomplete="PF('wvDlgAgregarUsuarios').hide()"
+                                                         update=":formDetalle"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </f:facet>
+
+                        <!--                            Columnas-->
+                        <!-- Evento doble click sobre una fila -->
+                        <!--                            <p:ajax event="rowSelect" listener="#{listaParametroUsuarioBackBean.seleccionarUsuario}"-->
+                        <!--                                    update=":formDetalle" resetValues="true"/>-->
+
+                        <p:column headerText="Usuario">
+                            <h:outputText value="#{usuarios.username}"/>
+                        </p:column>
+
+                        <p:column headerText="Nombres">
+                            <h:outputText value="#{usuarios.nombres}"/>
+                        </p:column>
+
+                        <p:column headerText="Apellidos">
+                            <h:outputText value="#{usuarios.apellidos}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+
+        <!-- Modal Parametros-->
+        <p:dialog id="dlgAgregarParametros" header="Listado de Parametros" widgetVar="wvDlgAgregarParametros"
+                  modal="true" height="500" width="60%" closable="false" resizable="false">
+
+            <h:form id="formParametros">
+                <p:panel>
+
+                    <p:dataTable var="parametros"
+                                 value="#{listaParametroUsuarioBackBean.listaParametros}"
+                                 paginatorPosition="top"
+                                 selectionMode="single"
+                                 selection="#{listaParametroUsuarioBackBean.parametroSeleccionado}"
+                                 rowKey="#{parametros.id}"
+                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                 paginator="true"
+                                 rowIndexVar="rowIndex"
+                                 rows="8" pageLinks="3" scrollable="true"
+                                 scrollHeight="450"
+                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                        <!--                            Columnas-->
+                        <!-- Evento doble click sobre una fila -->
+                        <!--                            <p:ajax event="rowDblselect"-->
+                        <!--                                    listener="#{listaParametroUsuarioBackBean.seleccionarParametro}"-->
+                        <!--                                    update=":formDetalle" resetValues="true"/>-->
+
+                        <f:facet name="header">
+                            <!--                Botones-->
+                            <div class="ui-g">
+                                <div class="ui-g-12 ui-md-12 sinMargen">
+                                    <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen">
+                                        <p:outputPanel style="display: block; text-align: left">
+                                            <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                         style="width: 60%"
+                                                         value="#{listaParametroUsuarioBackBean.itBuscarParametro}"
+                                                         id="buscarParametro" autocomplete="off"/>
+                                            <p:commandButton icon="ui-icon-search" ajax="true"
+                                                             style="margin-left: 5px"
+                                                             actionListener="#{listaParametroUsuarioBackBean.cargarListaParametros}"
+                                                             update=":formParametros"/>
+                                        </p:outputPanel>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="ui-icon-plus" value="#{labelName.btnAgregar}"
+                                                         ajax="true"
+                                                         action="#{listaParametroUsuarioBackBean.seleccionarParametro}"
+                                                         update=":formDetalle:parametro"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                         action="#{listaParametroUsuarioBackBean.cerrarModalPara}"
+                                                         oncomplete="PF('wvDlgAgregarParametros').hide()"
+                                                         update=":formDetalle"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Código">
+                            <h:outputText value="#{parametros.codigo}"/>
+                        </p:column>
+
+                        <p:column headerText="Descriptor">
+                            <h:outputText value="#{parametros.descriptor}"/>
+                        </p:column>
+
+                        <p:column headerText="Valor">
+                            <h:outputText value="#{parametros.valor}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <mc:dialogAuditoria id="tipoCatalogoAudit" auditoriaId="tipoCatalogoAuditWV"
+                            auditoriaList="#{listaParametroUsuarioBackBean.listaAuditoria}"/>
+
+    </ui:define>
+</ui:composition>

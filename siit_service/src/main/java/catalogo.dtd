@@ -1,0 +1,20 @@
+<!--
+BARISTA
+Copyright (c) 2014 INSS
+Todos los derechos reservados.
+DEFINICION DE XML PARA CATALOGOS DE APLICACION
+
+@author JUAN EVANGELISTA FLETES GARCIA
+@version 1.0, 18/03/2015
+@since 1.0 *
+-->
+<!ELEMENT ListaCatalogo (Catalogo)*>
+<!ELEMENT Catalogo (CatalogoItem)*>
+<!ATTLIST Catalogo
+        codigo ID #REQUIRED
+        descripcion CDATA #REQUIRED >
+<!ELEMENT CatalogoItem (#PCDATA)>
+<!ATTLIST CatalogoItem
+        codigo CDATA #REQUIRED
+        valor CDATA #REQUIRED
+        orden CDATA #REQUIRED>

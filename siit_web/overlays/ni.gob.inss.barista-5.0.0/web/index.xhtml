@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<!--
+* GSLAUD
+* Copyright (c) 2013 INSS.
+* Todos los derechos reservados.
+* @author Juan Evangelista Fletes Garcia
+* @since 20/05/2013
+* @version 1.0.0
+* Pantalla Principal
+-->
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <link href="#{resource['default:img/aplicacion/favisco.ico']}" rel="shortcut icon" type="image/x-icon"/>
+    </f:facet>
+
+    <title>#{configApplicationBean.aplicacionNombreEntidad}</title>
+
+    <h:outputScript name="js/nanoscroller.js" library="sapphire-layout"/>
+    <h:outputScript name="js/layout.js" library="sapphire-layout"/>
+    <h:outputScript name="js/ripple.js" library="sapphire-layout"/>
+    <h:outputScript name="js/cropper.js" library="default"/>
+
+    <h:outputStylesheet name="css/nanoscroller.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/ripple.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/grid.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/cropper.css" library="default"/>
+    <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/nigthMode/nigthModeRootVar.css" library="default"/>
+    <h:outputStylesheet rendered="#{sessionBean.nigthMode}" name="css/nigthMode/nigthMode.css"
+                        library="default"/>
+
+</h:head>
+<h:body>
+    <style type="text/css">
+        body .ui-dialog .ui-dialog-titlebar {
+            padding: 0;
+        }
+
+        .ui-dialog .ui-dialog-content {
+            padding: 0;
+        }
+         body .ui-widget-content {
+             background-color: #ffffff;
+             border: 1px solid transparent;
+         }
+    </style>
+    <div class="layout-container layout-menu-#{guestPreferences.menuTheme} layout-topbar-#{guestPreferences.topBar} #{guestPreferences.horizontal ? 'layout-menu-horizontal' : ''} layout-top-small">
+        <div class="layout-top">
+
+            <ui:include src="template/topbar.xhtml"/>
+
+            <div class="layout-breadcrumb">
+                <ul>
+                    <p:outputPanel id="panelBreadcrum" style="display: unset">
+                        <li><h:outputText id="nombreModuloActual"
+                                          value="#{sessionBean.nombreModuloActual}"/></li>
+                        <li><i class="material-icons">chevron_right</i></li>
+
+                        <h:outputText id="breadcrum_menu" value="#{sessionBean.breadcrum}" escape="false"/>
+
+                        <li style="float: right;font-weight: bolder">
+                            <h:outputText id="usuarioLabel"
+                                          value="#{sessionBean.usuarioActual.username} - "/>
+                            <h:outputText id="nombreEntidadActual"
+                                          value="#{sessionBean.nombreEntidadActual}"/>
+
+                        </li>
+                    </p:outputPanel>
+                </ul>
+            </div>
+        </div>
+        <div class="layout-main">
+            <p:outputPanel id="application_content">
+                <ui:include src="#{indexBackBean.paginaActual}"/>
+            </p:outputPanel>
+        </div>
+
+        <ui:include src="template/config.xhtml"/>
+
+        <div class="layout-mask"></div>
+
+    </div>
+
+    <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+        <f:facet name="start">
+            <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+        </f:facet>
+
+        <f:facet name="complete">
+            <h:outputText value=""/>
+        </f:facet>
+    </p:ajaxStatus>
+
+    <!-- ajax status para toda la aplicación -->
+    <p:dialog widgetVar="statusDialog" draggable="false" closable="false"
+              resizable="false" showHeader="false" position="center middle">
+        <div class="TexAlCenter">
+            <div class="ContainerIndent">
+                <span style="display: block;" class="fondo">Cargando...</span>
+            </div>
+        </div>
+    </p:dialog>
+    <p:ajaxStatus onstart="PF('statusDialog').show();reiniciarContadorRegresiva()" oncomplete="PF('statusDialog').hide()"/>
+    <!-- fin ajax status para toda la aplicación -->
+
+    <!-- mensajes para toda la aplicación -->
+    <p:growl id="message" showDetail="true" showSummary="false" autoUpdate="true" severity="info,warn">
+        <p:autoUpdate/>
+    </p:growl>
+    <p:growl id="messageError" showDetail="true" showSummary="false" sticky="true" autoUpdate="true" severity="error">
+        <p:autoUpdate/>
+    </p:growl>
+
+    <!-- diálogo de confirmación para toda la aplicación -->
+    <h:form>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+            <p:commandButton value="#{dialogText.deleteConfirmationTextYesButton}" type="button"
+                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+            <p:commandButton value="#{dialogText.deleteConfirmationTextNoButton}" type="button"
+                             styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+        </p:confirmDialog>
+    </h:form>
+
+    <!-- Enable ajaxErrorHandler -->
+    <p:ajaxExceptionHandler widgetVar="ajaxErrorHandler" button="Cerrar" buttonOnclick="ajaxErrorHandler.hide();"/>
+    <p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException" button="Iniciar sessión"
+                            onexception="PF('sesionExpirada').show();"
+                            buttonOnclick="document.location.href=document.location.href;"
+                            body="Su sessión ha expirado!!." title="Sessión expirada ..."/>
+    <p:ajaxExceptionHandler type="ni.gob.inss.barista.view.security.SystemSecurityException" button="Aceptar"
+                            buttonOnclick="document.location.href=document.location.href;"
+                            body="No esta autorizado para ver este recurso!!." title="Seguridad"/>
+
+    <!-- Canal General para notificaciones -->
+    <!--    <p:socket widgetVar="mySocket" channel="/general" transport="long-polling">
+            <p:ajax event="message" update=":mNotificacion" oncomplete="PF('modalNotificacion').show()"/>
+        </p:socket>-->
+
+    <!--Diálogo de notificación general -->
+    <!--    <p:dialog header="#{messageNotification.title}" width="400" resizable="false"
+                  id="mNotificacion" widgetVar="modalNotificacion" modal="true">
+            <h:panelGrid columns="2" styleClass="panelGridClass" style="width: 100%">
+                <p:graphicImage library="#{configApplicationBean.temaAplicacion}" name="img/icons/comunes/mail.png"/>
+                <h:outputText value="#{messageNotification.message}" style="font-size: 1.2em;font-weight: bold"/>
+            </h:panelGrid>
+        </p:dialog>-->
+
+
+    <!--Diálogo de notificación de entidad cambiada -->
+    <!--<p:dialog header="Entidad cambiada" width="400" closable="false" closeOnEscape="false" resizable="false"
+              widgetVar="notificacionEntidad" modal="true">
+        <h:panelGrid columns="2" styleClass="panelGridClass" style="width: 100%;text-align: center;">
+            &lt;!&ndash;<p:graphicImage library="#{configApplicationBean.temaAplicacion}" name="img/icons/comunes/mail.png"/>&ndash;&gt;
+            <h:outputText value="La entidad actual a cambiado, debe recargar la página para aplicar los cambios."
+                          style="font-size: 1.2em;font-weight: bold;text-align: justify !important;"/>
+        </h:panelGrid>
+        <p:outputPanel style="padding: 0 0 7px 0;text-align: center;width: 100%;">
+            <p:button value="Recargar" onclick="window.location = window.location;"/>
+        </p:outputPanel>
+    </p:dialog>-->
+
+    <!--Diálogo de notificación de Sesión Expirada -->
+    <p:dialog header="Sesión Expirada" width="400" closable="false" closeOnEscape="false" resizable="false"
+              widgetVar="sesionExpirada" modal="true">
+        <h:panelGrid columns="2" styleClass="panelGridClass" style="width: 100%;text-align: center;">
+            <h:outputText value="La sesión ha expirado, debe recargar la página para ingresar nuevamente."
+                          style="font-size: 1.2em;font-weight: bold;text-align: justify !important;"/>
+        </h:panelGrid>
+        <p:outputPanel style="padding: 0 0 7px 0;text-align: center;width: 100%;">
+            <h:form>
+                <p:commandButton value="Recargar"
+                                 onclick="login()"/>
+            </h:form>
+        </p:outputPanel>
+    </p:dialog>
+
+    <p:dialog id="dlgCambiarClave" width="450" modal="true" resizable="false"
+              widgetVar="wvDlgCambiarClave" closable="false" style="padding: 0">
+        <h:form id="formularioCambiarClave">
+            <p:panel>
+                <f:facet name="header">
+                    <p:outputPanel style="display: block;float: left">
+                        <h:outputText value="Cambio de contraseña"/>
+                    </p:outputPanel>
+                    <p:outputPanel style="display: block;float: right">
+                        <p:commandButton icon="fa fa-check" value="#{labelName.btnGuardar}"
+                                         update="message messageError"
+                                         action="#{indexBackBean.cambiarClave}"/>
+                        <p:commandButton icon="fa fa-close" value="#{labelName.btnCerrarModal}"
+                                         immediate="true"
+                                         update="message messageError"
+                                         action="#{indexBackBean.cerrarModalContraseña}"
+                                         resetValues="true"/>
+                    </p:outputPanel>
+                </f:facet>
+
+                <h:panelGrid columns="2">
+                    <p:outputLabel for="claveActual" value="Contraseña actual:"/>
+                    <p:password id="claveActual"
+                                autocomplete="off"
+                                maxlength="20"
+                                required="true"
+                                value="#{indexBackBean.claveActual}"
+                                label="Contraseña actual">
+                        <f:validateLength minimum="0" maximum="20"/>
+                    </p:password>
+
+                    <p:outputLabel for="cambiarClave" value="Nueva contraseña:"/>
+                    <p:password id="cambiarClave"
+                                autocomplete="off"
+                                maxlength="20"
+                                required="true"
+                                value="#{indexBackBean.claveNueva}"
+                                label="Nueva contraseña"
+                                feedback="true"
+                                promptLabel="Ingrese su nueva contraseña"
+                                weakLabel="Debíl"
+                                goodLabel="Buena"
+                                strongLabel="Fuerte">
+
+                        <f:validateLength minimum="0" maximum="20"/>
+                    </p:password>
+
+                    <p:outputLabel for="cambiarClaveConfirmacion" value="Confirmación de contraseña:"/>
+                    <p:password id="cambiarClaveConfirmacion"
+                                autocomplete="off"
+                                maxlength="20"
+                                required="true"
+                                value="#{indexBackBean.claveConfirmacion}"
+                                label="Confirmación de contraseña"
+                                feedback="true"
+                                promptLabel="Ingrese otra vez su nueva contraseña"
+                                weakLabel="Debíl"
+                                goodLabel="Buena"
+                                strongLabel="Fuerte">
+
+                        <f:validateLength minimum="0" maximum="20"/>
+                    </p:password>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog id="dlgRenovarSesion" width="400" height="auto" header="Alerta!"
+              modal="true" resizable="false" closable="false"
+              widgetVar="wvDlgRenovarSesion">
+        <h:form id="formSesion">
+            <p:panel styleClass="ui-grid-col-12">
+                <h:inputHidden id="tiempoSesion" value="#{indexBackBean.getSessionMaxInactiveInterval() - 600}"/>
+                <p style="margin-top: 30px; text-align: center;">
+                    La sesión del usuario esta apunto de acabar desea Renovar?
+                </p>
+                <p style="margin-top: 5px;text-align: center">
+                    <span id="cuenta_regresiva"></span>
+                    <span>seg.</span>
+                </p>
+                <p:panelGrid columns="2" columnClasses="ui-grid-col-6,ui-grid-col-6" style="border: none;width: 100%">
+                    <p:commandButton icon="ui-icon-check" value="Renovar" styleClass="right"
+                                     immediate="true" oncomplete="PF('wvDlgRenovarSesion').hide()"
+                                     resetValues="true"/>
+                    <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+                       onclick="bandMostrarRenovacion=false;PF('wvDlgRenovarSesion').hide();logout();">
+                        <span class="ui-button-icon-left ui-icon ui-c ui-icon-close"></span>
+                        <span class="ui-button-text ui-c">Cerrar</span>
+                    </a>
+                </p:panelGrid>
+            </p:panel>
+        </h:form>
+    </p:dialog>
+
+    <script type="application/javascript">
+        function mostrarMensajeEntidad() {
+            PF('notificacionEntidad').show();
+        }
+
+        function mostrarMensajeSesion() {
+            PF('sesionExpirada').show();
+        }
+
+        function login() {
+            window.location = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 2)) + '/login.html';
+        }
+
+        var tiempoSesion = $("input[name*='tiempoSesion']").val();
+        var bandMostrarRenovacion = true;
+
+        function cuentaRegresiva() {
+            try {
+                if (30 >= tiempoSesion) {
+                    if (bandMostrarRenovacion) {
+                        PF('wvDlgRenovarSesion').show();
+                        bandMostrarRenovacion = false;
+                    }
+                }
+                if (tiempoSesion > 0)
+                    tiempoSesion -= 1;
+                else
+                    logout();
+                $("#cuenta_regresiva").text(tiempoSesion);
+                setTimeout("cuentaRegresiva()", 1000);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        function reiniciarContadorRegresiva() {
+            try {
+                bandMostrarRenovacion = true;
+                tiempoSesion = $("input[name*='tiempoSesion']").val();
+                $("#cuenta_regresiva").text(tiempoSesion);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        $(document).ready(function () {
+            reiniciarContadorRegresiva();
+            cuentaRegresiva();
+        });
+    </script>
+
+    <h:outputStylesheet name="css/nanoscroller.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/ripple.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/grid.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="sapphire-layout"/>
+
+</h:body>
+</html>

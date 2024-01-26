@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ListaCatalogo SYSTEM "catalogo.dtd">
+<!--
+BARISTA
+Copyright (c) 2014 INSS
+Todos los derechos reservados.
+CATALOGOS DE APLICACION
+
+@author JUAN EVANGELISTA FLETES GARCIA
+@version 1.0, 18/03/2015
+@since 1.0 *
+-->
+<ListaCatalogo>
+       <Catalogo codigo="001" descripcion="Sexo">
+              <CatalogoItem codigo="M" valor="MASCULINO" orden="1" />
+              <CatalogoItem codigo="F" valor="FEMENINO" orden="2" />
+              <CatalogoItem codigo="I" valor="INDETERMINADO" orden="3" />
+       </Catalogo>
+</ListaCatalogo>

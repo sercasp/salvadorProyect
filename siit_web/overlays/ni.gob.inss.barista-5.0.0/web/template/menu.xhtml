@@ -1,0 +1,20 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ps="http://primefaces.org/sapphire">
+
+    <div id="layout-menu-container" class="layout-menu-container">
+        <div id="layout-nano" class="nano">
+            <div class="nano-content sidebar-scroll-content">
+                <div class="layout-menu-wrapper">
+                    <h:form>
+                        <ps:menu id="menu" widgetVar='me' model="#{indexBackBean.model}"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </div>
+</ui:composition>

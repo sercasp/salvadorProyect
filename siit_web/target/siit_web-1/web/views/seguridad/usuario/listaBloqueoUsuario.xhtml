@@ -1,0 +1,157 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:cc="http://java.sun.com/jsf/core"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaBloqueoUsuarioBackBean}"/>
+
+    <ui:define name="headerContent">
+        Desbloqueo de Usuario
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .margin {
+                margin-left: 60px !important;
+            }
+
+            .size {
+                margin-bottom: 30px;
+                margin-top: 10px !important;
+            }
+
+            .width {
+                width: 350px;
+            }
+
+            .pasivo {
+                background-color: red !important;
+            }
+
+            .titulo {
+                font-weight: 500;
+                font-size: 20px;
+                line-height: 32px;
+                margin: 0;
+                color: white;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 3px !important;
+            }
+
+            .btn-width-auto {
+                width: auto !important;
+            }
+
+            .float-left {
+                float: left !important;
+            }
+
+            .float-right {
+                float: right !important;
+            }
+
+            .clear-fix {
+                clear: both;
+            }
+
+            .m-b-10 {
+                margin-bottom: 10px !important;
+            }
+
+            .m-t-10 {
+                margin-top: 10px !important;
+            }
+
+            .font color {
+                font-weight: bold;
+                color: #000000;
+            }
+
+            .font-color-pasivo {
+                font-weight: bold;
+                color: #ff0c0c;
+            }
+
+            .cuadrado {
+                width: 20px;
+                height: 20px;
+                background: red;
+                position: center;
+            }
+        </style>
+        <h:form id="formLista" style="height: 500px">
+            <p:dataTable var="r"
+                         value="#{listaBloqueoUsuarioBackBean.listaUsuarios}"
+                         scrollable="true"
+                         scrollHeight="370"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaBloqueoUsuarioBackBean.selectedRow}"
+                         rowKey="#{r.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="10"
+                         pageLinks="3"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen">
+                                <p:outputPanel style="display: block;text-align: left;">
+                                    <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                 style="width: 60%"
+                                                 value="#{listaBloqueoUsuarioBackBean.txtBuscar}"
+                                                 id="buscar" autocomplete="off"/>
+                                    <p:commandButton icon="ui-icon-search"
+                                                     update="formLista"
+                                                     style="margin-left: 5px"
+                                                     action="#{listaBloqueoUsuarioBackBean.cargarLista}"/>
+                                </p:outputPanel>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen"></div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton value="#{labelName.btnDesbloquear}"
+                                                 icon="fa fa-unlock fa-lg"
+                                                 actionListener="#{listaBloqueoUsuarioBackBean.desbloquear}"
+                                                 update="formLista">
+                                    <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                               message="#{dialogText.desbloquearConfirmationTextContent}"
+                                               icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </div>
+
+                        </div>
+                    </div>
+                </f:facet>
+                <p:column headerText="Usuario" style="width: 15%">
+                    <h:outputText value="#{r.username}"/>
+                </p:column>
+
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{r.nombres} #{r.apellidos}"/>
+                </p:column>
+
+                <p:column headerText="Referencia">
+                    <h:outputText value="#{r.referencia}"/>
+                </p:column>
+
+                <p:column headerText="Pasivo" style="text-align: center ">
+                    <p:selectBooleanCheckbox value="#{r.pasivo}" disabled="true" styleClass="ui-linus-enabled"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

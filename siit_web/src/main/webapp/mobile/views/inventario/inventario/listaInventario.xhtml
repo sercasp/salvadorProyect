@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pm="http://primefaces.org/mobile">
+
+    <h:form id="editForm">
+        <span style="font-size: large;text-align: center">
+            <p:outputLabel id="cantidad" value="Listado de Productos(#{listaMovimientoInventarioMobileBackBean.cantidad})"/>
+        </span>
+
+        <h:panelGrid columns="2" styleClass="personalized_panel">
+            <p:outputLabel for="buscarTag" value="Búsqueda por Producto:"/>
+            <p:inputText id="buscarTag" style="text-transform: uppercase !important;width: 84%"
+                         value="#{listaMovimientoInventarioMobileBackBean.txtBuscar}" autocomplete="off"/>
+        </h:panelGrid>
+
+        <h:panelGrid columns="2" styleClass="personalized_panel2">
+            <p:selectOneMenu id="selectOneMenu" value="#{listaMovimientoInventarioMobileBackBean.cmbBodega}">
+                <f:selectItem itemLabel="Seleccione una Bodega" itemValue="#{null}" />
+                <f:selectItems var="md" value="#{listaMovimientoInventarioMobileBackBean.listaBodegas}" itemLabel="#{md.nombre}"
+                               itemValue="#{md.id}"/>
+            </p:selectOneMenu>
+
+            <p:commandButton value="Buscar" actionListener="#{listaMovimientoInventarioMobileBackBean.cargarListaMovimientos}"
+                             update="listMedicamentosAgregados cantidad" icon="fa fa-search"/>
+        </h:panelGrid>
+
+            <p:dataTable id="listMedicamentosAgregados" var="prod"
+                         value="#{listaMovimientoInventarioMobileBackBean.listaMovimientosInventarios}"
+                         selectionMode="single"
+                         rowKey="#{prod.get('nombre_bodega')}"
+                         paginator="true"
+                         rows="10"
+                         tableStyleClass="ui-table-columntoggle">
+
+                <!--<p:ajax event="swipeleft" listener="#{dtMobileView.onRowSwipeLeft}" update="@parent:msgs" />-->
+                <!--<p:ajax event="swiperight" listener="#{dtMobileView.onRowSwipeRight}" update="@this"/>-->
+
+                <p:column headerText="Bodega" priority="1" style="width: 20%">
+                    <h:outputText value="#{prod.get('nombre_bodega')}" />
+                </p:column>
+
+                <p:column headerText="Producto" priority="2" style="width: 50%">
+                    <h:outputText value="#{prod.get('nombre_producto')}" />
+                </p:column>
+
+                <p:column headerText="Existencia" priority="3" style="width: 20%">
+                    <h:outputText value="#{prod.get('existencia')}" />
+                </p:column>
+
+                <p:column headerText="Precio Medio" priority="3" style="width: 10%">
+                    <h:outputText value="#{prod.get('precio_medio')}" />
+                </p:column>
+            </p:dataTable>
+
+           <!-- <p:dataList  var="pr" id="listMedicamentosAgregados" value="#{listaMovimientoInventarioMobileBackBean.listaMovimientosInventarios}"
+                         styleClass="ui-listview-inset ui-corner-all">
+                <p:panelGrid columns="3" style="width: 100%" styleClass="panelGridClass" >
+                    <p:row>
+                        <p:column><p:outputLabel><span style="color: darkblue;padding-right: 35px;">Bodega:</span>#{pr.get('nombre_bodega')}</p:outputLabel></p:column>
+                        <p:column><p:outputLabel><span style="color: darkblue;padding-right: 27px;">Producto:</span>#{pr.get('nombre_producto')}</p:outputLabel></p:column>
+                        <p:column><p:outputLabel><span style="color: darkblue;padding-right: 17px;">Existencia:</span>#{pr.get('existencia')}</p:outputLabel></p:column>
+                    </p:row>
+                </p:panelGrid>
+
+            </p:dataList> -->
+    </h:form>
+
+</ui:composition>

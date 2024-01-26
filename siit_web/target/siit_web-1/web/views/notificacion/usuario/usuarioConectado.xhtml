@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{usuarioConectadoBackBean}"/>
+
+    <ui:define name="headerContent">
+        Usuarios Conectados -  <h:outputText id="cantidadUsuario"
+                                             style="color: green;"
+                                             value="Cantidad usuarios conectados: #{usuarioConectadoBackBean.listaUsuarios.size()}"/>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="formLista">
+                      <p:dataTable var="r"
+                         value="#{usuarioConectadoBackBean.listaUsuarios}"
+                         filteredValue="#{usuarioConectadoBackBean.listaUsuariosFiltrados}"
+                         paginatorPosition="top"
+                         id="listaUsuarios"
+                         scrollable="true"
+                         scrollHeight="373"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="13"
+                         pageLinks="3"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                <f:facet name="header">
+                    <p:outputPanel style="display: block; width: 19%;margin-left: 80%" styleClass="right">
+                        <p:commandButton icon="ui-icon-refresh" value="Recargar"
+                                         immediate="true"
+                                         action="#{usuarioConectadoBackBean.cargarUsuarios}"
+                                         update="cantidadUsuario formLista:listaUsuarios"/>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column
+                        headerText="Usuario"
+                        filterBy="#{r}" filterMaxLength="100"
+                        filterStyle="width: 40%"
+                        filterMatchMode="contains">
+                    <h:outputText value="#{r.get('username')}"/>
+                </p:column>
+
+                <p:column headerText="Nombre"
+                          filterBy="#{r}" filterMaxLength="100"
+                          filterStyle="width: 40%"
+                          filterMatchMode="contains">
+                    <h:outputText value="#{r.get('nombre')}"/>
+                </p:column>
+
+                <p:column headerText="Referencia"
+                          filterBy="#{r}" filterMaxLength="100"
+                          filterStyle="width: 40%"
+                          filterMatchMode="contains">
+                    <h:outputText value="#{r.get('referencia')}"/>
+                </p:column>
+
+                <p:column headerText="Teléfono"
+                          filterBy="#{r}" filterMaxLength="100"
+                          filterStyle="width: 40%"
+                          filterMatchMode="contains">
+                    <h:outputText value="#{r.get('telefono')}"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

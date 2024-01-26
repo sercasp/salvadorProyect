@@ -1,0 +1,388 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaRoleReporteBackBean}"/>
+
+    <ui:define name="headerContent">
+        Roles Reportes
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .size3 {
+                margin-bottom: 30px;
+                margin-top: 10px !important;
+            }
+
+            .ui-panelgrid tbody tr td {
+                border: none !important
+            }
+
+            .size {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+
+            .size2 {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+
+            body .ui-datatable thead th {
+                border: 1px solid #d8d8d8;
+            }
+
+            .pasivo {
+                background-color: red !important;
+            }
+
+            .titulo {
+                font-weight: 500;
+                font-size: 20px;
+                line-height: 32px;
+                margin: 0;
+                color: white;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 3px !important;
+            }
+
+            .btn-width-auto {
+                width: auto !important;
+            }
+
+            .float-left {
+                float: left !important;
+            }
+
+            .float-right {
+                float: right !important;
+            }
+
+            .clear-fix {
+                clear: both;
+            }
+
+            .m-b-10 {
+                margin-bottom: 10px !important;
+            }
+
+            .m-t-10 {
+                margin-top: 10px !important;
+            }
+
+            .font color {
+                font-weight: bold;
+                color: #000000;
+            }
+
+            .font-color-pasivo {
+                font-weight: bold;
+                color: #ff0c0c;
+            }
+
+            .cuadrado {
+                width: 20px;
+                height: 20px;
+                background: red;
+                position: center;
+            }
+        </style>
+
+        <h:form id="formLista" style="height: 500px">
+            <p:dataTable
+                    var="r"
+                    value="#{listaRoleReporteBackBean.listaRoles}"
+                    scrollable="true"
+                    scrollHeight="300"
+                    paginatorPosition="top"
+                    selectionMode="single"
+                    selection="#{listaRoleReporteBackBean.selectedRole}"
+                    rowKey="#{r.id}"
+                    paginator="true"
+                    emptyMessage="#{labelName.tableEmptyMessage}"
+                    rows="10"
+                    pageLinks="3"
+                    paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                    currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen">
+                                <p:outputPanel style="display: block; text-align: left;">
+                                    <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                 style="width: 60%"
+                                                 value="#{listaRoleReporteBackBean.txtBuscar}"
+                                                 id="buscar" autocomplete="off"/>
+                                    <p:commandButton icon="ui-icon-search"
+                                                     ajax="true"
+                                                     update="formLista"
+                                                     action="#{listaRoleReporteBackBean.cargarListaRoles()}"/>
+                                </p:outputPanel>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-plus" value="#{labelName.btnAgregar}"
+                                                 ajax="true"
+                                                 update=":formDetalle formLista"
+                                                 action="#{listaRoleReporteBackBean.limpiar}"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 resetValues="true"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-pencil" value="#{labelName.btnEditar}"
+                                                 ajax="true"
+                                                 update=":formDetalle"
+                                                 action="#{listaRoleReporteBackBean.editar}"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <!-- Evento doble click sobre una fila -->
+                <!--                        <p:ajax event="rowDblselect" listener="#{listaRoleReporteBackBean.onRowSelect}"-->
+                <!--                                update=":formDetalle"/> -->
+
+                <p:column headerText="ID">
+                    <h:outputText value="#{r.id}"/>
+                </p:column>
+
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{r.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Pasivo" style="text-align: center">
+                    <p:selectBooleanCheckbox value="#{r.pasivo}" disabled="true"
+                                             styleClass="ui-linus-enabled"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <!--Modal Agragar -->
+        <p:dialog id="dlgFormDetalle" widgetVar="wvDlgFormDetalle" modal="true" width="50%" height="620"
+                  closable="false" resizable="false" showEffect="clip" hideEffect="fold" styleClass="disable-scroll"
+                  style="padding: 10px">
+
+            <h:form id="formDetalle" styleClass="maxHeight" style="width: 100%;">
+                <h:inputHidden id="role_id" value="#{listaRoleReporteBackBean.hfId}"/>
+                <p:panel style="height: 551px" styleClass="fondoPaneles">
+                    <f:facet name="header">
+                        <!--                        BOTONES  -->
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen"></div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="fa fa-clipboard fa-lg" value="#{labelName.btnAuditoria}"
+                                                     oncomplete="PF('tipoCatalogoAuditWV').show();" process="@this"
+                                                     update=":tipoCatalogoAudit"
+                                                     rendered="#{listaRoleReporteBackBean.btnAuditoriaVisible}"
+                                                     action="#{listaRoleReporteBackBean.cargarAuditoria}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-trash" value="#{labelName.btnEliminar}"
+                                                     actionListener="#{listaRoleReporteBackBean.elminar}"
+                                                     rendered="#{listaRoleReporteBackBean.btnElminiarVisible}"
+                                                     update="formDetalle :formLista">
+                                        <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                   message="#{dialogText.deleteConfirmationTextContent}"
+                                                   icon="ui-icon-alert"/>
+                                    </p:commandButton>
+
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-save "
+                                                     value="#{labelName.btnGuardar}"
+                                                     actionListener="#{listaRoleReporteBackBean.guardar}"
+                                                     update="formDetalle :formLista"
+                                                     validateClient="true"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                     actionListener="#{listaRoleReporteBackBean.limpiar}"
+                                                     onclick="PF('wvDlgFormDetalle').hide()"
+                                                     update="formDetalle :formLista"
+                                                     resetValues="true"
+                                                     process="@this"/>
+                                </div>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <h:panelGrid columns="4" columnClasses="Wid20, Wid80" styleClass="Wid100">
+                        <h:panelGroup styleClass="md-inputfield"
+                                      style="margin-bottom:30px;margin-top:20px !important">
+                            <p:inputText autocomplete="off" id="nombre" style="width: 400px"
+                                         value="#{listaRoleReporteBackBean.txtNombre}"
+                                         label="nombre" required="true">
+                                <p:keyFilter for="nombre" regEx="/#{listaRoleReporteBackBean.regExpNombre}/"/>
+                                <f:validateRegex pattern="#{listaRoleReporteBackBean.regExpNombre}"/>
+                                <f:validateLength minimum="0" maximum="100"/>
+                            </p:inputText>
+                            <label>Nombre:</label>
+                        </h:panelGroup>
+                        <p:outputLabel for="pasivo" value="Pasivo:"
+                                       rendered="#{!listaRoleReporteBackBean.nuevo_registro}"
+                                       style="margin-left: 100px"/>
+                        <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                               value="#{listaRoleReporteBackBean.rbPasivo}"
+                                               rendered="#{!listaRoleReporteBackBean.nuevo_registro}"/>
+                    </h:panelGrid>
+
+                    <p:tabView id="tabView" styleClass="test" style="height: 430px;"
+                               rendered="#{!listaRoleReporteBackBean.nuevo_registro}"
+                               activeIndex="#{listaRoleReporteBackBean.index}">
+                        <p:tab id="tab1" title="Reportes">
+                            <p:panel style="height: 381px;">
+                                <f:facet name="header">
+                                    <!--                                    Botones-->
+                                    <div class="ui-g">
+                                        <div class="ui-g-12 ui-md-12 sinMargen">
+                                            <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen"></div>
+
+                                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                                <p:commandButton icon="ui-icon-plus"
+                                                                 value="#{labelName.btnAgregar}"
+                                                                 action="#{listaRoleReporteBackBean.modalAgregarReportes}"
+                                                                 update=":formListaModalReporte" process="@this"
+                                                                 oncomplete="PF('modalReportes').show()"/>
+                                            </div>
+                                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                                <p:commandButton icon="ui-icon-minus"
+                                                                 value="#{labelName.btnExtraer}"
+                                                                 action="#{listaRoleReporteBackBean.elminarReportes}"
+                                                                 ajax="true"
+                                                                 immediate="true"
+                                                                 update="tabView" process="@this"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </f:facet>
+
+                                <p:panel id="treeReportes"
+                                         style="height: 325px;overflow-y: auto;border: none;">
+                                    <p:tree style="border: none"
+                                            styleClass="whitOtBorderTree"
+                                            value="#{listaRoleReporteBackBean.root}"
+                                            expanded="true"
+                                            id="tree"
+                                            var="node"
+                                            animate="true"
+                                            selectionMode="checkbox"
+                                            selection="#{listaRoleReporteBackBean.selectedNodes}">
+
+                                        <p:ajax event="select"
+                                                listener="#{listaRoleReporteBackBean.onNodeSelecte}"/>
+                                        <p:ajax event="unselect"
+                                                listener="#{listaRoleReporteBackBean.onNodeUnselecte}"/>
+
+                                        <p:treeNode>
+                                            <h:outputText value="#{node.text}"/>
+                                        </p:treeNode>
+                                    </p:tree>
+                                </p:panel>
+                            </p:panel>
+                        </p:tab>
+
+                        <p:tab id="tab2" title="Usuarios (#{listaRoleReporteBackBean.listaUsuarios.size()})">
+                            <p:outputPanel styleClass="tableClass">
+                                <p:dataTable var="u"
+                                             value="#{listaRoleReporteBackBean.listaUsuarios}"
+                                             paginatorPosition="top"
+                                             paginator="true"
+                                             rowIndexVar="rowIndex"
+                                             emptyMessage="#{labelName.tableEmptyMessage}"
+                                             rows="8"
+                                             scrollable="true"
+                                             scrollHeight="290"
+                                             paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                             currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                    <p:column headerText="Usuario">
+                                        <h:outputText value="#{u.username}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Nombres">
+                                        <h:outputText value="#{u.nombres}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Apellidos">
+                                        <h:outputText value="#{u.apellidos}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </p:tab>
+
+                    </p:tabView>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--        modal agregar Reporte-->
+        <p:dialog header="Listado de Reportes no Agregados" widgetVar="modalReportes" modal="true"
+                  height="390" width="50%" closable="false" resizable="false"
+                  showEffect="clip" hideEffect="fold" styleClass="disable-scroll">
+            <h:form id="formListaModalReporte">
+                <p:panel>
+                    <f:facet name="header">
+                        <!--       BOTONES                 -->
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen"></div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-plus" value="#{labelName.btnAgregar}"
+                                                     action="#{listaRoleReporteBackBean.agregarReportes}"
+                                                     ajax="true" immediate="true"
+                                                     update=":formDetalle:tabView"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                     oncomplete="PF('modalReportes').hide()"
+                                                     onclick="PF('modalReportes').hide()"
+                                                     ajax="true" immediate="true"/>
+                                </div>
+
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:scrollPanel style="width: 97%" mode="native"
+                                   easing="easeOutElastic">
+                        <p:tree style="height: 300px;overflow-y: auto;border: none;"
+                                value="#{listaRoleReporteBackBean.rootNoAgregado}"
+                                expanded="true"
+                                id="treeNoAgregado"
+                                var="nodeNoAgregado"
+                                styleClass="whitOtBorderTree"
+                                animate="true"
+                                selectionMode="checkbox"
+                                selection="#{listaRoleReporteBackBean.selectedNodes}">
+
+                            <p:ajax event="select" listener="#{listaRoleReporteBackBean.onNodeSelect}"/>
+                            <p:ajax event="unselect" listener="#{listaRoleReporteBackBean.onNodeUnselect}"/>
+
+                            <p:treeNode styleClass="#{nodeNoAgregado.estado}">
+                                <h:outputText value="#{nodeNoAgregado.text}"/>
+                            </p:treeNode>
+                        </p:tree>
+                    </p:scrollPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+        <mc:dialogAuditoria id="tipoCatalogoAudit" auditoriaId="tipoCatalogoAuditWV"
+                            auditoriaList="#{listaRoleReporteBackBean.listaAuditoria}"/>
+    </ui:define>
+
+</ui:composition>

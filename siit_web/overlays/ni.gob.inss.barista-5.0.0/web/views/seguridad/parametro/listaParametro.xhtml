@@ -1,0 +1,320 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaParametroBackBean}"/>
+
+    <ui:define name="headerContent">
+        Parámetros
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .margin {
+                margin-left: 60px !important;
+            }
+
+            .size {
+                margin-bottom: 30px;
+                margin-top: 10px !important;
+            }
+
+            .size3 {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+
+            .size4 {
+                margin-bottom: 15px;
+                margin-top: 5px !important;
+                margin-left: 30px;
+            }
+
+            .width {
+                width: 350px;
+            }
+
+            .pasivo {
+                background-color: red !important;
+            }
+
+            .titulo {
+                font-weight: 500;
+                font-size: 20px;
+                line-height: 32px;
+                margin: 0;
+                color: white;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 3px !important;
+            }
+
+            .btn-width-auto {
+                width: auto !important;
+            }
+
+            .float-left {
+                float: left !important;
+            }
+
+            .float-right {
+                float: right !important;
+            }
+
+            .clear-fix {
+                clear: both;
+            }
+
+            .m-b-10 {
+                margin-bottom: 10px !important;
+            }
+
+            .m-t-10 {
+                margin-top: 10px !important;
+            }
+
+            .font color {
+                font-weight: bold;
+                color: #000000;
+            }
+
+            .font-color-pasivo {
+                font-weight: bold;
+                color: #ff0c0c;
+            }
+
+            .cuadrado {
+                width: 20px;
+                height: 20px;
+                background: red;
+                position: center;
+            }
+        </style>
+
+        <h:form id="formLista" style="height: 500px">
+            <p:dataTable var="r"
+                         value="#{listaParametroBackBean.listaParametros}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaParametroBackBean.selectedRow}"
+                         rowKey="#{r.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="10"
+                         scrollable="true"
+                         scrollHeight="370"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen">
+                                <p:outputPanel style="display: block; text-align: left;">
+                                    <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                 style="width: 60%"
+                                                 value="#{listaParametroBackBean.txtBuscar}"
+                                                 id="buscar" autocomplete="off"/>
+                                    <p:commandButton icon="ui-icon-search"
+                                                     update="formLista"
+                                                     style="margin-left: 5px"
+                                                     action="#{listaParametroBackBean.cargarLista}"/>
+                                </p:outputPanel>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-plus"
+                                                 value="#{labelName.btnAgregar}" ajax="true"
+                                                 update=":formLista :formDetalle" resetValues="true"
+                                                 actionListener="#{listaParametroBackBean.seleccionarTipoParametro}"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:commandButton icon="ui-icon-pencil" value="#{labelName.btnEditar}"
+                                                 ajax="true"
+                                                 update=":formDetalle"
+                                                 action="#{listaParametroBackBean.editar}"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <!-- Evento doble click sobre una fila -->
+                <!--                <p:ajax event="rowDblselect" listener="#{listaParametroBackBean.editar}"-->
+                <!--                        update=":formDetalle"-->
+                <!--                        resetValues="true"/>-->
+
+                <p:column headerText="Codigo">
+                    <h:outputText value="#{r.codigo}"/>
+                </p:column>
+
+                <p:column headerText="Descriptor">
+                    <h:outputText value="#{r.descriptor}"/>
+                </p:column>
+
+                <p:column headerText="Valor">
+                    <h:outputText value="#{r.valor}"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+        <!--  Modal Agregar-->
+        <p:dialog id="dlgFormDetalle" widgetVar="wvDlgFormDetalle" modal="true" width="50%"
+                  closable="false" resizable="false" showEffect="clip" hideEffect="fold" styleClass="disable-scroll"
+                  style="padding: 10px" onShow="PF('wvDlgFormDetalle').initPosition()">
+
+            <h:form id="formDetalle" style="height: 100%; width: 100%">
+                <p:inputText type="hidden" value="#{listaParametroBackBean.hfId}"/>
+                <p:panel style="height: auto" styleClass="fondoPaneles">
+                    <f:facet name="header">
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                    <h:outputText value="ID: #{listaParametroBackBean.hfId}"
+                                                  rendered="#{!listaParametroBackBean.nuevoRegistro}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="fa fa-clipboard fa-lg"
+                                                     value="#{labelName.btnAuditoria}"
+                                                     oncomplete="PF('tipoCatalogoAuditWV').show();"
+                                                     process="@this"
+                                                     update=":tipoCatalogoAudit"
+                                                     rendered="#{listaParametroBackBean.btnAuditoriaVisible}"
+                                                     action="#{listaParametroBackBean.cargarAuditoria}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-trash" value="#{labelName.btnEliminar}"
+                                                     actionListener="#{listaParametroBackBean.elminar}"
+                                                     update=":formDetalle :formLista"
+                                                     rendered="#{!listaParametroBackBean.nuevoRegistro}">
+                                        <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                   message="#{dialogText.deleteConfirmationTextContent}"
+                                                   icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                     actionListener="#{listaParametroBackBean.guardar}"
+                                                     update=":formDetalle :formLista"
+                                                     rendered="#{listaParametroBackBean.btnGuardarVisible}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-cancel"
+                                                     value="#{labelName.btnCerrarModal}"
+                                                     actionListener="#{listaParametroBackBean.limpiar}"
+                                                     update="formDetalle"
+                                                     onclick="PF('wvDlgFormDetalle').hide()"
+                                                     resetValues="true" process="@this"/>
+                                </div>
+                            </div>
+                        </div>
+                    </f:facet>
+
+
+                    <h:panelGrid columns="4" styleClass="size3" columnClasses="Wid30, Wid70">
+                        <p:selectOneMenu id="tipoParametro" style="width: 100%" styleClass="size3"
+                                         value="#{listaParametroBackBean.somTipoParametro}"
+                                         disabled="#{!listaParametroBackBean.nuevoRegistro}">
+                            <f:selectItem itemLabel="Seleccione un Tipo Parametro" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="Númerico" itemValue="N"/>
+                            <f:selectItem itemLabel="Carácter" itemValue="C"/>
+                            <f:selectItem itemLabel="Lista de Valores" itemValue="L"/>
+                            <f:selectItem itemLabel="Lista Vínculada" itemValue="V"/>
+                            <f:selectItem itemLabel="Sentencia SQL" itemValue="S"/>
+                            <p:ajax event="change" update=":formDetalle"
+                                    listener="#{listaParametroBackBean.seleccionarTipoParametro}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid30, Wid70">
+                        <h:panelGroup styleClass="md-inputfield size3"
+                                      rendered="#{listaParametroBackBean.visibleCaracter}">
+                            <p:inputText id="codigo" styleClass="size3" label="Código" required="true"
+                                         style="width: 350px!important"
+                                         disabled="#{!listaParametroBackBean.nuevoRegistro}" autocomplete="off"
+                                         value="#{listaParametroBackBean.txtCodigo}"
+                                         rendered="#{listaParametroBackBean.visibleCaracter}">
+                                <f:validateLength minimum="0" maximum="20"/>
+                            </p:inputText>
+                            <label>Código:</label>
+                        </h:panelGroup>
+                        <h:panelGroup styleClass="md-inputfield size3" style="margin-left: 50px"
+                                      rendered="#{listaParametroBackBean.visibleCaracter}">
+                            <p:inputText id="descriptor" styleClass="size3" label="Descriptor" required="true"
+                                         style="width: 350px!important;"
+                                         value="#{listaParametroBackBean.txtDescriptor}" autocomplete="off"
+                                         rendered="#{listaParametroBackBean.visibleCaracter}">
+                                <f:validateRegex pattern="#{listaParametroBackBean.regExpDescriptor}"/>
+                                <f:validateLength minimum="0" maximum="100"/>
+                            </p:inputText>
+                            <label>Descriptor:</label>
+                        </h:panelGroup>
+                        <h:panelGroup styleClass="md-inputfield size3"
+                                      rendered="#{listaParametroBackBean.visibleListaValores}">
+                            <p:inputText id="listaValor" styleClass="size3" label="listaValor" required="true"
+                                         value="#{listaParametroBackBean.itListaValor}" autocomplete="off"
+                                         rendered="#{listaParametroBackBean.visibleListaValores}">
+                                <f:validateLength minimum="0" maximum="50"/>
+                                <p:keyFilter regEx="/^[a-zA-Z \áéíóúAÉÍÓÚÑñ\;]*$/"/>
+                                <p:ajax/>
+                            </p:inputText>
+                            <label>Lista de Valores:</label>
+                        </h:panelGroup>
+                        <h:panelGroup styleClass="md-inputfield size3" style="margin-left: 50px"
+                                      rendered="#{listaParametroBackBean.visibleListaValores}">
+                            <p:inputText id="nombre" styleClass="size3" label="Nombre" required="true"
+                                         rendered="#{listaParametroBackBean.visibleListaValores}"
+                                         value="#{listaParametroBackBean.itNombreListaValor}" autocomplete="off">
+                                <f:validateLength minimum="0" maximum="100"/>
+                                <p:keyFilter regEx="/^[a-zA-Z \áéíóúAÉÍÓÚÑñ\;]*$/"/>
+                                <p:ajax event="blur" process="@this"
+                                        listener="#{listaParametroBackBean.validarSplit}"/>
+                            </p:inputText>
+                            <label>Nombre de Valores:</label>
+                        </h:panelGroup>
+                        <h:panelGroup styleClass="md-inputfield size3"
+                                      rendered="#{listaParametroBackBean.visibleCaracter}">
+                            <p:inputText id="valor" styleClass="size3"
+                                         value="#{listaParametroBackBean.txtValor}"
+                                         label="Valor" required="true" autocomplete="off"
+                                         rendered="#{listaParametroBackBean.visibleCaracter}">
+                                <f:validateLength minimum="0" maximum="100"/>
+                            </p:inputText>
+                            <label>Valor:</label>
+                        </h:panelGroup>
+                        <p:selectOneMenu id="modulo" style="width: 350px!important; margin-left: 50px"
+                                         label="Modulo"
+                                         value="#{listaParametroBackBean.cmbModulo}" styleClass="size3"
+                                         rendered="#{listaParametroBackBean.visibleCaracter}">
+                            <f:selectItem itemLabel="Seleccione Módulo" itemValue="Módulo"/>
+                            <f:selectItems var="md" value="#{listaParametroBackBean.listaModulos}"
+                                           itemLabel="#{md.nombre}" itemValue="#{md.id}"/>
+                        </p:selectOneMenu>
+                        <h:panelGroup styleClass="md-inputfield size3"
+                                      rendered="#{listaParametroBackBean.visibleSentenciaSQL}">
+                            <p:inputTextarea id="sentencia" styleClass="size3" required="true" maxlength="100"
+                                             rendered="#{listaParametroBackBean.visibleSentenciaSQL}"
+                                             value="#{listaParametroBackBean.itaSentenciaSQL}"
+                                             label="Descripción" style="text-transform: none !important">
+                                <f:validateLength minimum="0" maximum="100"/>
+                            </p:inputTextarea>
+                            <label>Sentencia SQL</label>
+                        </h:panelGroup>
+                    </h:panelGrid>
+
+                    <p:keyFilter for="codigo" regEx="/#{listaParametroBackBean.regExpCodigo}/"/>
+                    <p:keyFilter for="descriptor" regEx="/#{listaParametroBackBean.regExpDescriptor}/"/>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <mc:dialogAuditoria id="tipoCatalogoAudit" auditoriaId="tipoCatalogoAuditWV"
+                            auditoriaList="#{listaParametroBackBean.listaAuditoria}"/>
+    </ui:define>
+</ui:composition>

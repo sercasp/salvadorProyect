@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>#{configApplicationBean.aplicacionNombreEntidad}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <h:outputScript name="js/layout.js" library="sapphire-layout"/>
+    <h:outputScript name="js/ripple.js" library="sapphire-layout"/>
+
+    <link href="#{resource['default:img/aplicacion/favisco.ico']}" rel="shortcut icon" type="image/x-icon"/>
+
+    <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="sapphire-layout"/>
+</h:head>
+
+<h:body styleClass="login-body">
+    <h:form id="loginForm">
+        <div class="login-panel ui-fluid">
+            <div class="login-panel-header">
+                <h:graphicImage library="default"
+                                name="img/icons/login/logo.png"/>
+            </div>
+            <div class="login-panel-content">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <h1><label style="background: #1e88e5;color: snow;">
+                            #{sessionBean.usuarioActual.nombres}  #{sessionBean.usuarioActual.apellidos}
+                        </label>
+                        </h1>
+                        <h2>Por motivo de seguridad, la sesión ha expirado, debe recargar la página para ingresar nuevamente.</h2>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:commandButton value="Recargar" styleClass="green-btn" icon="ui-icon-check"
+                                         onclick="login()"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </h:form>
+
+    <script type="application/javascript">
+        function login() {
+            window.location = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 2)) + '/login.html';
+        }
+    </script>
+</h:body>
+</html>

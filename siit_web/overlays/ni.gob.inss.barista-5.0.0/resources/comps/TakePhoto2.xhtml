@@ -1,0 +1,250 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<composite:interface>
+
+    <composite:attribute name="id" shortDescription="Id con el que se nombrara el componente"/>
+    <composite:attribute name="buttonText" default="Tomar foto"/>
+    <composite:attribute name="buttonStyle" default=""/>
+    <composite:attribute name="width" default="1080"/>
+    <composite:attribute name="height" default="850"/>
+    <composite:attribute name="selectionListener" required="true"
+                         method-signature="void seleccionar(java.lang.String)"/>
+</composite:interface>
+
+<composite:implementation>
+    <style>
+        .container-camera {
+            position: fixed;
+            background: #000000a1;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            overflow: auto;
+        }
+
+        .container-camera > .modal {
+            border: solid 1px #808080;
+            padding: 10px;
+            max-width: 700px;
+            margin: 100px auto;
+            display: block;
+            background: white;
+        }
+
+        .container-camera > .modal > .cabecera {
+            margin-bottom: 10px;
+        }
+
+        .container-camera > .modal > .cuerpo {
+
+        }
+
+        .container-camera > .modal > .pie {
+            text-align: center;
+        }
+
+        .player {
+            height: 90%;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 600px;
+            display: block;
+            border: 1px solid #808080;
+        }
+
+        .container-camera.hide {
+            top: -100%;
+            bottom: 100%;
+        }
+
+        .gray {
+            filter: grayscale(1);
+        }
+    </style>
+    <a class="ui-button w-auto w-autoui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+       onclick="#{cc.attrs.id}.toggletViewer($(this).next())" style="color: #fff;#{cc.attrs.buttonStyle}">
+        <span class="ui-button-icon-left ui-icon ui-c fa fa-camera"></span>
+        <span class="ui-button-text ui-c">#{cc.attrs.buttonText}</span>
+    </a>
+    <p:outputPanel styleClass="container-camera hide">
+        <p:outputPanel styleClass="modal">
+
+            <p:outputPanel styleClass="cabecera">
+                <h2 style="display: block; width: 90%;">Titulo</h2>
+                <a href="javascript:void(0)" onclick="#{cc.attrs.id}.toggletViewer($(this).parent().parent().parent())"
+                   style="float: right;margin-top: -38px;margin-right: 10px;font-size: 20px;">
+                    <span class="fa fa-close"></span>
+                </a>
+                <hr/>
+            </p:outputPanel>
+
+            <p:outputPanel styleClass="cuerpo">
+                <video id="#{cc.attrs.id}player" autoplay="autoplay" class="player"></video>
+            </p:outputPanel>
+
+            <p:outputPanel styleClass="pie">
+                <hr/>
+                <a class="ui-button w-auto w-autoui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+                   onclick="#{cc.attrs.id}.toggletViewer($(this).parent().parent().parent())"
+                   style="color: #fff;border: solid 2px #fff;width: auto;height: 50px;float: right;">
+                    <span class="ui-button-icon-left ui-icon ui-c fa fa-close"></span>
+                    <span class="ui-button-text ui-c" style="padding-top: 9px;">Cerrar</span>
+                </a>
+                <a id="btn#{cc.attrs.id}Capturar" onclick="#{cc.attrs.id}.take($(this))"
+                   class="ui-button w-auto w-autoui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+                   style="color: #fff;border: solid 2px #fff;width: auto;height: 50px;float: right;">
+                    <span class="ui-button-icon-left ui-icon ui-c fa fa-picture-o"></span>
+                    <span class="ui-button-text ui-c" style="padding-top: 9px;">Capturar</span>
+                </a>
+                <div style="clear: both;"></div>
+
+            </p:outputPanel>
+
+        </p:outputPanel>
+    </p:outputPanel>
+
+    <p:outputPanel styleClass="container-camera hide">
+        <p:outputPanel styleClass="modal" style="min-width: 80%;">
+
+            <p:outputPanel styleClass="cabecera">
+                <h2 style="display: block; width: 90%;">Pre-visualización</h2>
+                <a href="javascript:void(0)" onclick="#{cc.attrs.id}.toggletViewer($(this).parent().parent().parent())"
+                   style="float: right;margin-top: -38px;margin-right: 10px;font-size: 20px;">
+                    <span class="fa fa-close"></span>
+                </a>
+                <hr/>
+            </p:outputPanel>
+
+            <p:outputPanel styleClass="cuerpo">
+                <canvas id="#{cc.attrs.id}snapshot" width="#{cc.attrs.width}" height="#{cc.attrs.height}"
+                        style="width: 100%;display: none"></canvas>
+                <div style="width: 50%;float: left;padding: 10px;">
+                    <label style="margin-bottom: 10px">Imagen original</label>
+                    <br />
+                    <img id="#{cc.attrs.id}img" style="max-height: 450px; margin: 0 auto;display: block;" src=""/>
+                </div>
+                <div style="width: 50%;float: left;padding: 10px;">
+                    <label style="margin-bottom: 10px">Imagen en escala de grises</label>
+                    <br />
+                    <img id="#{cc.attrs.id}img2" style="max-height: 450px; margin: 0 auto;filter: grayscale(1);display: block;" src=""/>
+                </div>
+                <div style="clear: both;"></div>
+            </p:outputPanel>
+
+            <p:outputPanel styleClass="pie">
+                <hr/>
+                <p:commandButton icon="fa fa-check-circle"
+                                 onclick="#{cc.attrs.id}.finalize($(this).parent().parent().parent())"
+                                 value="Finalizar"
+                                 style="color: #fff;border: solid 2px #fff;width: auto;height: 50px;float:right;"
+                                 action="#{takePhotoBackBean.seleccionarCapturas}"
+                                 resetValues="true"/>
+                <a id="btn#{cc.attrs.id}Capturar" onclick="#{cc.attrs.id}.enableCrop()"
+                   class="ui-button w-auto w-autoui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+                   style="color: #fff;border: solid 2px #fff;width: auto;height: 50px;float:right;">
+                    <span class="ui-button-icon-left ui-icon ui-c fa fa-crop"></span>
+                    <span class="ui-button-text ui-c" style="padding-top: 9px;">Recortar</span>
+                </a>
+                <a id="btn#{cc.attrs.id}Capturar" onclick="#{cc.attrs.id}.crop()"
+                   class="ui-button w-auto w-autoui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+                   style="color: #fff;border: solid 2px #fff;width: auto;height: 50px;float:right;">
+                    <span class="ui-button-icon-left ui-icon ui-c fa fa-picture-o"></span>
+                    <span class="ui-button-text ui-c" style="padding-top: 9px;">Utilizar</span>
+                </a>
+                <div style="clear: both;"></div>
+
+            </p:outputPanel>
+
+        </p:outputPanel>
+    </p:outputPanel>
+    <h:inputHidden id="h#{cc.attrs.id}" value="#{takePhotoBackBean.originalImage}"></h:inputHidden>
+    <script>
+        eval(
+            "var #{cc.attrs.id} = (function () {" +
+            "" +
+            "    var cropper," +
+            "        handleSuccess = function (stream) {" +
+            "           document.getElementById(\"#{cc.attrs.id}player\").srcObject = stream;" +
+            "        }," +
+            "" +
+            "        toggletViewer = function(element) {" +
+            "            if($(element).hasClass(\"hide\")){" +
+            "                $(element).removeClass(\"hide\");" +
+            "            }" +
+            "            else {" +
+            "                $(element).addClass(\"hide\");" +
+            "                document.querySelector('##{cc.attrs.id}player').play();" +
+            "            }" +
+            "        }," +
+            "" +
+            "take = function(element) {" +
+            "    var player = document.getElementById('#{cc.attrs.id}player');" +
+            "    var context = document.getElementById('#{cc.attrs.id}snapshot').getContext('2d');" +
+            "    context.drawImage(player, 0, 0, parseInt(\"#{cc.attrs.width}\"), parseInt(\"#{cc.attrs.height}\"));" +
+            "    var img = document.getElementById('#{cc.attrs.id}snapshot').toDataURL(\"image/png\");" +
+            "    player.pause();" +
+            "    eval(\"#{cc.attrs.id}.toggletViewer($(element).parent().parent().parent().next())\");" +
+            "    $(\"##{cc.attrs.id}img\").attr(\"src\", img);" +
+            "    crop();" +
+            "}," +
+            "" +
+            "enableCrop = function() {" +
+            "    if (cropper != undefined || cropper != null)" +
+            "        cropper.destroy();" +
+            "    cropper = new Cropper(document.querySelector(\"##{cc.attrs.id}img\"), {" +
+            "        ready: function (event) {" +
+            "            cropper.zoomTo(0.4);" +
+            "        }," +
+            "        zoom: function (event) {" +
+            "            if (event.detail.oldRatio === 1) {" +
+            "                event.preventDefault();" +
+            "            }" +
+            "        }" +
+            "    });" +
+            "}," +
+            "" +
+            "crop = function() {" +
+            "    if (cropper.cropped) {" +
+            "        $(\"##{cc.attrs.id}img\").attr(\"src\", cropper.getCroppedCanvas().toDataURL('image/png'));" +
+            "    }" +
+            "    cropper.destroy();" +
+            "}," +
+            "" +
+            "finalize = function(element) {" +
+            "    var hidden = document.querySelector(\"input[id*='htakePhoto']\");" +
+            "    $(hidden).val($(\"##{cc.attrs.id}img\").attr(\"src\"));" +
+            "    eval(\"#{cc.attrs.id}.toggletViewer(element)\");" +
+            "    eval(\"#{cc.attrs.id}.toggletViewer(element.prev())\");" +
+            "    cropper.destroy();" +
+            "}," +
+            "" +
+            "        init = function () {" +
+            "            if(navigator.mediaDevices === undefined) alert(\"Camara no soportada.\");" +
+            "            else navigator.mediaDevices.getUserMedia({video: true}).then(handleSuccess);" +
+            "        $('##{cc.attrs.id}img').on('load', function () {" +
+            "            $('##{cc.attrs.id}img2').attr('src', $('##{cc.attrs.id}img').attr(\"src\"));" +
+            "        });" +
+            "        };" +
+            "" +
+            "    return {" +
+            "        init: init," +
+            "        toggletViewer: toggletViewer," +
+            "        take: take," +
+            "        enableCrop: enableCrop," +
+            "        crop: crop," +
+            "        finalize: finalize," +
+            "        getCropper: function() { return cropper; }" +
+            "    }" +
+            "})();" +
+            "$(document).ready(#{cc.attrs.id}.init);");
+    </script>
+</composite:implementation>
+
+</html>

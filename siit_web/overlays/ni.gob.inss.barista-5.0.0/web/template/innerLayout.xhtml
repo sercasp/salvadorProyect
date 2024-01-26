@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en">
+<h:body>
+    <h:outputScript library="default" name="/js/utils.js"/>
+    <div class="layout-content">
+        <div class="ui-fluid">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div class="card card-w-title">
+                        <div class="card-title">
+                            <ui:insert name="headerContent"/>
+                        </div>
+                        <ui:insert name="content"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style type="text/css">
+        body .ui-panel .ui-panel-titlebar {
+            padding: 5px 7px 0 7px !important;
+        }
+    </style>
+</h:body>
+</html>

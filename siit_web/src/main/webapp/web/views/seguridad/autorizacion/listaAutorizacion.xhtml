@@ -1,0 +1,205 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{listaAutorizacionBackBean}}"/>
+
+    <ui:define name="headerContent">
+        Autorizaciones
+    </ui:define>
+
+    <ui:define name="content">
+        <style type="text/css">
+        </style>
+
+        <h:form id="formLista">
+            <p:dataTable var="r"
+                         value="#{listaAutorizacionBackBean.listaAutorizaciones}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaAutorizacionBackBean.selectedRow}"
+                         rowKey="#{r.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="10"
+                         pageLinks="3"
+                         reflow="true"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <div class="ui-g-12 ui-md-6 ui-lg-9" style="padding-top: 16px;">
+                                            <span class="md-inputfield">
+                                                 <p:inputText value="#{listaAutorizacionBackBean.txtBuscar}"
+                                                              autocomplete="off"/>
+                                                <label>#{labelName.placeholderBuscar}</label>
+                                            </span>
+
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}" styleClass="teal-btn"
+                                                 ajax="true"
+                                                 update="formLista"
+                                                 action="#{listaAutorizacionBackBean.cargarLista}"/>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3"></div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3">
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="fa fa-plus-circle" value="#{labelName.btnAgregar}"
+                                                 ajax="true" styleClass="green-btn"
+                                                 update=":formLista :formDetalle"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 action="#{listaAutorizacionBackBean.limpiar}"
+                                                 resetValues="true"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="ui-icon-pencil" value="#{labelName.btnEditar}"
+                                                 ajax="true"
+                                                 update=":formDetalle"
+                                                 actionListener="#{listaAutorizacionBackBean.editar}"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <!-- Evento doble click sobre una fila -->
+                <p:ajax event="rowSelect" listener="#{listaAutorizacionBackBean.editar}"
+                        update=":formDetalle" resetValues="true"/>
+
+                <p:column headerText="Código" styleClass="Wid20">
+                    <h:outputText value="#{r.codigo}"/>
+                </p:column>
+
+                <p:column headerText="Nombre" styleClass="Wid60">
+                    <h:outputText value="#{r.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Modulo" styleClass="Wid20">
+                    <h:outputText value="#{r.moduloIdByModuloId.nombre}"/>
+                </p:column>
+                <p:column headerText="Pasivo" style="text-align: center; width: 10%">
+                    <p:selectBooleanCheckbox value="#{r.pasivo}" disabled="true"
+                                             styleClass="ui-linus-enabled"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog id="dlgFormDetalle" modal="true" resizable="false" width="90%" responsive="true"
+                  widgetVar="wvDlgFormDetalle" closable="false" style="padding: 0">
+            <h:form id="formDetalle">
+                <p:inputText type="hidden" value="#{listaAutorizacionBackBean.hfId}"/>
+                <p:panel>
+                    <f:facet name="header">
+                        <p:outputPanel styleClass="ui-g-6" style="float: left;padding: 0;padding-top: 7px">
+                            <div class="p-grid">
+                                <p:outputPanel styleClass="p-col">
+                                    <h:outputLabel>Nueva autorización</h:outputLabel>
+
+                                    <h:outputText value=" Autorización ID: #{listaAutorizacionBackBean.hfId}"
+                                                  rendered="#{!listaAutorizacionBackBean.nuevoRegistro}"/>
+
+                                </p:outputPanel>
+                            </div>
+                        </p:outputPanel>
+                        <p:outputPanel styleClass="ui-g-6" style="float: right;padding: 0;">
+                            <div class="p-grid">
+                                <p:outputPanel styleClass="p-col"
+                                               rendered="#{listaAutorizacionBackBean.btnGuardarVisible}">
+                                    <div class="box">
+                                        <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                         actionListener="#{listaAutorizacionBackBean.guardar}"
+                                                         update=":formDetalle :formLista"/>
+                                    </div>
+                                </p:outputPanel>
+                                <p:outputPanel styleClass="p-col"
+                                               rendered="#{listaAutorizacionBackBean.btnElminiarVisible}">
+                                    <div class="box">
+                                        <p:commandButton icon="ui-icon-trash" styleClass="red-btn" value="#{labelName.btnEliminar}"
+                                                         actionListener="#{listaAutorizacionBackBean.eliminar()}"
+                                                         update=":formDetalle :formLista">
+                                            <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                       message="#{dialogText.deleteConfirmationTextContent}"
+                                                       icon="ui-icon-alert"/>
+                                        </p:commandButton>
+                                    </div>
+                                </p:outputPanel>
+                                <p:outputPanel styleClass="p-col">
+                                    <div class="box">
+                                        <p:commandButton icon="ui-icon-close" value="#{labelName.btnCerrarModal}"
+                                                         update=":formLista"
+                                                         action="#{listaAutorizacionBackBean.limpiar}"
+                                                         onclick="PF('wvDlgFormDetalle').hide()"
+                                                         immediate="true"/>
+                                    </div>
+                                </p:outputPanel>
+                            </div>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+                                 layout="grid" styleClass="ui-panelgrid-blank form-group"
+                                 style="border:0 none; background-color:transparent;">
+                        <h:panelGroup styleClass="md-inputfield">
+                            <p:inputText id="codigo" label="Código" required="true"
+                                         readonly="#{!listaAutorizacionBackBean.nuevoRegistro}"
+                                         value="#{listaAutorizacionBackBean.txtCodigo}" autocomplete="off">
+                                <f:validateLength minimum="0" maximum="7"/>
+                            </p:inputText>
+                            <label>Código:</label>
+                        </h:panelGroup>
+
+                        <h:panelGroup styleClass="md-inputfield">
+                            <p:inputText id="nombre" label="Nombre" required="true"
+
+                                         value="#{listaAutorizacionBackBean.txtNombre}" autocomplete="off">
+                                <f:validateLength minimum="0" maximum="100"/>
+                            </p:inputText>
+                            <label>Nombre:</label>
+                        </h:panelGroup>
+
+                        <h:panelGroup styleClass="md-inputfield">
+                            <p:inputTextarea id="descripcion" autoResize="true" rows="1"
+                                             value="#{listaAutorizacionBackBean.txtDescripcion}" label="Descripcion"
+                                             required="false">
+                                <f:validateLength minimum="0" maximum="1000"/>
+                            </p:inputTextarea>
+                            <label>Descripción:</label>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <p:selectOneMenu id="modulo" label="Módulo" placeholder="Módulo"
+                                             value="#{listaAutorizacionBackBean.cmbModulo}"
+                                             required="false">
+                                <f:selectItem itemLabel="Seleccione Un Módulo" itemValue="#{null}"
+                                              noSelectionOption="true"/>
+                                <f:selectItems var="md" value="#{listaAutorizacionBackBean.listaModulos}"
+                                               itemLabel="#{md.nombre}"
+                                               itemValue="#{md.id}"/>
+                            </p:selectOneMenu>
+                            <label>Módulo:</label>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                                   value="#{listaAutorizacionBackBean.rbPasivo}"
+                                                   rendered="#{!listaAutorizacionBackBean.nuevoRegistro}">
+                                <label style="position: relative;font-size: 12px;color: #1E88E5;left: 5px">Pasivo:</label>
+                            </p:selectBooleanButton>
+                        </h:panelGroup>
+                    </p:panelGrid>
+
+                    <p:keyFilter for="codigo" regEx="/#{listaAutorizacionBackBean.regExpCodigo}/"/>
+                    <p:keyFilter for="nombre" regEx="/#{listaAutorizacionBackBean.regExpDescriptor}/"/>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

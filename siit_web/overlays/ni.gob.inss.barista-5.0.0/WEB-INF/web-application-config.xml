@@ -1,0 +1,87 @@
+<?xml  version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          p:location="classpath:jdbc.properties"/>
+
+    <!-- needed is for @Configurable -->
+    <context:annotation-config/>
+    <context:component-scan base-package="ni.gob.inss"/>
+
+    <tx:annotation-driven/>
+
+
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName">
+            <value>${jdbc.jndiName}</value>
+        </property>
+    </bean>
+
+    <!--========== /Spring Data Source ==========-->
+
+    <!--========== Hibernate SessionFactory ==========-->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+        <property name="packagesToScan" value="ni.gob.inss.barista.model.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${jdbc.dialect}</prop>
+                <prop key="hibernate.show_sql">${jdbc.show_sql}</prop>
+                <!-- JDBC connection pool (use the built-in) -->
+                <prop key="connection.pool_size">10</prop>
+                <prop key="hibernate.search.autoregister_listeners">true</prop>
+                <prop key="hibernate.search.indexing_strategy">event</prop>
+                <!-- Disable the second-level cache  -->
+                <!--<prop key="cache.provider_class">org.hibernate.cache.</prop>-->
+            </props>
+        </property>
+    </bean>
+
+
+    <!--========== /Hibernate SessionFactory ==========-->
+
+    <!--========== TransactionManager ==========-->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager"
+          scope="prototype">
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="entityInterceptor" ref="auditableEntityInterceptor"/>
+    </bean>
+    <!--========== /TransactionManager ==========-->
+
+    <!--========== Spring CustomScopeConfigurer ==========-->
+    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+        <property name="scopes">
+            <props>
+                <prop key="view">ni.gob.inss.barista.view.utils.web.spring.customscope.ViewScope</prop>
+            </props>
+        </property>
+    </bean>
+    <!--========== /Spring CustomScopeConfigurer ==========-->
+
+
+    <!--========== XMLConverter ==========-->
+    <bean id="xMLConverter" class="ni.gob.inss.barista.businesslogic.service.util.xml.XMLConverter">
+        <property name="marshaller" ref="castorMarshaller"/>
+        <property name="unmarshaller" ref="castorMarshaller"/>
+    </bean>
+    <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
+        <property name="mappingLocations">
+            <list>
+                <value>classpath:catalogo_mapping.xml</value>
+            </list>
+        </property>
+        <property name="supportDtd" value="true"/>
+    </bean>
+    <!--========== /XMLConverter ==========-->
+
+
+</beans>

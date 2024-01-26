@@ -1,0 +1,340 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{usuarioEmpleadoBackBean}"/>
+
+    <ui:define name="headerContent">
+        Usuarios Servidores Públicos INTUR
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ContainerIndent">
+            <div class="Container50 Responsive">
+                <h:form id="formLista" style="width: 100%;">
+                    <p:panel styleClass="fondoPaneles">
+                        <f:facet name="header">
+                            <p:outputPanel style="display: block" styleClass="left Wid50">
+                                <p:inputText maxlength="100" placeholder="#{labelName.placeholderBuscar}"
+                                             styleClass="Wid50" autocomplete="off"
+                                             value="#{usuarioEmpleadoBackBean.txtBuscar}"
+                                             style="text-transform: none !important;"/>
+                                <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                 value="#{labelName.btnBuscar}"
+                                                 update="formLista" action="#{usuarioEmpleadoBackBean.cargarLista}"/>
+                            </p:outputPanel>
+                            <p:outputPanel style="display: block" styleClass="right">
+                                <p:commandButton icon="fa fa-plus-circle" styleClass="cyan-btn"
+                                                 value="#{labelName.btnAgregar}"
+                                                 update=":formDetalle"
+                                                 action="#{usuarioEmpleadoBackBean.limpiar}"
+                                                 resetValues="true"/>
+                                <p:commandButton icon="fa fa-pencil-square-o" styleClass="green-btn"
+                                                 value="#{labelName.btnEditar}"
+                                                 update=":formDetalle" action="#{usuarioEmpleadoBackBean.editar}"
+                                                 resetValues="true"/>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:outputPanel styleClass="maxHeight tableClass">
+                            <p:dataTable var="r"
+                                         value="#{usuarioEmpleadoBackBean.listaUsuarios}"
+                                         scrollable="false"
+                                         scrollHeight="397"
+                                         paginatorPosition="top"
+                                         selectionMode="single"
+                                         selection="#{usuarioEmpleadoBackBean.selectedRow}"
+                                         rowKey="#{r.get('id')}"
+                                         paginator="true"
+                                         emptyMessage="#{labelName.tableEmptyMessage}"
+                                         rows="8"
+                                         pageLinks="3"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                <p:ajax event="rowDblselect" listener="#{usuarioEmpleadoBackBean.editar}"
+                                        update=":formDetalle"
+                                        resetValues="true"/>
+
+                                <p:column headerText="Usuario" styleClass="Wid20">
+                                    <h:outputText value="#{r.get('usuarionombre')}"/>
+                                </p:column>
+
+                                <p:column headerText="Identificación" styleClass="Wid20">
+                                    <h:outputText value="#{r.get('cedula')}"/>
+                                </p:column>
+
+                                <p:column headerText="Nombre de Empleado" styleClass="Wid60">
+                                    <h:outputText value="#{r.get('nombreempleado')}"/>
+                                </p:column>
+
+                                <p:column headerText="Unidad Administrativa/Cargo Administrativo" styleClass="Wid60">
+                                    <h:outputText
+                                            value="#{r.get('unidadadministrativa')}/#{r.get('cargoadministrativo')}"/>
+                                </p:column>
+
+                                <p:column headerText="Pasivo" styleClass="Wid10 TexAlCenter">
+                                    <p:selectBooleanCheckbox value="#{r.get('pasivo')}" disabled="true"
+                                                             styleClass="ui-linus-enabled"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:panel>
+                </h:form>
+            </div>
+
+            <div class="Container50 Responsive">
+                <h:form id="formDetalle" style="width: 100%;">
+                    <p:tab id="tabDatos" title="Datos Generales">
+                        <p:panel style="height: 548px" id="datosG">
+                            <f:facet name="header">
+                                <h:outputText value="ID: #{usuarioEmpleadoBackBean.hfId}"
+                                              rendered="#{!usuarioEmpleadoBackBean.nuevoRegistro}"/>
+                                <p:outputPanel style="display: block" styleClass="right">
+                                    <p:commandButton icon="fa fa-save" styleClass="green-btn"
+                                                     value="#{labelName.btnGuardar}"
+                                                     actionListener="#{usuarioEmpleadoBackBean.guardar}"/>
+
+                                    <p:commandButton icon="fa fa-ban" styleClass="orange-btn"
+                                                     value="#{labelName.btnCancelar}"
+                                                     actionListener="#{usuarioEmpleadoBackBean.limpiar}"
+                                                     update=":formDetalle"
+                                                     immediate="true"
+                                                     resetValues="true" process="@this"/>
+                                </p:outputPanel>
+                            </f:facet>
+                            <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid30, Wid70">
+                                <p:outputLabel value="Nombre de Empleado:"/>
+                                <p:outputPanel style="display: block;width: 92%" styleClass="Wid80">
+                                    <p:inputText placeholder="Seleccione un Empleado de INTUR" id="txtEmpresaTuristica"
+                                                 style="width: 87%"
+                                                 readonly="true" required="true"
+                                                 value="#{usuarioEmpleadoBackBean.txtEmpleadoSeleccionado}"/>
+                                    <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                     rendered="#{usuarioEmpleadoBackBean.nuevoRegistro}"
+                                                     type="image" immediate="true"
+                                                     action="#{usuarioEmpleadoBackBean.cargarListaEmleados}"
+                                                     update=":dlgAgregarEmpleado"/>
+                                </p:outputPanel>
+                                <p:outputLabel for="username" value="Usuario:"/>
+                                <p:outputPanel>
+                                    <!--<p:outputLabel rendered="#{usuarioEmpleadoBackBean.nuevoRegistro}"-->
+                                    <!--style="padding-right: 11px;"-->
+                                    <!--value="#{usuarioEmpleadoBackBean.txtPrefijoUsername}"/>-->
+                                    <p:inputText id="username"
+                                                 maxlength="30"
+                                                 autocomplete="off"
+                                                 styleClass="width90" label="Usuario" required="true"
+                                                 value="#{usuarioEmpleadoBackBean.txtUsername}"
+                                                 disabled="#{!usuarioEmpleadoBackBean.nuevoRegistro}"/>
+                                </p:outputPanel>
+
+                                <p:outputLabel for="nombres" value="Nombres:"/>
+                                <p:inputText maxlength="50" id="nombres" styleClass="Wid90"
+                                             label="Nombres" readonly="true"
+                                             required="true"
+                                             autocomplete="off"
+                                             value="#{usuarioEmpleadoBackBean.txtNombres}">
+                                    <f:validateRegex pattern="#{usuarioEmpleadoBackBean.regExpUsername}"/>
+                                </p:inputText>
+
+                                <p:outputLabel for="apellidos" value="Apellidos:"/>
+                                <p:inputText maxlength="50" id="apellidos" styleClass="Wid90"
+                                             value="#{usuarioEmpleadoBackBean.txtApellidos}"
+                                             autocomplete="off" readonly="true"
+                                             label="Apellidos" required="true"/>
+
+                                <p:outputLabel for="email" value="Correo Electrónico:"/>
+                                <p:inputText maxlength="100" id="email" styleClass="Wid90"
+                                             autocomplete="off"
+                                             value="#{usuarioEmpleadoBackBean.txtEmail}"
+                                             label="E-mail" required="true"/>
+
+                                <p:outputLabel value="Delegación:" for="delegacion"/>
+                                <p:selectOneMenu id="delegacion" style="width: 89%;"
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 label="delegacion"
+                                                 required="true"
+                                                 value="#{usuarioEmpleadoBackBean.cmbDelegacion}">
+                                    <f:selectItem itemLabel="Seleccione..." itemValue="#{null}"/>
+                                    <f:selectItems var="del"
+                                                   value="#{usuarioEmpleadoBackBean.listaDelegaciones}"
+                                                   itemLabel="#{del.nombre}"
+                                                   itemValue="#{del.id}"/>
+                                </p:selectOneMenu>
+                                <p:outputLabel for="pasivo" value="Pasivo:"
+                                               rendered="#{!usuarioEmpleadoBackBean.nuevoRegistro}"/>
+                                <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                                       value="#{usuarioEmpleadoBackBean.rbPasivo}"
+                                                       rendered="#{!usuarioEmpleadoBackBean.nuevoRegistro}"/>
+                            </h:panelGrid>
+
+                            <p:keyFilter for="username" regEx="/#{usuarioEmpleadoBackBean.regExpUsername}/"/>
+
+                            <h3 style="margin-top:0;padding-left: 5px;">Contraseña</h3>
+                            <p:separator/>
+
+                            <h:panelGrid id="tipoClaveSeleccion" columns="3" styleClass="Wid100"
+                                         columnClasses="Wid30,Wid40,Wid30">
+
+                                <p:outputLabel for="tipoClave" value="Tipo:"/>
+
+                                <p:selectOneMenu id="tipoClave" style="width: 84%;" label="Tipo Clave:"
+                                                 value="#{usuarioEmpleadoBackBean.somTipoGeneracionClave}">
+                                    <f:selectItem itemLabel="Seleccione un tipo de clave" itemValue="#{null}"/>
+                                    <f:selectItem itemLabel="Manual" itemValue="manual"/>
+                                    <f:selectItem itemLabel="Aleatoria" itemValue="aleatoria"/>
+                                    <p:ajax update="formDetalle:claveGenerada formDetalle:tipoClaveSeleccion"
+                                            event="change"
+                                            listener="#{usuarioEmpleadoBackBean.seleccionarTipoGeneracionClave}"/>
+                                </p:selectOneMenu>
+
+                                <p:commandButton icon="fa fa-refresh" id="btnClave"
+                                                 update="labelClave cambiarClave "
+                                                 immediate="true"
+                                                 action="#{usuarioEmpleadoBackBean.generarClaveTemporal}"
+                                                 rendered="#{usuarioEmpleadoBackBean.esClaveAleatoria}"/>
+
+                                <p:outputLabel rendered="#{!usuarioEmpleadoBackBean.esClaveAleatoria}"/>
+
+                            </h:panelGrid>
+
+                            <h:panelGrid id="claveGenerada" columns="2" styleClass="Wid100"
+                                         columnClasses="Wid30,Wid70">
+
+                                <p:outputLabel value="Clave Aleatoria Generada:"
+                                               rendered="#{usuarioEmpleadoBackBean.esClaveAleatoria}"/>
+
+                                <p:outputLabel id="labelClave" value="#{usuarioEmpleadoBackBean.pwContrasenia}"
+                                               rendered="#{usuarioEmpleadoBackBean.esClaveAleatoria}"/>
+
+                                <p:outputLabel for="cambiarClave" value="Clave:"
+                                               rendered="#{usuarioEmpleadoBackBean.esClaveManual}"/>
+                                <p:password id="cambiarClave" styleClass="Wid50"
+                                            autocomplete="off" redisplay="true"
+                                            maxlength="20"
+                                            feedback="true"
+                                            promptLabel="Ingrese una contraseña"
+                                            weakLabel="Debil"
+                                            goodLabel="Buena"
+                                            strongLabel="Excelente"
+                                            match="claveConfirmacion"
+                                            value="#{usuarioEmpleadoBackBean.pwContrasenia}"
+                                            label="Clave" rendered="#{usuarioEmpleadoBackBean.esClaveManual}">
+                                    <p:keyFilter regEx="/#{indexBackBean.regExpClave}/"/>
+                                </p:password>
+                                <p:outputLabel for="claveConfirmacion" value="Confirmación Clave:"
+                                               rendered="#{usuarioEmpleadoBackBean.esClaveManual}"/>
+
+                                <p:password id="claveConfirmacion" styleClass="Wid50"
+                                            autocomplete="off" redisplay="true"
+                                            maxlength="20"
+                                            feedback="true"
+                                            promptLabel="Ingrese una contraseña"
+                                            weakLabel="Debil"
+                                            goodLabel="Buena"
+                                            strongLabel="Excelente"
+                                            value="#{usuarioEmpleadoBackBean.pwConfirmacionContrasenia}"
+                                            label="Clave Confirmación"
+                                            rendered="#{usuarioEmpleadoBackBean.esClaveManual}">
+                                    <p:keyFilter regEx="/#{indexBackBean.regExpClave}/"/>
+                                </p:password>
+
+                                <p:outputLabel for="claveTemporal" value="Clave Temporal"
+                                               rendered="#{usuarioEmpleadoBackBean.esClaveManual}"/>
+                                <p:selectBooleanButton id="claveTemporal" onLabel="Si" offLabel="No"
+                                                       rendered="#{usuarioEmpleadoBackBean.esClaveManual}"
+                                                       value="#{usuarioEmpleadoBackBean.sbbClaveTemporal}">
+                                    <p:ajax listener="#{usuarioEmpleadoBackBean.seleccionEnClaveTemporal}"/>
+                                </p:selectBooleanButton>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:tab>
+                </h:form>
+            </div>
+
+        </div>
+
+        <p:dialog id="dlgAgregarEmpleado" width="90%" height="481" widgetVar="wvDlgAgregarEmpleado" responsive="true"
+                  modal="true" resizable="false" maximizable="false">
+            <h:form id="formAgregarEmpleado">
+                <p:panel>
+                    <f:facet name="header">
+                        <p:outputPanel style="display: block" styleClass="left">
+                            <h:outputText value="Servidores Públicos INTUR"/>
+                        </p:outputPanel>
+                        <p:outputPanel style="display: block" styleClass="right">
+                            <p:commandButton icon="fa fa-check-square-o" styleClass="teal-btn"
+                                             value="Seleccionar"
+                                             action="#{usuarioEmpleadoBackBean.seleccionandoEmpleado}"
+                                             update=":formDetalle"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:outputPanel>
+                        <p:dataTable var="ars"
+                                     id="listaAgregarEmpleado" widgetVar="listaAgregarEmpleado"
+                                     value="#{usuarioEmpleadoBackBean.listaEmpleados}"
+                                     paginatorPosition="top"
+                                     scrollHeight="300"
+                                     scrollable="false"
+                                     selectionMode="single"
+                                     pageLinks="3"
+                                     paginator="true"
+                                     selection="#{usuarioEmpleadoBackBean.seleccionandoEmpleados}"
+                                     rowKey="#{ars.get('id')}"
+                                     emptyMessage="#{labelName.tableEmptyMessage}"
+                                     rows="9"
+                                     paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                     currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                            <p:column headerText="Cargo Administrativo" styleClass="Wid25"
+                                      filterBy="#{ars.get('cargoadministrativo')}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{ars.get('cargoadministrativo')}"/>
+                            </p:column>
+
+                            <p:column headerText="Nombre del Empleado" styleClass="Wid20"
+                                      filterBy="#{ars.get('nombreempleado')}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{ars.get('nombreempleado')}"/>
+                            </p:column>
+
+                            <!--<p:column headerText="Nombres" styleClass="Wid15"-->
+                            <!--filterBy="#{ars.get('nombres')}"-->
+                            <!--filterMatchMode="contains">-->
+                            <!--<h:outputText value="#{ars.get('nombres')}"/>-->
+                            <!--</p:column>-->
+
+                            <!--<p:column headerText="Apellidos" styleClass="Wid15"-->
+                            <!--filterBy="#{ars.get('apellidos')}"-->
+                            <!--filterMatchMode="contains">-->
+                            <!--<h:outputText value="#{ars.get('apellidos')}"/>-->
+                            <!--</p:column>-->
+                            <p:column headerText="Identificación" styleClass="Wid10 TexAlCenter"
+                                      filterBy="#{ars.get('numerocedula')}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{ars.get('numerocedula')}"/>
+                            </p:column>
+                            <p:column headerText="Tiene Usuario" styleClass="Wid10 TexAlCenter"
+                                      filterBy="#{ars.get('tieneusuario')}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{ars.get('tieneusuario')}"/>
+                            </p:column>
+                            <p:column headerText="Tiene rol Ser. Púb. INTUR" styleClass="Wid10 TexAlCenter">
+                                <p:selectBooleanCheckbox value="#{ars.get('rolservidorpublicointur')}" disabled="true"
+                                                         styleClass="ui-linus-enabled"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+
+    </ui:define>
+</ui:composition>

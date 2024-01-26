@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>siit</artifactId>
+        <groupId>ni.gob.inss</groupId>
+        <version>1</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>siit_web</artifactId>
+    <packaging>war</packaging>
+    <name>siit Web Module</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>ni.gob.inss</groupId>
+            <artifactId>barista</artifactId>
+            <version>5.0.0</version>
+            <type>war</type>
+        </dependency>
+
+        <dependency>
+            <groupId>ni.gob.inss</groupId>
+            <artifactId>siit_service</artifactId>
+            <scope>compile</scope>
+            <version>1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ni.gob.inss</groupId>
+            <artifactId>siit_service</artifactId>
+            <version>1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
+                <configuration>
+                    <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warName>${war.name}</warName>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>7.1.0.Final</version>
+                <configuration>
+                    <hostname>${deploy.jboss.host}</hostname>
+                    <port>${deploy.jboss.port}</port>
+                    <username>${deploy.jboss.user}</username>
+                    <password>${deploy.jboss.password}</password>
+                    <name>${backend.deployment-name}</name>
+                    <filename>${war.name}.war</filename>
+                    <skip>${skipDeployment}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>deploy-jar</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.appfuse</groupId>
+                <artifactId>maven-warpath-plugin</artifactId>
+                <version>2.0.2</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>add-classes</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <dependentWarIncludes>**</dependentWarIncludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

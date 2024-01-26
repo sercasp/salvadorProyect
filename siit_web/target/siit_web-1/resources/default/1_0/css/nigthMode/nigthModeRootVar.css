@@ -1,0 +1,19 @@
+:root {
+  --main-bg-color: #121212;
+  --main-pnl-color: #2c2c2c;
+  --main-higligth-color: #4e4e4e;
+  --main-active-color: #555555;
+  --main-font-color: #eeeeee;
+  --main-border-color: #262626;
+  --main-error-color: rgb(255, 44, 49);
+  --main-success-color: #0099ff;
+  --main-info-color: #ff9900;
+  --main-menu-color: #3f3f3f;
+
+
+  --main-bg-color-completed-nigth: #2ECC71;
+  --main-bg-color-active-nigth: #00BFFF;
+  --main-bg-color-return-nigth: #EB9532;
+  --main-bg-color-incompleted-nigth: #828683;
+  --main-bg-color-canceled-nigth: #E73C4E;
+}

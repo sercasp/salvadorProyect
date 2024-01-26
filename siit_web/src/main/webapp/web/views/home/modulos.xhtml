@@ -1,0 +1,261 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:p="http://primefaces.org/ui">
+    <!--
+     * Creado por jvillanueva 23/01/2024
+     -->
+
+    <style>
+        #application_content {
+            /*Fondo del aplicativo*/
+            margin: 0 0 0;
+            background-image: url("#{resource['sapphire-layout:images/special/destination-topbar.jpg']}");
+        }
+
+        body .ui-datagrid .ui-panel .ui-panel-titlebar {
+            background-color: #607D8B;
+            color: #FFFFFF;
+        }
+
+        body .ui-panel .ui-panel-content {
+            padding: 0.157em 0.1em;
+        }
+
+        body .ui-panel .ui-panel-titlebar {
+            padding: 0.3714em 0.3em;
+        }
+
+        body .ui-datagrid .ui-datagrid-header {
+            padding: 0.014em 0.01em;
+        }
+
+
+        body .ui-paginator {
+            padding: 0.1714em 0.1em;
+        }
+
+        .layout-breadcrumb ul {
+            padding: .3em;
+        }
+
+        .ui-panelgrid.form-group .ui-panelgrid-cell {
+            padding: 5px 5px;
+        }
+
+        .layout-topbar .layout-topbar-grid {
+            min-height: 1em;
+        }
+
+        .ui-panel, div.layout-top {
+            top: 1px;
+        }
+
+        .layout-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 5vh;
+        }
+
+        .layout-content {
+            /*Ancho del contenido*/
+            padding: 0;
+            margin-top: -1px;
+        }
+
+        .layout-top {
+            /*Margenes de la parte superior*/
+            padding: 1px 1px 1px 1px;
+        }
+
+        .card {
+            padding: 0em;
+            margin-bottom: 0em;
+        }
+
+        .card .card-title {
+            margin: 0em 0;
+        }
+
+        .ui-dashboard-column {
+            width: 100%;
+            float: left;
+            padding-bottom: 0px;
+        }
+
+        .dashboard .card {
+            height: 100%;
+            margin-bottom: 0;
+        }
+
+        .layout-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 10vh;
+        }
+
+        html, body, div, p, h2, a, ul, li, img {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    <h:outputStylesheet name="theme.css" library="primefaces-sapphire-bluegray"/>
+    <h:outputStylesheet name="css/layout-blue.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/nanoscroller.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/ripple.css" library="sapphire-layout"/>
+    <h:outputStylesheet name="css/grid.css" library="sapphire-layout"/>
+
+    <h:outputScript name="js/layout.js" library="sapphire-layout"/>
+    <h:outputScript name="js/nanoscroller.js" library="sapphire-layout"/>
+    <h:outputScript name="js/ripple.js" library="sapphire-layout"/>
+
+    <div class="card">
+        <h:form id="form_modulos">
+            <p:growl id="actualizardash" showDetail="true" skipDetailIfEqualsSummary="true"/>
+
+            <p:dashboard id="board" model="#{indexBackBean.model2}">
+                <p:ajax event="reorder" listener="#{indexBackBean.handleReorder}" update="actualizardash"/>
+
+<!--                                <p:panel id="estadisticas" header="Estadísticas" style="width: 100%">-->
+<!--                                    <p:chart type="bar"-->
+<!--                                             model="#{indexBackBean.graficoEmpresasTuristicasDelegacionClasificacionActividad}"-->
+<!--                                             responsive="true"/>-->
+<!--                                </p:panel>-->
+
+
+<!--                                <p:panel id="estadisticas" header="Estadísticas" style="width: 100%">-->
+<!--                                    <ui:include-->
+<!--                                            src="/public/site/mapaInturNicaragua.xhtml">-->
+<!--                                        <ui:param name="listaEmpresasTuristicasPublicoBackBean"-->
+<!--                                                  value="#{listaEmpresasTuristicasPublicoBackBean}"/>-->
+<!--                                    </ui:include>-->
+<!--                                </p:panel>-->
+
+
+                <p:panel id="modulosdelsistema" header="Módulos" style="width: 100%">
+                    <div class="layout-content">
+                        <p:panelGrid columns="3"
+                                     columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+                                     layout="grid" styleClass="ui-panelgrid-blank form-group"
+                                     style="border:0 none; background-color:transparent;">
+                            <p:outputPanel>
+                                <p:outputLabel for="cboEntidad" value="Seleccione:"/>
+
+                                <p:inputText rendered="#{indexBackBean.listaEntidads.size()==1}"
+                                             value="#{sessionBean.entidadActual.nombre}"
+                                             style="width: 90%; text-align: center" readonly="true"/>
+
+                                <p:selectOneMenu id="cboEntidad"
+                                                 pt:readonly="false" filter="true"
+                                                 filterMatchMode="contains"
+                                                 value="#{sessionBean.cmbEntidadActual}" style="width: 90%"
+                                                 rendered="#{indexBackBean.listaEntidads.size()!=1}"
+                                                 valueChangeListener="#{indexBackBean.selecionarEntidadEvent}">
+                                    <p:ajax event="change"
+                                            update="mnuModulos panelBreadcrum"/>
+                                    <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+                                    <f:selectItems value="#{indexBackBean.listaEntidads}" var="e"
+                                                   itemLabel="#{e.nombre}"
+                                                   itemValue="#{e.id}"/>
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+
+                            <p:outputPanel>
+                                <p:outputLabel for="cboEntidad" value="Busqueda por módulo ..: "
+                                               style="width: 90%"/>
+                                <p:inputText placeholder="Módulo" id="txtBuscarModulo"
+                                             maxlength="50" style="width: 90%" autocomplete="off"
+                                             value="#{indexBackBean.txtNombreModulo}"/>
+                                <p:commandButton id="btnSearch" icon="ui-icon-search" ajax="true"
+                                                 style="width: 18px;display: none;"
+                                                 update="mnuModulos" styleClass="Wid10"
+                                                 action="#{indexBackBean.buscarModulos}"/>
+                            </p:outputPanel>
+
+                            <p:outputPanel>
+                                <p:outputLabel value="Ordenar por: "/>
+                                <p:selectOneMenu value="#{indexBackBean.selectOrder}"
+                                                 valueChangeListener="#{indexBackBean.selecionarOrdenEvent}"
+                                                 style="width: 90%">
+                                    <p:ajax event="change" update="mnuModulos"/>
+                                    <f:selectItem itemLabel="Nombre" itemValue="nombre"/>
+                                    <f:selectItem itemLabel="Más utilizado" itemValue="cantidad"/>
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+                        </p:panelGrid>
+
+
+                        <p:dataGrid id="mnuModulos" var="m" value="#{indexBackBean.modulos}" columns="4"
+                                    layout="grid"
+                                    paginator="true" scrollHeight="100%" rowsPerPageTemplate="4,8" rows="8"
+                                    emptyMessage="Seleccione una Entidad" paginatorAlwaysVisible="true"
+                                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                    currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+
+
+                            <p:remoteCommand name="seleccionarModuloGrid"
+                                             action="#{indexBackBean.seleccionarModulo(false)}"
+                                             update=" :application_content topBar panelBreadcrum topBar:panelUsuarioLabel"/>
+
+                            <p:panel header="#{m.nombre}" style="text-align:center;">
+                                <h:panelGrid columns="1" style="width:100%;" onmouseover="cambioAspecto(this)"
+                                             onmouseout="aspectoNormal(this)"
+                                             onclick="seleccionarModulosGrid(#{m.id})">
+                                    <h:graphicImage
+                                            style="vertical-align: middle;width: 120px;padding-right: 5px;padding-left: 20px;"
+                                            library="#{configApplicationBean.temaAplicacion}"
+                                            name="#{m.url_imagen}"/>
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:dataGrid>
+                    </div>
+
+                    <f:facet name="actions">
+                        <h:outputLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+                                      value="#{facesContext.externalContext.requestContextPath}/public/site/mapaInturNicaragua.html">
+                            <h:outputText styleClass="ui-icon ui-icon-help"/>
+                        </h:outputLink>
+                        <!--                        <h:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default">-->
+                        <!--                            <h:outputText styleClass="ui-icon ui-icon-star"/>-->
+                        <!--                        </h:commandLink>-->
+                    </f:facet>
+
+                </p:panel>
+
+            </p:dashboard>
+
+            <div style="clear:both"/>
+        </h:form>
+    </div>
+
+    <script type="application/javascript">
+        function seleccionarModulosGrid(val) {
+            seleccionarModuloGrid([{name: 'id', value: val}]);
+        }
+    </script>
+
+    <script type="text/javascript">
+        function exportChart() {
+            //export image
+            $('#output').empty().append(PF('chart').exportAsImage());
+
+            //show the dialog
+            PF('dlg').show();
+        }
+    </script>
+
+    <script>
+        function cambioAspecto(x) {
+            x.style.background = "#c1f8ff";
+        }
+
+        function aspectoNormal(x) {
+            x.style.background = "#ffffff";
+        }
+    </script>
+</ui:composition>

@@ -1,0 +1,406 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{listaUsuarioInturPermisoBackBean}"/>
+    <ui:define name="headerContent">
+        Usuario INTUR - Permiso
+    </ui:define>
+
+    <ui:define name="content" styleClass="ContainerIndent">
+        <h:outputStylesheet name="css/leaflet.css" library="siit"/>
+        <h:outputScript name="js/leaflet.js" library="siit"/>
+
+        <h:outputScript name="plugins/LeafletExtraMarkers/src/assets/js/leaflet.extra-markers.js" library="siit"/>
+        <h:outputStylesheet name="plugins/LeafletExtraMarkers/src/assets/css/leaflet.extra-markers.css" library="siit"/>
+        <style type="text/css">
+            @media (max-width: 1200px) and (min-width: 640px) {
+                .Responsive {
+                    width: 100% !important;
+                }
+            }
+
+            .ui-inputfield {
+                text-transform: none !important;
+            }
+
+            /*.ui-selectonemenu {*/
+            /*max-width: 400px !important;*/
+            /*min-width: 150px !important;*/
+            /*}*/
+
+            .ui-selectonemenu label.ui-selectonemenu-label {
+                text-transform: none !important;
+            }
+
+            input[disabled="disabled"], input[type="radio"], select[disabled="disabled"], textarea[disabled="disabled"] {
+                background: bisque !important;
+                color: black !important;
+            }
+
+            input[type="text"] {
+                text-transform: none !important;
+            }
+
+            .ui-selectonemenu.ui-state-disabled .ui-selectonemenu-trigger, .ui-selectonemenu.ui-state-disabled .ui-selectonemenu-label {
+                background: bisque !important;
+                color: black !important;
+            }
+
+            #formDetalle\:tabV\:tabDatos input {
+                width: 80%;
+            }
+
+            #formDetalle\:tabV\:tabPermisos input {
+                width: 80%;
+            }
+
+        </style>
+
+        <h:form id="formLista">
+            <p:panel styleClass="fondoPaneles" style="height: 545px; overflow-y: auto ">
+                <!--style="min-height: 450px"-->
+                <p:dataTable var="r"
+                             id="dtUsuarioIntur"
+                             widgetVar="dtUsuarioIntur"
+                             value="#{listaUsuarioInturPermisoBackBean.listaUsuario}"
+                             paginatorPosition="top"
+                             paginator="true"
+                             emptyMessage="#{labelName.tableEmptyMessage}"
+                             selection="#{listaUsuarioInturPermisoBackBean.selectedRow}"
+                             selectionMode="single"
+                             rowKey="#{r.id}"
+                             rows="10"
+                             reflow="true"
+                             pageLinks="3"
+                             scrollable="false"
+                             scrollHeight="380"
+                             styleClass="ui-paginator-current"
+                             lazy="true"
+                             paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                             currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                    <f:facet name="header">
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:selectOneMenu id="delegacionFilter" style="width:100%"
+                                                 label="Delegación"
+                                                 value="#{listaUsuarioInturPermisoBackBean.cmbDelegacion}"
+                                                 rendered="#{sessionBean.entidadActual.id == 1 ? true : false}"
+                                                 filter="true"
+                                                 filterMatchMode="contains">
+                                    <p:ajax event="change" update=":formLista :formDetalle"
+                                            listener="#{listaUsuarioInturPermisoBackBean.cargarLista(false)}"/>
+
+                                    <f:selectItem itemLabel="Seleccione una Delegación" itemValue="#{null}"/>
+                                    <f:selectItems var="cmbdelegacion"
+                                                   value="#{listaUsuarioInturPermisoBackBean.listaEntidad}"
+                                                   itemLabel="#{cmbdelegacion.nombre}"
+                                                   itemValue="#{cmbdelegacion.id}"/>
+                                </p:selectOneMenu></div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:inputText maxlength="100"
+                                             placeholder="#{labelName.placeholderBuscar}"
+                                             styleClass="Wid80" style="width: 86%"
+                                             value="#{listaUsuarioInturPermisoBackBean.txtBuscar}"
+                                             autocomplete="off"/>
+                                <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                 update="formLista"
+                                                 actionListener="#{listaUsuarioInturPermisoBackBean.cargarLista(false)}"/>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:ajax event="rowSelect"
+                            listener="#{listaUsuarioInturPermisoBackBean.editarAgregarPermiso}"
+                            update=":formDetalle"
+                            resetValues="true"/>
+
+                    <p:column headerText="Id" width="20%">
+                        <h:outputText value="#{r.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Usuario" width="30%">
+                        <h:outputText value="#{r.username}"/>
+                    </p:column>
+
+                    <p:column headerText="Nombre" width="50%">
+                        <h:outputText value="#{r.nombre}"/>
+                    </p:column>
+
+                </p:dataTable>
+
+            </p:panel>
+        </h:form>
+
+        <div class="Container50 Responsive container2">
+            <h:form id="formDetalle">
+                <p:panel style="height: 545px; overflow-y: auto " id="datosG">
+                    <p:tabView id="tabV" dynamic="true" activeIndex="1">
+                        <p:tab id="tabDatos" title="Datos Generales">
+                            <p:panel>
+                                <f:facet name="header">
+                                    <h:outputText value="ID: #{listaUsuarioInturPermisoBackBean.usuario.id}"/>
+                                </f:facet>
+
+                                <p:panelGrid columns="2" styleClass="panelPMD" style="border: none;"
+                                             columnClasses="ui-grid-col-2,ui-grid-col-8"
+                                             layout="grid">
+                                    <p:outputLabel value="Usuario:"/>
+                                    <p:inputText autocomplete="off"
+                                                 label="Usuario"
+                                                 value="#{listaUsuarioInturPermisoBackBean.usuario.username}"
+                                                 disabled="true">
+                                    </p:inputText>
+
+                                    <p:outputLabel value="Nombres:"/>
+                                    <p:inputText autocomplete="off"
+                                                 label="Nombres"
+                                                 value="#{listaUsuarioInturPermisoBackBean.usuario.nombres}"
+                                                 disabled="true">
+                                    </p:inputText>
+
+                                    <p:outputLabel value="Apellidos:"/>
+                                    <p:inputText autocomplete="off"
+                                                 label="Apellidos"
+                                                 value="#{listaUsuarioInturPermisoBackBean.usuario.apellidos}"
+                                                 disabled="true">
+                                    </p:inputText>
+
+                                    <p:outputLabel value="Email:"/>
+                                    <p:inputText autocomplete="off"
+                                                 label="Email"
+                                                 value="#{listaUsuarioInturPermisoBackBean.usuario.email}"
+                                                 disabled="true">
+                                    </p:inputText>
+
+                                    <p:outputLabel value="Referencia:"/>
+                                    <p:inputText autocomplete="off"
+                                                 label="Referencia"
+                                                 value="#{listaUsuarioInturPermisoBackBean.usuario.referencia}"
+                                                 disabled="true">
+                                    </p:inputText>
+
+                                </p:panelGrid>
+                            </p:panel>
+                        </p:tab>
+
+                        <p:tab id="tabPermisos" title="Permisos">
+                            <p:panel>
+                                <f:facet name="header">
+                                    <h:outputText value="ID: #{listaUsuarioInturPermisoBackBean.usuario.id}"/>
+                                    <p:outputPanel style="display: block" styleClass="right">
+                                        <p:commandButton icon="fa fa-plus-circle" styleClass="cyan-btn"
+                                                         value="#{labelName.btnAgregar}"
+                                                         disabled="#{listaUsuarioInturPermisoBackBean.autoriza}"
+                                                         actionListener="#{listaUsuarioInturPermisoBackBean.agregarRol}"
+                                                         update="formDetalle:tabV :formLista"/>
+                                    </p:outputPanel>
+                                </f:facet>
+
+                                <p:panelGrid columns="2" styleClass="panelPMD" style="border: none;"
+                                             columnClasses="ui-grid-col-2,ui-grid-col-8"
+                                             layout="grid">
+                                    <p:outputLabel for="delegacion" value="Delegación:"/>
+                                    <p:outputPanel>
+                                        <p:inputText placeholder="Seleccione una delegación"
+                                                     id="delegacion"
+                                                     readonly="true"
+                                                     required="true"
+                                                     value="#{listaUsuarioInturPermisoBackBean.entidadSeleccionada.nombre}"/>
+                                        <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                         rendered="#{sessionBean.entidadActual.id == 1 ? true : false}"
+                                                         actionListener="#{listaUsuarioInturPermisoBackBean.cargarListaAgregarEntidad}"
+                                                         update=":dlgAgregarEntidad rol"/>
+                                    </p:outputPanel>
+
+                                    <p:outputLabel for="rol" value="Rol:"/>
+                                    <p:outputPanel>
+                                        <p:inputText placeholder="Seleccione un Rol"
+                                                     id="rol"
+                                                     readonly="true"
+                                                     required="true"
+                                                     value="#{listaUsuarioInturPermisoBackBean.rolSeleccionado.nombre}"/>
+                                        <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                                         actionListener="#{listaUsuarioInturPermisoBackBean.cargarListaAgregarRoles}"
+                                                         update=":dlgAgregarRol"/>
+                                    </p:outputPanel>
+
+                                </p:panelGrid>
+
+                                <p:panel>
+                                    <f:facet name="header">
+                                        Roles por Delegación
+                                        <p:outputPanel style="display: block" styleClass="right">
+                                            <p:commandButton icon="fa fa-trash-o" styleClass="red-btn"
+                                                             value="#{labelName.btnQuitar}"
+                                                             actionListener="#{listaUsuarioInturPermisoBackBean.quitarRol}"
+                                                             disabled="#{listaUsuarioInturPermisoBackBean.autoriza}"
+                                                             resetValues="true"
+                                                             update="formDetalle:tabV :formLista">
+                                                <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                           message="#{dialogText.deleteConfirmationTextContent}"
+                                                           icon="fa fa-bullhorn"/>
+                                            </p:commandButton>
+                                        </p:outputPanel>
+                                    </f:facet>
+
+                                    <p:dataTable var="rol"
+                                                 id="dtRol"
+                                                 widgetVar="dtRol"
+                                                 value="#{listaUsuarioInturPermisoBackBean.listaRoles}"
+                                                 paginatorPosition="top"
+                                                 paginator="true"
+                                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                                 selection="#{listaUsuarioInturPermisoBackBean.rolSeleccionados}"
+                                                 rowKey="#{rol.id}"
+                                                 rows="5"
+                                                 reflow="true"
+                                                 pageLinks="3"
+                                                 scrollable="false"
+                                                 style="min-height: 300px"
+                                                 styleClass="ui-paginator-current"
+                                                 lazy="true"
+                                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                        <p:column selectionMode="multiple" width="10%"
+                                                  style="width:25px;text-align:center"/>
+
+                                        <p:column headerText="Delegación" width="45%">
+                                            <h:outputText value="#{rol.entidad}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Rol-Permiso" width="45%">
+                                            <h:outputText value="#{rol.rol}"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </p:panel>
+
+                            </p:panel>
+
+                        </p:tab>
+                    </p:tabView>
+
+
+                </p:panel>
+            </h:form>
+        </div>
+
+        <p:dialog id="dlgAgregarEntidad" width="90%" height="600px" widgetVar="wvDlgAgregarEntidad" responsive="true"
+                  header="Agregar Entidad" modal="true" resizable="false" maximizable="true">
+            <h:form id="formularioAgregarEntidad">
+                <p:panel>
+                    <f:facet name="header">
+                        <p:outputPanel style="display: block" styleClass="left">
+                            <h:outputText value="Agregar Entidad"/>
+                        </p:outputPanel>
+                        <p:outputPanel style="display: block" styleClass="right">
+                            <p:commandButton icon="fa fa-pencil-square-o" styleClass="green-btn"
+                                             value="Seleccionar"
+                                             update=":formDetalle:tabV:delegacion"
+                                             oncomplete="PF('wvDlgAgregarEntidad').hide()"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:outputPanel>
+                        <p:dataTable var="ar"
+                                     value="#{listaUsuarioInturPermisoBackBean.listaEntidadesSinAgregar}"
+                                     paginatorPosition="top"
+                                     scrollHeight="300"
+                                     pageLinks="1"
+                                     selectionMode="single"
+                                     paginator="true"
+                                     reflow="true"
+                                     selection="#{listaUsuarioInturPermisoBackBean.entidadSeleccionada}"
+                                     rowKey="#{ar.id}"
+                                     emptyMessage="#{labelName.tableEmptyMessage}"
+                                     rows="10"
+                                     paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                     currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                            <p:column headerText="Nombre" style="width: 80%">
+                                <h:outputText value="#{ar.nombre}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgAgregarRol" width="90%" height="600px" widgetVar="wvDlgAgregarRol" header="Agregar Rol"
+                  responsive="true" modal="true" resizable="false" maximizable="true">
+            <h:form id="formularioAgregarRol">
+                <p:panel>
+                    <f:facet name="header">
+                        <p:outputPanel style="display: block" styleClass="left">
+                            <h:outputText value="Agregar Rol"/>
+                        </p:outputPanel>
+                        <p:outputPanel style="display: block" styleClass="right">
+                            <p:commandButton icon="fa fa-pencil-square-o" styleClass="green-btn"
+                                             value="Seleccionar"
+                                             update=":formDetalle:tabV:rol"
+                                             oncomplete="PF('wvDlgAgregarRol').hide()"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:outputPanel>
+                        <p:dataTable var="ars"
+                                     id="listaAgregarRole" widgetVar="listaAgregarRole"
+                                     value="#{listaUsuarioInturPermisoBackBean.listaAgregarRoles}"
+                                     paginatorPosition="top"
+                                     scrollHeight="300"
+                                     scrollable="false"
+                                     pageLinks="1"
+                                     selectionMode="single"
+                                     paginator="true"
+                                     selection="#{listaUsuarioInturPermisoBackBean.rolSeleccionado}"
+                                     rowKey="#{ars.id}"
+                                     emptyMessage="#{labelName.tableEmptyMessage}"
+                                     rows="10"
+                                     reflow="true"
+                                     paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                     currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                            <p:ajax
+                                    event="rowToggle"
+                                    global="false"
+                                    async="false"
+                                    process="listaAgregarRole"
+                                    listener="#{listaUsuarioInturPermisoBackBean.obtenerDetalleRole}"/>
+
+                            <p:column width="15%">
+                                <p:rowToggler/>
+                            </p:column>
+
+                            <p:column headerText="Nombre" width="60%">
+                                <h:outputText value="#{ars.nombre}"/>
+                            </p:column>
+
+                            <p:column headerText="Tipo" width="25%">
+                                <h:outputText value="#{ars.tipo == 'P' ? 'PANTALLA' : 'REPORTE'}"/>
+                            </p:column>
+
+                            <p:rowExpansion>
+                                <p:tree
+                                        styleClass="whitOtBorderTree"
+                                        value="#{listaUsuarioInturPermisoBackBean.detalleRol}"
+                                        expanded="true"
+                                        var="node"
+                                        animate="true">
+                                    <p:treeNode>
+                                        <h:outputText value="#{node.text}"/>
+                                    </p:treeNode>
+                                </p:tree>
+                            </p:rowExpansion>
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

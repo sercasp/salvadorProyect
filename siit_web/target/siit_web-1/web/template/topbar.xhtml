@@ -1,0 +1,90 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pa="http://primefaces.org/sapphire"
+        xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <div class="layout-topbar">
+        <h:form id="topBar">
+            <a id="layout-menubutton" href="#" class="layout-menubutton">
+                <div class="layout-menubutton-icon"></div>
+            </a>
+
+            <div class="layout-topbar-grid">
+                <div class="layout-topbar-grid-column layout-topbar-grid-column-fixed">
+                    <a href="#" class="layout-logo">
+                        <p:graphicImage name="images/logo.png" library="sapphire-layout"/>
+                    </a>
+                </div>
+                <p:outputPanel styleClass="layout-topbar-grid-column" id="menuForm">
+                    <ui:include src="./menu.xhtml"/>
+                </p:outputPanel>
+
+                <p:outputPanel id="panelUsuarioLabel" class="layout-topbar-grid-column layout-topbar-grid-column-fixed">
+                    <c:if test="#{!indexBackBean.moduloUnico}">
+                        <c:if test="#{sessionBean.nombreModuloActual != ''}">
+                            <p:link onclick="seleccionarModulos()">
+                                <i class="material-icons" style="color: #616161">&#xE88A;</i>
+                            </p:link>
+                        </c:if>
+                    </c:if>
+                </p:outputPanel>
+
+                <div class="layout-topbar-grid-column layout-topbar-grid-column-fixed">
+                    <a id="profile-menu-button" href="#" class="profile-menu-button" style="margin-left: 5px">
+                        <i class="material-icons" style="color: #616161">donut_large</i>
+                    </a>
+                </div>
+            </div>
+
+            <ul id="layout-profile-menu" class="layout-profile-menu">
+                <li>
+                    <a href="#" class="ripplelink" onclick="PF('wvDlgCambiarClave').show()">
+                        <i class="material-icons">settings</i>
+                        <span>Change password</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="ripplelink" onclick="logout()">
+                        <i class="material-icons">lock</i>
+                        <span>Log off</span>
+                    </a>
+                </li>
+            </ul>
+            <p:remoteCommand name="seleccionarModulo"
+                             actionListener="#{indexBackBean.seleccionarMenuModulo}"
+                             update="menuForm :application_content panelBreadcrum panelUsuarioLabel"/>
+
+            <p:remoteCommand name="goToUrlNew" update="application_content panelBreadcrum"
+                             actionListener="#{menuPrincipalBackBean.goToUrlNew}"/>
+
+            <p:remoteCommand name="logoutAction" action="#{sessionBean.logoutAction}"/>
+        </h:form>
+    </div>
+
+    <div class="layout-topbar-separator"></div>
+
+    <script type="application/javascript">
+        function goToUrl(url) {
+            goToUrlNew([{name: 'url', value: url}]);
+        }
+
+        function seleccionarModulos() {
+            seleccionarModulo();
+        }
+
+        function logout() {
+            logoutAction();
+        }
+    </script>
+
+    <style type="text/css">
+        .layout-topbar .profile-menu-button {
+            border: none;
+        }
+    </style>
+
+</ui:composition>

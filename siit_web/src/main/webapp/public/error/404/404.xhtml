@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <link rel="shortcut icon" type="image/x-icon"
+          href="#{request.contextPath}/resources#{configApplicationBean.temaAplicacion}/1_0/img/aplicacion/favisco.ico"/>
+    <link rel="icon" type="image/x-icon"
+          href="#{request.contextPath}/resources#{configApplicationBean.temaAplicacion}/1_0/img/aplicacion/favisco.ico"/>
+    <title>Sistema Integrado de Información Turística Error 404</title>
+    <link href="#{facesContext.externalContext.requestContextPath}/resources/siit/1_0/img/aplicacion/favintur.ico"
+          rel="shortcut icon" type="image/x-icon"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content=""/>
+    <!-- We're linkin the css files here -->
+    <link rel="stylesheet" href="/public/error/404/css/style.css"/>
+    <!-- We're linkin the js files here -->
+    <script type="text/javascript" src="/public/error/404/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/public/error/404/js/common.js"></script>
+    <script type="text/javascript" src="http://jqueryrotate.googlecode.com/svn/trunk/jQueryRotate.js"></script>
+
+</head>
+
+<body>
+<!-- Showing the image clouds, stars, and moon -->
+<div id="clouds"></div>
+<div id="stars"></div>
+<div id="moon"></div>
+
+<!-- BEGIN CONTENT -->
+<div class="wrap_content">
+    <h1>404</h1>
+    <h2>Oh! Página no encontrada</h2><br/>
+    <p>Disculpe las molestias <a>#{sessionBean.usuarioActual.nombres} #{sessionBean.usuarioActual.apellidos}</a>.</p>
+    <!-- <p>Intente regresar al <a href="/login.xhtml">Menú de Inicio</a>.</p> -->
+</div><!-- End div content -->
+<!-- END CONTENT -->
+
+<!-- BEGIN BOTTOM -->
+<div class="wrap_bottom">
+    <div id="tumbleweed"></div>
+    <div class="image_wrapper">
+        <div id="house"></div>
+    </div>
+</div><!-- End div content -->
+<!-- END CONTENT -->
+
+<!-- BEGIN FOOTER -->
+<div class="wrap_footer">
+    <div class="content_footer">
+        <div class="left">
+            <!-- <img src="images/bug.png"/> -->
+            Copyright Sistema Integrado de Información Turística - Instituto Nicaragüense de Turismo
+        </div>
+        <!-- <div class="right">POWERED BY <a href="#"><img src="images/waole-logo.png"/></a></div> -->
+    </div>
+</div>
+<!-- End div footer -->
+<!-- END FOOTER -->
+
+</body>
+</html>

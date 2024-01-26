@@ -1,0 +1,31 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:p="http://primefaces.org/ui">
+
+<composite:interface>
+    <composite:attribute name="id"/>
+    <composite:attribute name="nombre" required="true"/>
+    <composite:attribute name="streamView" required="true" type="org.primefaces.model.StreamedContent"/>
+</composite:interface>
+
+<composite:implementation>
+    <p:dialog header="Vista previa" widgetVar="modalVistaPreviaReporte" modal="true" width="60%"
+              height="500" closable="true" dynamic="true"
+              onShow="#{vistaPreviaReporteBackBean.setStreamPdf(cc.attrs.streamView)}"
+              resizable="false" styleClass="fondoPaneles">
+        <h:form id="formModalPdf">
+            <p:panel styleClass="fondoPaneles" style="border: transparent;">
+                <p:outputPanel style="border: transparent; width: 99.7%;">
+                    <pe:documentViewer cache="false" locale="es" height="487"
+                                       value="#{vistaPreviaReporteBackBean.streamPdf}"
+                                       download="#{cc.attrs.nombre.concat('.pdf')}"/>
+                </p:outputPanel>
+            </p:panel>
+        </h:form>
+    </p:dialog>
+
+</composite:implementation>
+
+</html>

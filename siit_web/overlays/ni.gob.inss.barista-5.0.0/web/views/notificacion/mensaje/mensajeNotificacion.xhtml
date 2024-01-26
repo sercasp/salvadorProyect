@@ -1,0 +1,182 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps"
+                template="/web/template/innerLayout.xhtml">
+
+
+    <ui:param name="paramBackBean" value="#{mensajeNotificacionBackBean}"/>
+
+    <ui:define name="headerContent">
+        <h:outputText value="Mensajes para notificaciones "/>
+        <mc:textoReplica servidorReplicacion="#{mensajeNotificacionBackBean.servidorReplicacion}"/>
+
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .size2 {
+                height: 25px !important;
+            }
+
+            .size3 {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+        </style>
+        <h:form id="formLista">
+            <p:dataTable var="r"
+                         value="#{mensajeNotificacionBackBean.listaMensajes}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         scrollable="true"
+                         scrollHeight="390"
+                         selection="#{mensajeNotificacionBackBean.mensajeSeleccionado}"
+                         rowKey="#{r.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="10"
+                         pageLinks="3"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <div class="ui-g-12 ui-md-6 ui-lg-9" style="padding-top: 16px;">
+                                            <span class="md-inputfield">
+                                                  <p:inputText maxlength="150"
+                                                               autocomplete="off"
+                                                               styleClass="Wid70"
+                                                               value="#{mensajeNotificacionBackBean.txtBuscar}"
+                                                  />
+                                                <label>#{labelName.placeholderBuscar}</label>
+                                            </span>
+
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}"
+                                                 ajax="true"
+                                                 update="formLista"
+                                                 action="#{mensajeNotificacionBackBean.cargarLista}"/>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3"></div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3">
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="fa fa-plus-circle"
+                                                 styleClass="green-btn"
+                                                 value="#{labelName.btnAgregar}"
+                                                 update=":formDetalle"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 action="#{mensajeNotificacionBackBean.limpiar}"
+                                                 resetValues="true"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="ui-icon-pencil"
+                                                 value="#{labelName.btnEditar}"
+                                                 update=":formDetalle"
+                                                 action="#{mensajeNotificacionBackBean.editar}"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+                <!-- Evento doble click sobre una fila -->
+                <p:ajax event="rowSelect" listener="#{mensajeNotificacionBackBean.editar()}"
+                        update=":formDetalle"/>
+
+                <p:column headerText="Título">
+                    <h:outputText value="#{r.titulo}"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+        <p:dialog id="dlgFormDetalle" modal="true" resizable="false" width="60%" showEffect="clip"
+                  height="auto"
+                  hideEffect="fold" styleClass="disable-scroll"
+                  widgetVar="wvDlgFormDetalle" closable="false" style="padding: 0">
+            <h:form id="formDetalle" style="width: 100%;">
+                <p:panel style="height: auto" styleClass="fondoPaneles">
+                    <f:facet name="header">
+
+                        <!-- Botones  -->
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                    <h:outputText value="ID: #{mensajeNotificacionBackBean.id}"
+                                                  rendered="#{!mensajeNotificacionBackBean.nuevoRegistro}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen"></div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-trash" value="#{labelName.btnEliminar}"
+                                                     actionListener="#{mensajeNotificacionBackBean.elminar}"
+                                                     update="formDetalle :formLista"
+                                                     rendered="#{mensajeNotificacionBackBean.btnElminiarVisible}">
+                                        <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                   message="#{dialogText.deleteConfirmationTextContent}"
+                                                   icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                     actionListener="#{mensajeNotificacionBackBean.guardar}"
+                                                     update="formDetalle :formLista"
+                                                     rendered="#{mensajeNotificacionBackBean.btnGuardarVisible}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-cancel"
+                                                     value="#{labelName.btnCerrarModal}"
+                                                     actionListener="#{mensajeNotificacionBackBean.limpiar}"
+                                                     update="formDetalle"
+                                                     onclick="PF('wvDlgFormDetalle').hide()"
+                                                     resetValues="true" process="@this"/>
+                                </div>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <h:panelGrid columns="2" styleClass="Wid100" columnClasses="Wid20, Wid80">
+
+                        <h:panelGroup styleClass="md-inputfield size3">
+                            <p:inputText maxlength="200" id="titulo" label="Título"
+                                         required="true"
+                                         styleClass="Wid90"
+                                         autocomplete="off"
+                                         style="width: 400px"
+                                         value="#{mensajeNotificacionBackBean.txtTitulo}">
+                                <f:validateRegex pattern="#{mensajeNotificacionBackBean.regExpTexto}"/>
+                                <f:validateLength minimum="0" maximum="200"/>
+                            </p:inputText>
+                            <label>Título:</label>
+                        </h:panelGroup>
+
+                        <h:panelGroup styleClass="md-inputfield size2" style="margin-left: 100px">
+                            <p:inputTextarea autoResize="false"
+                                             maxlength="1000"
+                                             scrollHeight="100"
+                                             required="true"
+                                             rows="20"
+                                             styleClass="size2"
+                                             id="mensaje" label="Mensaje"
+                                             autocomplete="off"
+                                             style="margin-top: 59px;width: 400px; margin-top: unset"
+                                             value="#{mensajeNotificacionBackBean.txtMensaje}">
+                                <f:validateRegex pattern="#{mensajeNotificacionBackBean.regExpTexto}"/>
+                                <f:validateLength minimum="0" maximum="1000"/>
+                            </p:inputTextarea>
+                            <label>Mensaje:</label>
+                        </h:panelGroup>
+
+                    </h:panelGrid>
+
+                    <p:keyFilter for="titulo" regEx="/#{mensajeNotificacionBackBean.regExpTexto}/"/>
+                    <p:keyFilter for="mensaje" regEx="/#{mensajeNotificacionBackBean.regExpTexto}/"/>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

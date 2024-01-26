@@ -1,0 +1,44 @@
+.ui-panel {
+    width: 50% !important;
+}
+
+.ui-panel-dismiss-open.ui-panel-dismiss-position-right {
+    right: 50% !important;
+}
+
+.ui-widget {
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+.ui-datalist-data {
+    height: 450px;
+    overflow: auto;
+}
+
+.ui-disabled, .ui-state-disabled, button[disabled], .ui-select .ui-btn.ui-state-disabled {
+    opacity: 1 !important;
+}
+
+.ui-btnPadding {
+    margin: 0em 0 !important;
+}
+
+.username {
+    padding-left: 1px !important;
+    padding-top: 8px !important;
+}
+
+#app-description {
+    float: left;
+    font-size: 1.3em;
+    font-weight: bold;
+    padding-top: 0px;
+}
+
+.ui-page-theme-a .ui-btn, html .ui-bar-a .ui-btn, html .ui-body-a .ui-btn, html body .ui-group-theme-a .ui-btn, html head + body .ui-btn.ui-btn-a, .ui-btn:visited, html .ui-bar-a .ui-btn:visited, html .ui-body-a .ui-btn:visited, html body .ui-group-theme-a .ui-btn:visited, html head + body .ui-btn.ui-btn-a:visited {
+    background-color: snow;
+    border-color: #ddd;
+    color: #333;
+    text-shadow: 0 0px 0 #f3f3f3;
+}

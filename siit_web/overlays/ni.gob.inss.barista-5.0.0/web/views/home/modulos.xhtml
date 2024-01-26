@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="form_modulos">
+        <div class="layout-content">
+            <p:dataGrid id="mnuModulos" var="m" value="#{indexBackBean.modulos}" columns="4" layout="grid"
+                        paginator="true" scrollHeight="500px" rowsPerPageTemplate="4,8" rows="8"
+                        emptyMessage="Seleccione una Entidad" paginatorAlwaysVisible="true"
+                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+                <f:facet name="header">
+                    <p:panelGrid columns="3"
+                                 columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+                                 layout="grid" styleClass="ui-panelgrid-blank form-group"
+                                 style="border:0 none; background-color:transparent;">
+                        <p:outputPanel>
+                            <p:outputLabel for="cboEntidad" value="Seleccione:"/>
+
+                            <p:inputText rendered="#{indexBackBean.listaEntidads.size()==1}"
+                                         value="#{sessionBean.entidadActual.nombre}"
+                                         style="width: 90%; text-align: center" readonly="true"/>
+
+                            <p:selectOneMenu id="cboEntidad"
+                                             pt:readonly="false" filter="true" filterMatchMode="contains"
+                                             value="#{sessionBean.cmbEntidadActual}" style="width: 90%"
+                                             rendered="#{indexBackBean.listaEntidads.size()!=1}"
+                                             valueChangeListener="#{indexBackBean.selecionarEntidadEvent}">
+                                <p:ajax event="change"
+                                        update="mnuModulos panelBreadcrum"/>
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+                                <f:selectItems value="#{indexBackBean.listaEntidads}" var="e"
+                                               itemLabel="#{e.nombre}"
+                                               itemValue="#{e.id}"/>
+                            </p:selectOneMenu>
+                        </p:outputPanel>
+
+                        <p:outputPanel>
+                            <p:outputLabel for="cboEntidad" value="Busqueda por módulo: "
+                                           style="width: 90%"/>
+                            <p:inputText placeholder="MÓDULO" id="txtBuscarModulo"
+                                         maxlength="50" style="width: 90%" autocomplete="off"
+                                         value="#{indexBackBean.txtNombreModulo}"/>
+                            <p:commandButton id="btnSearch" icon="ui-icon-search" ajax="true"
+                                             style="width: 18px;display: none;"
+                                             update="mnuModulos" styleClass="Wid10"
+                                             action="#{indexBackBean.buscarModulos}"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel>
+                            <p:outputLabel value="Ordenar por: "/>
+
+                            <p:selectOneMenu value="#{indexBackBean.selectOrder}"
+                                             valueChangeListener="#{indexBackBean.selecionarOrdenEvent}"
+                                             style="width: 90%">
+                                <p:ajax event="change" update="mnuModulos"/>
+                                <f:selectItem itemLabel="Nombre" itemValue="nombre"/>
+                                <f:selectItem itemLabel="Más utilizado" itemValue="cantidad"/>
+                            </p:selectOneMenu>
+                        </p:outputPanel>
+                    </p:panelGrid>
+                </f:facet>
+
+                <p:remoteCommand name="seleccionarModuloGrid"
+                                 action="#{indexBackBean.seleccionarModulo(false)}"
+                                 update=" :application_content topBar panelBreadcrum topBar:panelUsuarioLabel"/>
+
+                <p:panel header="#{m.nombre}" style="text-align:center">
+                    <h:panelGrid columns="1" style="width:100%" onclick="seleccionarModulosGrid(#{m.id})">
+                        <h:graphicImage style="vertical-align: middle;width: 60px;padding-right: 10px;"
+                                        library="#{configApplicationBean.temaAplicacion}" name="#{m.url_imagen}"/>
+
+                        <h:outputText value="#{configApplicationBean.dateToDateTimeWithSeconds(m.ultima_sesion) == '' ?
+                                    '-' :
+                                    configApplicationBean.dateToDateTimeWithSeconds(m.ultima_sesion)}"/>
+
+                    </h:panelGrid>
+                </p:panel>
+            </p:dataGrid>
+        </div>
+
+        <f:facet name="actions">
+            <h:outputLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"
+                          target="_blank"
+                          value="#{configApplicationBean.helpHost}/web/index.html">
+                <h:outputText styleClass="ui-icon ui-icon-help"/>
+            </h:outputLink>
+            <h:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default">
+                <h:outputText styleClass="ui-icon ui-icon-star"/>
+            </h:commandLink>
+        </f:facet>
+    </h:form>
+
+    <script type="application/javascript">
+        function seleccionarModulosGrid(val) {
+            seleccionarModuloGrid([{name: 'id', value: val}]);
+        }
+    </script>
+</ui:composition>

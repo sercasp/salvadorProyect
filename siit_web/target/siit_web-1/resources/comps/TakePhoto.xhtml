@@ -1,0 +1,232 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<composite:interface>
+    <composite:attribute name="id" shortDescription="Id con el que se nombrara el componente"/>
+    <composite:attribute name="buttonText" default="Tomar foto"/>
+    <composite:attribute name="modalTitle" default="Fotografía"/>
+    <composite:attribute name="width" default="640"/>
+    <composite:attribute name="height" default="480"/>
+    <composite:attribute name="modalTitle" default="Fotografía"/>
+    <composite:attribute name="selectionListener" required="true"
+                         method-signature="void seleccionar(java.lang.String, java.lang.String)"/>
+</composite:interface>
+
+<composite:implementation>
+    <style>
+        .modal-take-photo-viewer {
+            position: fixed;
+            background: #00000082 !important;
+            top: -2700px;
+            bottom: 100%;
+            left: 23px;
+            right: 21px;
+            z-index: 100;
+            padding: 10px !important;
+        }
+
+        .mostrar {
+            top: 110px;
+            bottom: 15px;
+            left: 23px;
+            right: 21px;
+        }
+
+        .transition-all {
+            -webkit-transition: all .5s ease-out;
+            -moz-transition: all .5s ease-out;
+            -o-transition: all .5s ease-out;
+            transition: all .5s ease-out;
+        }
+
+        .full-screen {
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .w-auto {
+            width: auto !important;
+        }
+
+        .container-canvas {
+            position: absolute;
+            width: 100%;
+            top: -100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container-canvas > canvas {
+            width: 90%;
+            margin-top: 100px;
+            max-width: 500px;
+            margin-right: 15px;
+            border: solid 4px #fff;
+        }
+
+        .hidden-pleyer {
+            top: -200%;
+            position: absolute;
+        }
+
+        .show-capturas {
+            top: auto;
+        }
+
+        .container-buttons {
+            background: #5590c8;
+            height: 60px;
+            padding: 14px;
+            margin-bottom: 20px;
+            top: -100%;
+            position: absolute;
+            left: 24px;
+            right: 24px;
+        }
+
+        .show-container-buttons {
+            margin-bottom: 20px;
+            top: 90px;
+        }
+    </style>
+    <a class="ui-button w-auto w-autoui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+       onclick="toggletViewer($(this).next())" style="color: #fff;">
+        <span class="ui-button-icon-left ui-icon ui-c fa fa-camera"></span>
+        <span class="ui-button-text ui-c">#{cc.attrs.buttonText}</span>
+    </a>
+    <p:panel id="#{cc.attrs.id}" styleClass="transition-all modal-take-photo-viewer">
+        <div style="background: #5590c8; height: 60px; padding: 14px; margin-bottom: 20px;">
+            <h2 style="float: left;margin-top: 0;color: #fff;text-shadow: 3px 4px 5px #000000;">#{cc.attrs.modalTitle}</h2>
+            <a class="ui-button w-auto w-autoui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+               onclick="toggletViewer($(this).parent().parent().parent())"
+               style="float: right;color: #fff;border: solid 2px #fff;">
+                <span class="ui-button-icon-left ui-icon ui-c fa fa-close"></span>
+                <span class="ui-button-text ui-c">Cerrar</span>
+            </a>
+            <a class="ui-button w-auto w-autoui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+               onclick="fullscreen($(this).parent().parent().parent())"
+               style="float: right;color: #fff;border: solid 2px #fff;">
+                <span class="ui-button-icon-left ui-icon ui-c fa fa-arrows-alt"></span>
+                <span class="ui-button-text ui-c">Fullscreen</span>
+            </a>
+            <a id="#{cc.attrs.id}btn"
+               class="ui-button w-auto w-autoui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+               style="float: right;color: #fff;border: solid 2px #fff;">
+                <span class="ui-button-icon-left ui-icon ui-c fa fa-picture-o"></span>
+                <span class="ui-button-text ui-c">Capturar</span>
+            </a>
+        </div>
+        <video id="#{cc.attrs.id}player" autoplay="autoplay"
+               style="height: 90%; margin: 0 auto;width: 100%;">
+        </video>
+        <div class="container-canvas">
+            <canvas id="#{cc.attrs.id}snapshot" width="#{cc.attrs.width}" height="#{cc.attrs.height}"></canvas>
+            <canvas id="#{cc.attrs.id}snapshot2" width="#{cc.attrs.width}" height="#{cc.attrs.height}"></canvas>
+        </div>
+        <div class="container-buttons">
+            <h2 style="float: left;margin-top: 0;color: #fff;text-shadow: 3px 4px 5px #000000;"></h2>
+            <p:commandButton icon="fa fa-check-circle" styleClass="w-auto"
+                             value="Seleccionar capturas" style="float: right;color: #fff;border: solid 2px #fff;"
+                             action="#{takePhotoBackBean.seleccionarCapturas}"
+                             resetValues="true"/>
+            <a class="ui-button w-auto ui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+               style="float: right;color: #fff;border: solid 2px #fff; " onclick="nuevaCaptura()">
+                <span class="ui-button-icon-left ui-icon ui-c fa fa-plus-circle"></span>
+                <span class="ui-button-text ui-c">Nueva captura</span>
+            </a>
+        </div>
+        <h:inputHidden value="#{takePhotoBackBean.originalImage}"/>
+        <h:inputHidden value="#{takePhotoBackBean.grayImage}"/>
+    </p:panel>
+    <script>
+        function toggletViewer(element) {
+            if ($(element).hasClass("mostrar")) {
+                $(element).removeClass("mostrar");
+                if ($('##{cc.attrs.id}player').next().hasClass("show-capturas"))
+                    nuevaCaptura();
+            } else {
+                $(element).addClass("mostrar");
+            }
+            $(element).removeClass("full-screen");
+
+        }
+
+        function fullscreen(element) {
+            if ($(element).hasClass("full-screen")) {
+                $(element).removeClass("full-screen");
+            } else {
+                $(element).addClass("full-screen");
+            }
+        }
+
+        var handleSuccess = function (stream) {
+            document.getElementById('#{cc.attrs.id}player').srcObject = stream;
+        };
+
+        document.getElementById('#{cc.attrs.id}btn').addEventListener('click', function () {
+            var player = document.getElementById('#{cc.attrs.id}player');
+            if (!$(player).next().hasClass("show-capturas")) {
+                var context = document.getElementById('#{cc.attrs.id}snapshot').getContext('2d');
+                // Draw the video frame to the canvas.
+                context.drawImage(player, 0, 0,
+                    document.getElementById('#{cc.attrs.id}snapshot').width,
+                    document.getElementById('#{cc.attrs.id}snapshot').height);
+                var img = document.getElementById('#{cc.attrs.id}snapshot').toDataURL("image/png");
+                player.pause();
+
+                var imageObj = new Image();
+                imageObj.src = img;
+                var data = grayImage(imageObj, document.getElementById('#{cc.attrs.id}snapshot'));
+                context = document.getElementById('#{cc.attrs.id}snapshot2').getContext('2d');
+                context.putImageData(data, 0, 0);
+
+                var hiddens = document.querySelectorAll("div[id*='#{cc.attrs.id}_content'] > input");
+                hiddens[0].value = img;
+                hiddens[1].value = document.getElementById('#{cc.attrs.id}snapshot2').toDataURL("image/png");
+
+                if ($(player).hasClass("hidden-pleyer")) {
+                    $(player).removeClass("hidden-pleyer");
+                } else {
+                    $(player).addClass("hidden-pleyer");
+                }
+
+                if ($(player).next().hasClass("show-capturas")) {
+                    $(player).next().removeClass("show-capturas");
+                    $(player).next().next().removeClass("show-container-buttons");
+                } else {
+                    $(player).next().addClass("show-capturas");
+                    $(player).next().next().addClass("show-container-buttons");
+                }
+            }
+        });
+
+        navigator.mediaDevices.getUserMedia({video: true}).then(handleSuccess);
+
+        function nuevaCaptura() {
+            var player = document.getElementById('#{cc.attrs.id}player');
+            if ($(player).hasClass("hidden-pleyer")) {
+                $(player).removeClass("hidden-pleyer");
+            } else {
+                $(player).addClass("hidden-pleyer");
+            }
+
+            if ($(player).next().hasClass("show-capturas")) {
+                $(player).next().removeClass("show-capturas");
+                $(player).next().next().removeClass("show-container-buttons");
+            } else {
+                $(player).next().addClass("show-capturas");
+                $(player).next().next().addClass("show-container-buttons");
+            }
+            player.play();
+        }
+    </script>
+</composite:implementation>
+</html>

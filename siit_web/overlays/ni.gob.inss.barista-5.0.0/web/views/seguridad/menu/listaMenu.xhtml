@@ -1,0 +1,459 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaMenuBackBean}"/>
+
+    <ui:define name="headerContent">
+        Menús
+    </ui:define>
+    <ui:define name="content">
+        <style>
+            .ui-panelgrid tbody tr td {
+                border: none !important
+            }
+
+            .size {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+
+            .size2 {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+
+            .size4 {
+                margin-bottom: 15px;
+                margin-top: 5px !important;
+                margin-left: 25px;
+            }
+
+            body .ui-datatable thead th {
+                border: 1px solid #d8d8d8;
+            }
+
+            .pasivo {
+                background-color: red !important;
+            }
+
+            .titulo {
+                font-weight: 500;
+                font-size: 20px;
+                line-height: 32px;
+                margin: 0;
+                color: white;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 3px !important;
+            }
+
+            .btn-width-auto {
+                width: auto !important;
+            }
+
+            .float-left {
+                float: left !important;
+            }
+
+            .float-right {
+                float: right !important;
+            }
+
+            .clear-fix {
+                clear: both;
+            }
+
+            .m-b-10 {
+                margin-bottom: 10px !important;
+            }
+
+            .m-t-10 {
+                margin-top: 10px !important;
+            }
+
+            .font color {
+                font-weight: bold;
+                color: #000000;
+            }
+
+            .font-color-pasivo {
+                font-weight: bold;
+                color: #ff0c0c;
+            }
+
+            .cuadrado {
+                width: 20px;
+                height: 20px;
+                background: red;
+                position: center;
+            }
+        </style>
+        <div class="ContainerIndent">
+            <div class="Container50 Responsive">
+                <h:form id="formLista" style="height: 500px">
+                    <p:panel styleClass="fondoPaneles" style="height: 400px">
+                        <f:facet name="header">
+                            <p:outputPanel style="float: left; height: 35px">
+                                <h:outputText value="Listado de Menús"/>
+                            </p:outputPanel>
+                            <p:outputPanel style="float: right; height: 35px">
+                                <p:commandButton icon="ui-icon-plus" value="#{labelName.btnAgregar}"
+                                                 ajax="true"
+                                                 style="width: 187.63px"
+                                                 update=":formDetalle :formListaModalRecurso"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 action="#{listaMenuBackBean.limpiar}" resetValues="true"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <div style="max-height: 450px; overflow-y: auto; ">
+                            <p:tree styleClass="whitOtBorderTree" style="border: none;width: 100%;margin-left: -23px"
+                                    value="#{listaMenuBackBean.tree}"
+                                    expanded="true"
+                                    id="tree"
+                                    var="node"
+                                    animate="true"
+                                    selectionMode="single">
+                                <p:ajax event="select" update=":formDetalle :formListaModalRecurso"
+                                        listener="#{listaMenuBackBean.onNodeSelect}"/>
+
+                                <p:treeNode>
+                                    <h:outputText value="#{node.text}"/>
+                                </p:treeNode>
+                            </p:tree>
+                        </div>
+
+                    </p:panel>
+                </h:form>
+            </div>
+
+            <!--             Modal EDITAR-->
+            <p:dialog id="dlgFormDetalle" widgetVar="wvDlgFormDetalle" closable="false" position="center center"
+                      width="80%" modal="true" showEffect="clip" onShow="PF('wvDlgFormDetalle').initPosition()"
+                      hideEffect="fold" styleClass="disable-scroll" style="padding: 10px">
+                <h:form id="formDetalle">
+                    <p:inputText type="hidden" value="#{listaMenuBackBean.hfId}"/>
+                    <p:panel styleClass="fondoPaneles">
+                        <f:facet name="header">
+
+                            <!-- Botones  -->
+                            <div class="ui-g">
+                                <div class="ui-g-12 ui-md-12 sinMargen">
+                                    <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                        <h:outputText value="ID: #{listaMenuBackBean.hfId}"
+                                                      rendered="#{!listaMenuBackBean.nuevoRegistro}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="fa fa-clipboard fa-lg"
+                                                         value="#{labelName.btnAuditoria}"
+                                                         oncomplete="PF('tipoCatalogoAuditWV').show();"
+                                                         process="@this"
+                                                         update=":tipoCatalogoAudit"
+                                                         rendered="#{listaMenuBackBean.btnAuditoriaVisible}"
+                                                         action="#{listaMenuBackBean.cargarAuditoria}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="ui-icon-trash" value="#{labelName.btnEliminar}"
+                                                         actionListener="#{listaMenuBackBean.elminar}"
+                                                         action="#{listaMenuBackBean.tree}"
+                                                         update="formDetalle :formLista"
+                                                         rendered="#{listaMenuBackBean.btnElminiarVisible}">
+                                            <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                                       message="#{dialogText.deleteConfirmationTextContent}"
+                                                       icon="ui-icon-alert"/>
+                                        </p:commandButton>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                         actionListener="#{listaMenuBackBean.guardar}"
+                                                         action="#{listaMenuBackBean.tree}"
+                                                         update="formDetalle :formLista"
+                                                         rendered="#{listaMenuBackBean.btnGuardarVisible}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="ui-icon-cancel"
+                                                         value="#{labelName.btnCerrarModal}"
+                                                         onclick="PF('wvDlgFormDetalle').hide()"
+                                                         actionListener="#{listaMenuBackBean.limpiar}"
+                                                         update="formDetalle"
+                                                         resetValues="true"
+                                                         process="@this"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </f:facet>
+
+                        <!--   Campos-->
+
+                        <p:panel id="panelCampos" style="overflow: auto!important;">
+                            <div class="ui-g-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                                    <p:outputLabel for="nombre" value="Nombre:" style="margin-bottom: 15px"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-5 sinMargen">
+                                    <p:inputText autocomplete="off" id="nombre"
+                                                 label="Nombre" required="true"
+                                                 value="#{listaMenuBackBean.txtNombre}"
+                                                 style="width:450px; margin-bottom: 15px;">
+                                        <f:validateLength minimum="0" maximum="100"/>
+                                    </p:inputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                                    <p:outputLabel for="orden" value="Orden:" style="margin-bottom: 15px"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-5 sinMargen">
+                                    <p:inputText autocomplete="off" id="orden"
+                                                 label="Orden"
+                                                 required="true"
+                                                 style="width:470px; margin-bottom: 15px;"
+                                                 value="#{listaMenuBackBean.txtOrden}">
+                                        <f:validateLength minimum="0" maximum="2"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                                    <p:outputLabel for="recurso" value="Recurso:" style="margin-bottom: 15px"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-5 sinMargen">
+                                    <p:inputText id="recurso" type="hidden"
+                                                 value="#{listaMenuBackBean.mdlRecurso}"
+                                                 required="true"/>
+                                    <p:inputText id="recursoNombre" style="width:430px; margin-bottom: 15px;"
+                                                 placeholder="Buscar Recurso"
+                                                 readonly="true" value="#{listaMenuBackBean.mdlRecursoNombre}"/>
+                                    <p:commandButton icon="ui-icon-search" ajax="true"
+                                                     onclick="PF('modalRecursos').show();"
+                                                     immediate="true"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                                    <p:outputLabel for="modulo" value="Módulo:" style="margin-bottom: 15px"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-5 sinMargen">
+                                    <p:selectOneMenu id="modulo" style="width:470px; margin-bottom: 15px;"
+                                                     label="Modulo"
+                                                     value="#{listaMenuBackBean.cmbModulo}"
+                                                     required="true"
+                                                     valueChangeListener="#{listaMenuBackBean.cleanMenuPadre}">
+                                        <p:ajax event="change" update="cmbMenu1 cmbMenu"/>
+                                        <f:selectItem itemLabel="Seleccione un Módulo" itemValue="#{null}"/>
+                                        <f:selectItems var="md" value="#{listaMenuBackBean.listaModulos}"
+                                                       itemLabel="#{md.nombre}"
+                                                       itemValue="#{md.id}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                                    <p:outputLabel for="cmbMenu" value="Menú:" style="margin-bottom: 15px"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-5 sinMargen">
+                                    <p:inputText id="cmbMenu" type="hidden"
+                                                 value="#{listaMenuBackBean.mdlMenuPadre}"/>
+                                    <p:inputText id="cmbMenu1" style="width:400px; margin-bottom: 15px;"
+                                                 placeholder="Buscar Menú Padre"
+                                                 readonly="true"
+                                                 value="#{listaMenuBackBean.mdlMenuPadreNombre}"/>
+                                    <p:commandButton actionListener="#{listaMenuBackBean.cargarTreeMenuPadre}"
+                                                     ajax="true"
+                                                     immediate="true"
+                                                     icon="ui-icon-search"
+                                                     update=":formListaModalMenu"/>
+                                    <p:commandButton icon="ui-icon-cancel"
+                                                     actionListener="#{listaMenuBackBean.cleanMenuPadre}"
+                                                     ajax="true"
+                                                     update=":formDetalle"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-1 sinMargen">
+                                    <p:outputLabel for="pasivo" value="Pasivo:"
+                                                   style="width: 10px"
+                                                   rendered="#{!listaMenuBackBean.nuevoRegistro}"/>
+                                </div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                                           value="#{listaMenuBackBean.rbPasivo}"
+                                                           style="width: 50px"
+                                                           rendered="#{!listaMenuBackBean.nuevoRegistro}"/>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <p:tabView rendered="#{!listaMenuBackBean.nuevoRegistro}">
+                            <p:tab title="Roles">
+                                <h:form id="listaRoles">
+                                    <p:dataTable style="width: 98%" var="rro"
+                                                 value="#{listaMenuBackBean.listaRoles}"
+                                                 paginatorPosition="top"
+                                                 selectionMode="single"
+                                                 selection="#{listaMenuBackBean.selectedRow}"
+                                                 rowKey="#{rro.id}"
+                                                 paginator="true"
+                                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                                 rows="3"
+                                                 scrollable="true"
+                                                 scrollHeight="210px"
+                                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                                        <p:column headerText="Nombre">
+                                            <h:outputText value="#{rro.nombre}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:form>
+                            </p:tab>
+                            <p:tab title="Usuarios">
+                                <h:form id="listaUsuarios">
+                                    <p:dataTable style="width: 98%" var="rur"
+                                                 value="#{listaMenuBackBean.listaUsuarios}"
+                                                 paginatorPosition="top"
+                                                 selectionMode="single"
+                                                 selection="#{listaMenuBackBean.selectedRow}"
+                                                 rowKey="#{rur.id}"
+                                                 paginator="true"
+                                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                                 rows="3"
+                                                 scrollable="true"
+                                                 scrollHeight="210px"
+                                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+                                        <p:column headerText="Usuario">
+                                            <h:outputText value="#{rur.username}"/>
+                                        </p:column>
+                                        <p:column headerText="Nombres">
+                                            <h:outputText value="#{rur.nombres}"/>
+                                        </p:column>
+                                        <p:column headerText="Apellidos">
+                                            <h:outputText value="#{rur.apellidos}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:form>
+                            </p:tab>
+                        </p:tabView>
+
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+        </div>
+
+        <!--            MODAL PARA LA CARGA DE RECURSOS-->
+        <p:dialog header="Listado de Recursos" widgetVar="modalRecursos" modal="true" height="600" width="60%"
+                  closable="false" resizable="false">
+            <h:form id="formListaModalRecurso" style="width: 100%">
+                <p:panel>
+
+
+                    <p:dataTable scrollHeight="430" style="width: 100%"
+                                 var="r"
+                                 value="#{listaMenuBackBean.listaRecursos}"
+                                 paginatorPosition="top"
+                                 selectionMode="single"
+                                 selection="#{listaMenuBackBean.selectedRow}"
+                                 rowKey="#{r.id}"
+                                 paginator="true"
+                                 scrollable="true"
+                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                 rows="10"
+                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                        <!-- Evento doble click sobre una fila -->
+                        <!--                    <p:ajax event="rowSelect" oncomplete="PF('modalRecursos').hide();"-->
+                        <!--                            listener="#{listaMenuBackBean.agregarRecurso}"-->
+                        <!--                            update=":formDetalle:recurso :formDetalle:recursoNombre :formListaModalRecurso"/>-->
+
+                        <f:facet name="header">
+                            <div class="ui-g">
+                                <div class="ui-g-12 ui-md-12 sinMargen">
+                                    <div class="ui-g-12 ui-md-12 ui-lg-8 sinMargen">
+                                        <p:outputPanel style="display: block; text-align: left">
+                                            <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                         style="width: 60%"
+                                                         value="#{listaMenuBackBean.txtBuscar}"
+                                                         id="buscar" autocomplete="off"/>
+                                            <p:commandButton icon="ui-icon-search"
+                                                             update=":formListaModalRecurso"
+                                                             style="margin-left: 5px"
+                                                             action="#{listaMenuBackBean.cargarModalRecursos}"/>
+                                        </p:outputPanel>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="ui-icon-plus" value="#{labelName.btnAgregar}"
+                                                         ajax="true"
+                                                         update=":formDetalle:recurso :formDetalle:recursoNombre"
+                                                         action="#{listaMenuBackBean.agregarRecurso}"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                        <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCerrarModal}"
+                                                         action="#{listaMenuBackBean.cerrarModal}"
+                                                         update="formListaModalRecurso"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="Codigo">
+                            <h:outputText value="#{r.codigo}"/>
+                        </p:column>
+
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{r.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Tipo">
+                            <h:outputText value="#{r.tipo}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--            MODAL PARA LA CARGA DE MENUS PADRES POR MODULO SELECCIONADO-->
+        <p:dialog id="modalMenus" widgetVar="modalMenus" closable="false" resizable="false"
+                  width="500" height="400" modal="true" showEffect="clip" header="Listado de Menú por Módulo"
+                  hideEffect="fold" styleClass="disable-scroll">
+
+            <h:form id="formListaModalMenu" style="height: 200px">
+                <p:panel>
+                    <f:facet name="header">
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+                                <div class="ui-g-12 ui-md-12 ui-lg-9 sinMargen"></div>
+                                <div class="ui-g-12 ui-md-12 ui-lg-3 sinMargen">
+                                    <p:commandButton icon="ui-icon-close" value="Cerrar"
+                                                     ajax="true" onclick="PF('modalMenus').hide();"/>
+                                </div>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:tree expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed"
+                            styleClass="whitOtBorderTree" style="width: 100%!important;margin-left: -23px"
+                            value="#{listaMenuBackBean.treeMenuPadre}"
+                            expanded="true"
+                            id="treeMenu"
+                            var="nodeMenu"
+                            animate="true"
+                            selectionMode="single">
+                        <p:ajax event="select" oncomplete="PF('modalMenus').hide();"
+                                update=":formDetalle:cmbMenu :formDetalle:cmbMenu1"
+                                listener="#{listaMenuBackBean.selectedMenuPadre}"/>
+                        <p:treeNode>
+                            <h:outputText value="#{nodeMenu.text}"/>
+                        </p:treeNode>
+                    </p:tree>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <mc:dialogAuditoria id="tipoCatalogoAudit" auditoriaId="tipoCatalogoAuditWV"
+                            auditoriaList="#{listaMenuBackBean.listaAuditoria}"/>
+
+    </ui:define>
+
+</ui:composition>

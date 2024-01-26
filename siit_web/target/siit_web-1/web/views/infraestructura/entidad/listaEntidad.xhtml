@@ -1,0 +1,265 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps">
+
+    <ui:param name="paramBackBean" value="#{listaEntidadBackBean}"/>
+
+    <ui:define name="headerContent">
+        Entidades
+    </ui:define>
+    <ui:define name="content">
+        <style>
+            .size2 {
+                margin-bottom: 10px;
+                margin-top: 10px !important;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 3px !important;
+            }
+        </style>
+        <h:form id="formLista">
+            <p:dataTable var="r"
+                         value="#{listaEntidadBackBean.listaEntidades}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{listaEntidadBackBean.selectedRow}"
+                         rowKey="#{r.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="10"
+                         scrollable="true"
+                         scrollHeight="300"
+
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-6">
+                            <div class="ui-g-12 ui-md-6 ui-lg-9" style="padding-top: 16px;">
+                                <span class="md-inputfield">
+                                    <p:inputText value="#{listaEntidadBackBean.txtBuscar}"
+                                                 autocomplete="off"/>
+                                    <label>#{labelName.placeholderBuscar}</label>
+                                </span>
+
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}"
+                                                 ajax="true"
+                                                 update="formLista"
+                                                 action="#{listaEntidadBackBean.cargarLista}"/>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3"></div>
+                        <div class="ui-g-12 ui-md-12 ui-lg-3">
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="fa fa-plus-circle"
+                                                 styleClass="green-btn"
+                                                 value="#{labelName.btnAgregar}" ajax="true"
+                                                 onclick="PF('wvDlgFormDetalle').show()"
+                                                 update=":formDetalle"
+                                                 action="#{listaEntidadBackBean.limpiar}"
+                                                 resetValues="true"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-6">
+                                <p:commandButton icon="ui-icon-pencil" value="#{labelName.btnEditar}"
+                                                 ajax="true"
+                                                 update=":formDetalle"
+                                                 action="#{listaEntidadBackBean.editar}"
+                                                 resetValues="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <!-- Evento doble click sobre una fila -->
+                <p:ajax event="rowSelect" listener="#{listaEntidadBackBean.editar}"
+                        update=":formDetalle"
+                        resetValues="true"/>
+
+                <p:column headerText="Id" styleClass="Wid10">
+                    <h:outputText value="#{r.id}"/>
+                </p:column>
+
+                <p:column headerText="Nombre" styleClass="Wid50">
+                    <h:outputText value="#{r.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Pasivo" style="text-align: center;">
+                    <p:selectBooleanCheckbox value="#{r.pasivo}" disabled="true"
+                                             styleClass="ui-linus-enabled"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+        <p:dialog id="dlgFormDetalle" modal="true" resizable="false" width="60%" height="auto"
+                  showEffect="clip"
+                  hideEffect="fold" styleClass="disable-scroll"
+                  widgetVar="wvDlgFormDetalle" closable="false" style="padding: 0">
+            <h:form id="formDetalle" style="width: 100%;">
+                <p:inputText type="hidden" value="#{listaEntidadBackBean.hfId}"/>
+                <p:panel style="height: auto" styleClass="fondoPaneles">
+                    <f:facet name="header">
+
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-12 sinMargen">
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                    <h:outputText value="ID: #{listaEntidadBackBean.hfId}"
+                                                  rendered="#{!listaEntidadBackBean.nuevoRegistro}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen"></div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="fa fa-clipboard fa-lg"
+                                                     value="#{labelName.btnAuditoria}"
+                                                     oncomplete="PF('tipoCatalogoAuditWV').show();"
+                                                     process="@this"
+                                                     update=":tipoCatalogoAudit"
+                                                     rendered="#{listaEntidadBackBean.btnAuditoriaVisible}"
+                                                     action="#{listaEntidadBackBean.cargarAuditoria}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-save" value="#{labelName.btnGuardar}"
+                                                     actionListener="#{listaEntidadBackBean.guardar}"
+                                                     update="formDetalle :formLista"
+                                                     rendered="#{listaEntidadBackBean.btnGuardarVisible}"/>
+                                </div>
+
+                                <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                    <p:commandButton icon="ui-icon-cancel"
+                                                     value="#{labelName.btnCerrarModal}"
+                                                     actionListener="#{listaEntidadBackBean.limpiar}"
+                                                     update="formDetalle"
+                                                     onclick="PF('wvDlgFormDetalle').hide()"
+                                                     resetValues="true" process="@this"/>
+                                </div>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:panel id="panelCampos1" style="overflow: auto!important;">
+                        <div class="ui-g-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="nombre" value="Nombre:"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                <p:inputText autocomplete="off" id="nombre" label="Nombre"
+                                             required="true"
+                                             style="width: 95%"
+                                             value="#{listaEntidadBackBean.txtNombre}" maxlength="100">
+                                    <f:validateRegex pattern="#{listaEntidadBackBean.regExpNombre}"/>
+                                    <f:validateLength minimum="0" maximum="100"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:panel id="panelCampos" style="overflow: auto!important;">
+                        <div class="ui-g-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="codigo" value="Código:"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                <p:inputText autocomplete="off" id="codigo" label="Código"
+                                             required="true" style="width: 95%"
+                                             value="#{listaEntidadBackBean.txtCodigo}" maxlength="20">
+                                    <f:validateLength minimum="0" maximum="20"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="siglas" value="Siglas:" style="margin-bottom: 15px"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                <p:inputText autocomplete="off" id="siglas" label="Siglas"
+                                             required="true" style="width: 100%"
+                                             value="#{listaEntidadBackBean.txtSiglas}" maxlength="4">
+                                    <f:validateRegex pattern="#{listaEntidadBackBean.regExpNombre}"/>
+                                    <f:validateLength minimum="0" maximum="4"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="direccion" value="Dirección:"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                <p:inputText autocomplete="off" id="direccion"
+                                             required="true" style="width: 95%"
+                                             value="#{listaEntidadBackBean.txtDireccion}">
+                                    <f:validateRegex pattern="#{listaEntidadBackBean.regExpNombre}"/>
+                                    <f:validateLength minimum="0" maximum="150"/>
+                                </p:inputText>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="telefono" value="Teléfono:"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                <p:inputText autocomplete="off" id="telefono"
+                                             style="width: 100%"
+                                             value="#{listaEntidadBackBean.txtTelefono}" maxlength="50">
+                                    <f:validateLength minimum="0" maximum="50"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="establecimiento" value="Establecimiento:"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                <p:selectOneMenu id="establecimiento" label="Establecimiento" required="true"
+                                                 style="width: 95%;"
+                                                 value="#{listaEntidadBackBean.cmbEstablecimiento}">
+                                    <f:selectItem itemLabel="Seleccione Un Establecimiento" itemValue="#{null}"/>
+                                    <f:selectItems var="md" value="#{listaEntidadBackBean.listaEstablecimientos}"
+                                                   itemLabel="#{md.nombre}"
+                                                   itemValue="#{md.id}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="entidades" value="Entidades:"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-4 sinMargen">
+                                <p:selectOneMenu id="entidades" required="false" style="width:100%;"
+                                                 value="#{listaEntidadBackBean.cmbEntidadesCombo}">
+                                    <f:selectItem itemLabel="Seleccione Una Entidad:" itemValue="#{null}"/>
+                                    <f:selectItems var="md" value="#{listaEntidadBackBean.listaEntidadesCombo}"
+                                                   itemLabel="#{md.nombre}"
+                                                   itemValue="#{md.id}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputLabel for="pasivo" value="Pasivo:"
+                                               rendered="#{!listaEntidadBackBean.nuevoRegistro}"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                                       style="margin-bottom: 20px; margin-top: 20px"
+                                                       value="#{listaEntidadBackBean.rbPasivo}"
+                                                       rendered="#{!listaEntidadBackBean.nuevoRegistro}"/>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:keyFilter for="codigo" regEx="/#{listaEntidadBackBean.regExpCodigo}/"/>
+                    <p:keyFilter for="nombre" regEx="/#{listaEntidadBackBean.regExpNombre}/"/>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+        <mc:dialogAuditoria id="tipoCatalogoAudit" auditoriaId="tipoCatalogoAuditWV"
+                            auditoriaList="#{listaEntidadBackBean.listaAuditoria}"/>
+    </ui:define>
+
+</ui:composition>

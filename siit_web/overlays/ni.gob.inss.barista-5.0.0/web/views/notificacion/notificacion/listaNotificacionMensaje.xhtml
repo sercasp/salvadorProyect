@@ -1,0 +1,158 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/web/template/innerLayout.xhtml">
+
+
+    <ui:param name="paramBackBean" value="#{listaNotificacionMensajeBackBean}"/>
+
+    <ui:define name="headerContent">
+        <h:outputText value="Notificación General - "/> <h:outputText style="color: yellow"
+                                                                      value="Cantidad usuarios conectados: #{usuarioConectadoBackBean.listaUsuarios.size()}"/>
+    </ui:define>
+    <ui:define name="content">
+        <div class="ContainerIndent">
+            <div class="Container50 Responsive">
+                <h:form id="formLista" style="width: 99%;">
+                    <p:panel styleClass="fondoPaneles">
+                        <f:facet name="header">
+                            <p:outputPanel style="display: block" styleClass="right">
+                                <p:commandButton icon="ui-icon-check" value="#{labelName.btnSeleccionar}" ajax="true"
+                                                 resetValues="true"
+                                                 update=":formDetalle:titulo :formDetalle:mensaje"
+                                                 action="#{listaNotificacionMensajeBackBean.seleccionar}"/>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:outputPanel styleClass="tableClass">
+                            <p:dataTable style="width: 100%" var="r"
+                                         value="#{listaNotificacionMensajeBackBean.listaMensajes}"
+                                         paginatorPosition="top"
+                                         selectionMode="single"
+                                         scrollable="true"
+                                         scrollHeight="410"
+                                         selection="#{listaNotificacionMensajeBackBean.mensajeSeleccionado}"
+                                         rowKey="#{r.id}"
+                                         paginator="true"
+                                         emptyMessage="#{labelName.tableEmptyMessage}"
+                                         rows="17"
+                                         pageLinks="3"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                <!-- Evento doble click sobre una fila -->
+                                <p:ajax event="rowDblselect" listener="#{listaNotificacionMensajeBackBean.seleccionar}"
+                                        update=":formDetalle:titulo :formDetalle:mensaje" resetValues="true"/>
+
+                                <p:column headerText="Título">
+                                    <h:outputText value="#{r.titulo}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:panel>
+                </h:form>
+            </div>
+
+            <div class="Container50 Responsive">
+                <h:form id="formDetalle" style="width: 99%;">
+                    <p:inputText type="hidden" value="#{catalogoBackBean.hfId}"/>
+                    <p:panel style="height: 546px" styleClass="fondoPaneles">
+                        <f:facet name="header">
+                            <h:outputText value="Escribir Mensaje"/>
+                            <p:outputPanel style="display: block" styleClass="right">
+                                <p:commandButton widgetVar="btnEnviar" icon="ui-icon-disk"
+                                                 process="@form"
+                                                 update=":formDetalle:titulo :formDetalle:mensaje"
+                                                 value="#{labelName.btnEnviar}"
+                                                 action="#{listaNotificacionMensajeBackBean.enivarMensaje}">
+                                </p:commandButton>
+
+                                <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnLimpiar}"
+                                                 actionListener="#{listaNotificacionMensajeBackBean.limpiar}"
+                                                 immediate="true"
+                                                 resetValues="true"
+                                                 update="formDetalle" process="@this"/>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:panelGrid columns="2" style="width: 100%" styleClass="panelGridClass">
+
+                            <p:outputLabel for="titulo" value="Título:"/>
+                            <p:inputText maxlength="200" id="titulo" label="Título"
+                                         required="true"
+                                         styleClass="width90"
+                                         autocomplete="off"
+                                        style="text-transform: none !important;"
+                                         value="#{listaNotificacionMensajeBackBean.txtTitulo}">
+                                <f:validateRegex pattern="#{listaNotificacionMensajeBackBean.regExpTexto}"/>
+                                <f:validateLength minimum="0" maximum="200"/>
+                            </p:inputText>
+
+                            <p:outputLabel for="tipo" value="Tipo:"/>
+                            <p:selectOneMenu id="tipo" style="width: 90%" label="Tipo"
+                                             value="#{listaNotificacionMensajeBackBean.cmbTipo}"
+                                             required="true">
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="NACIONAL" itemValue="I"/>
+                                <f:selectItem itemLabel="INTERNACIONAL" itemValue="N"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="categoria" value="Categoria:"/>
+                            <p:selectOneMenu id="categoria" style="width: 90%" label="Categoria"
+                                             value="#{listaNotificacionMensajeBackBean.cmbCategoria}"
+                                             required="true">
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="#{null}"/>
+                                <f:selectItems var="md" value="#{listaNotificacionMensajeBackBean.listaCategorias}"
+                                               itemLabel="#{md.nombre}"
+                                               itemValue="#{md.codigo}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="tag" value="Tags:"/>
+                            <p:inputText maxlength="200" id="tag" label="Tags"
+                                         required="true"
+                                         styleClass="width90"
+                                         autocomplete="off"
+                                         value="#{listaNotificacionMensajeBackBean.txtTag}">
+                                <f:validateRegex pattern="#{listaNotificacionMensajeBackBean.regExpTexto}"/>
+                                <f:validateLength minimum="0" maximum="100"/>
+                            </p:inputText>
+
+                            <p:outputLabel for="mensaje" value="Notificacion:"/>
+                            <p:inputTextarea autoResize="false"
+                                             maxlength="150"
+                                             scrollHeight="100"
+                                             required="true"
+                                             rows="10"
+                                             styleClass="width90"
+                                             id="mensaje" label="Notificacion"
+                                             autocomplete="off"
+                                             style="text-transform: none !important;"
+                                             value="#{listaNotificacionMensajeBackBean.txtMensaje}">
+                                <f:validateRegex pattern="#{listaNotificacionMensajeBackBean.regExpTexto}"/>
+                                <f:validateLength minimum="0" maximum="150"/>
+                            </p:inputTextarea>
+
+                            <p:outputLabel for="fuente" value="Fuente de la Noticia:"/>
+                            <p:inputText maxlength="200" id="fuente" label="Fuente de la Noticia"
+                                         required="true"
+                                         styleClass="width90"
+                                         autocomplete="off"
+                                         value="#{listaNotificacionMensajeBackBean.txtFuente}">
+                                <f:validateRegex pattern="#{listaNotificacionMensajeBackBean.regExpTexto}"/>
+                                <f:validateLength minimum="0" maximum="150"/>
+                            </p:inputText>
+
+                        </p:panelGrid>
+
+                        <p:keyFilter for="titulo" regEx="/#{listaNotificacionMensajeBackBean.regExpTexto}/"/>
+                        <p:keyFilter for="mensaje" regEx="/#{listaNotificacionMensajeBackBean.regExpTexto}/"/>
+                    </p:panel>
+
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

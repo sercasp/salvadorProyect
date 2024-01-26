@@ -1,0 +1,155 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{estadisticaReporteBackBean}"/>
+
+    <ui:define name="headerContent">
+        Estadística Reporte
+    </ui:define>
+
+    <ui:define name="content">
+        <style type="text/css">
+
+            .ui-selectonemenu .ui-selectonemenu-label {
+                width: 100% !important;
+            }
+
+            body .ui-datatable thead th {
+                border: 1px solid #d8d8d8;
+            }
+
+            body .ui-calendar .ui-datepicker-trigger .ui-icon {
+                color: #ffffff;
+            }
+
+            .ui-fluid .ui-selectonemenu {
+                height: 21px !important;
+            }
+
+            .ui-selectonemenu-label {
+                color: black !important;
+            }
+
+            .sinMargen {
+                margin-top: 0 !important;
+                padding: 3px !important;
+            }
+
+            .ui-inputfield.ui-state-focus {
+                background-size: 0 2px, 100% 1px !important;
+            }
+
+        </style>
+
+        <h:form id="formLista" style="width: 100%; height: 530px">
+            <p:dataTable var="r"
+                         value="#{estadisticaReporteBackBean.listaReporte}"
+                         paginatorPosition="top"
+                         selectionMode="single"
+                         selection="#{estadisticaReporteBackBean.reporteSeleccionada}"
+                         rowKey="#{r.id}"
+                         paginator="true"
+                         emptyMessage="#{labelName.tableEmptyMessage}"
+                         rows="10"
+                         pageLinks="3"
+                         scrollable="true"
+                         scrollHeight="370"
+                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 sinMargen">
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 sinMargen">
+                                <p:outputPanel style="display: block; text-align: left;">
+                                    <p:inputText placeholder="#{labelName.placeholderBuscar}"
+                                                 style="width: 80%"
+                                                 value="#{estadisticaReporteBackBean.itBuscar}"
+                                                 id="Buscar" autocomplete="off"/>
+                                    <p:commandButton icon="ui-icon-search"
+                                                     style="margin-left: 5px"
+                                                     update="formLista"
+                                                     action="#{estadisticaReporteBackBean.cargarListaReporte}"/>
+                                </p:outputPanel>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-12 ui-lg-1">
+                                <p:outputLabel value="Usuario: " for="usuario"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2 ">
+                                <p:selectOneMenu id="usuario" style="width: 90%; margin-left: 5px" label="usuario"
+                                                 styleClass="size2"
+                                                 value="#{estadisticaReporteBackBean.somUsuario}">
+                                    <f:selectItem itemLabel="Seleccione un usuario" itemValue="#{null}"/>
+                                    <f:selectItems var="u" value="#{estadisticaReporteBackBean.listaUsuario}"
+                                                   itemLabel="#{u.username}"
+                                                   itemValue="#{u.id}"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-12 ui-lg-1">
+                                <p:outputLabel value="Módulo: " for="modulo"/>
+                            </div>
+                            <div class="ui-g-12 ui-md-12 ui-lg-2">
+                                <p:selectOneMenu id="modulo" style="width: 90%;" label="modulo"
+                                                 styleClass="size2"
+                                                 value="#{estadisticaReporteBackBean.somModulo}">
+                                    <f:selectItem itemLabel="Seleccione un módulo" itemValue="#{null}"/>
+                                    <f:selectItems var="m" value="#{estadisticaReporteBackBean.listaModulos}"
+                                                   itemLabel="#{m.nombre}"
+                                                   itemValue="#{m.id}"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-12 ui-lg-2">
+                                <p:calendar id="fechaInicio" navigator="true" showOn="button"
+                                            autocomplete="off" placeholder="Inicio"
+                                            value="#{estadisticaReporteBackBean.dtFechaInicio}"
+                                            pattern="dd/MM/yyyy" mask="99/99/9999">
+                                    <f:convertDateTime pattern="#{configApplicationBean.formatoFecha}"/>
+                                </p:calendar>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-12 ui-lg-2">
+                                <p:calendar id="fechaFin" navigator="true" showOn="button"
+                                            autocomplete="off" placeholder="Fin"
+                                            sortBy="#{r.creado_el}"
+                                            value="#{estadisticaReporteBackBean.dtFechaFin}"
+                                            pattern="dd/MM/yyyy" mask="99/99/9999">
+                                    <f:convertDateTime pattern="#{configApplicationBean.formatoFecha}"/>
+                                </p:calendar>
+                            </div>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <p:column headerText="Código de reporte">
+                    <h:outputText value="#{r.recursosByRecursoCodigo.codigo}"/>
+                </p:column>
+
+                <p:column headerText="Nombre de reporte">
+                    <h:outputText value="#{r.recursosByRecursoCodigo.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Usuario">
+                    <h:outputText value="#{r.creadoPor.username}"/>
+                </p:column>
+
+                <p:column headerText="Módulo">
+                    <h:outputText value="#{r.modulosByModuloId.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Fecha y hora">
+                    <h:outputText value="#{r.creadoEl}">
+                        <f:convertDateTime pattern="dd/MM/yyyy hh:mm aa"/>
+                    </h:outputText>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

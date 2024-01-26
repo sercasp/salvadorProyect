@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+    <persistence-unit name="LinusPersistenceUnit">
+        <class>ni.gob.inss.siit.model.entity.actividadhotelera.EmpresaTuristicaHabitacion</class>
+        <class>ni.gob.inss.siit.model.entity.controlportuario.Buque</class>
+        <class>ni.gob.inss.siit.model.entity.controlportuario.Crucero</class>
+        <class>ni.gob.inss.siit.model.entity.catalogo.Institucion</class>
+        <class>ni.gob.inss.siit.model.entity.catalogo.MedioComunicacion</class>
+        <class>ni.gob.inss.siit.model.entity.controlportuario.FichaCrucero</class>
+        <class>ni.gob.inss.siit.model.entity.controlportuario.DestinosAVisitar</class>
+        <class>ni.gob.inss.siit.model.entity.controlportuario.InstitucionesParticipantes</class>
+        <class>ni.gob.inss.siit.model.entity.controlportuario.ParticipantesIntur</class>
+        <class>ni.gob.inss.siit.model.entity.catalogo.Destinos</class>
+        <class>ni.gob.inss.siit.model.entity.controlportuario.Destinos</class>
+        <class>ni.gob.inss.siit.model.entity.transporte.SolicitudTransporteVehiculo</class>
+        <class>ni.gob.inss.siit.model.entity.historialempresa.EmpresasTuristicaI</class>
+        <class>ni.gob.inss.siit.model.entity.historialempresa.EmpresasTuristica</class>
+        <class>ni.gob.inss.siit.model.entity.historialempresa.EmpresaTuristicaFuerzaLaboral</class>
+        <class>ni.gob.inss.siit.model.entity.registro.EmpresaTuristicaSinHerramienta</class>
+        <class>ni.gob.inss.siit.model.entity.contabilidadauxiliar.InspeccionMonto</class>
+        <properties>
+            <property name="toplink.jdbc.url" value="jdbc:postgresql://siit-bd-des.intur.gob.ni:5432/siit_desarrollo"/>
+            <property name="toplink.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="hibernate.connection.url"
+                      value="jdbc:postgresql://siit-bd-des.intur.gob.ni:5432/siit_desarrollo"/>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="openjpa.ConnectionURL"
+                      value="jdbc:postgresql://siit-bd-des.intur.gob.ni:5432/siit_desarrollo"/>
+            <property name="openjpa.ConnectionDriverName" value="org.postgresql.Driver"/>
+            <property name="eclipselink.jdbc.url"
+                      value="jdbc:postgresql://siit-bd-des.intur.gob.ni:5432/siit_desarrollo"/>
+            <property name="eclipselink.jdbc.driver" value="org.postgresql.Driver"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>

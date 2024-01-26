@@ -1,0 +1,157 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{configuracionBackBean}" />
+
+    <ui:define name="headerContent">
+        Configuración del Sistema
+    </ui:define>
+    <ui:define name="content">
+
+    <style>
+        .fila{
+            margin-bottom: 10px;
+        }
+    </style>
+
+        <h:panelGrid columns="1" styleClass="fondoPaneles" style="width: 100%">
+
+        <p:outputPanel styleClass="fila">
+            <p:outputPanel styleClass="panelTitulo">
+                <h:panelGrid columns="2" styleClass="panelGridMiddleClass">
+                    <h:graphicImage height="32" width="32" library="#{configApplicationBean.temaAplicacion}"  name="img/icons/configuracion/setting.png"/>
+                    <h:outputText style="font-weight: bold" value="Configuraciones generales del sistema"/>
+                </h:panelGrid>
+            </p:outputPanel>
+
+            <h:panelGrid columns="4">
+                <p:outputLabel value="Siglas Institución:"/>
+                <h:outputText value="#{configuracionBackBean.siglasEntidad}"/>
+
+                <p:outputLabel value="Nombre Institución:"/>
+                <h:outputText value="#{configuracionBackBean.nombreEntidad}"/>
+
+                <p:outputLabel value="Nombre Aplicación:"/>
+                <h:outputText value="#{configuracionBackBean.nombreAplicacion}"/>
+
+                <p:outputLabel value="Descripción Aplicación:"/>
+                <h:outputText value="#{configuracionBackBean.descripcionAplicacion}"/>
+
+                <p:outputLabel value="En producción:"/>
+                <h:outputText value="#{configuracionBackBean.produccion}"/>
+
+                <p:outputLabel value="Servidor de Replicación:"/>
+                <h:outputText value="#{configuracionBackBean.servidorReplicacionText}"/>
+
+                <p:outputLabel value="Tema Aplicación(Interfaz Gráfica):"/>
+                <h:outputText value="#{configuracionBackBean.temaAplicacion}"/>
+
+                <p:outputLabel value="Nombre Entorno:"/>
+                <h:outputText value="#{configuracionBackBean.nombreEntorno}"/>
+
+                <p:outputLabel value="Formato de Fecha:"/>
+                <h:outputText value="#{configuracionBackBean.formatoFecha}"/>
+
+                <p:outputLabel value="Formato de Hora:"/>
+                <h:outputText value="#{configuracionBackBean.formatoHora}"/>
+            </h:panelGrid>
+        </p:outputPanel>
+
+
+        <p:outputPanel styleClass="fila">
+            <p:outputPanel styleClass="panelTitulo">
+                <h:panelGrid columns="2" styleClass="panelGridMiddleClass">
+                    <h:graphicImage height="32" width="32" library="#{configApplicationBean.temaAplicacion}"  name="img/icons/configuracion/secure.png"/>
+                    <h:outputText style="font-weight: bold" value="Configuraciones generales de Seguridad"/>
+                </h:panelGrid>
+            </p:outputPanel>
+
+            <h:panelGrid columns="4">
+                <p:outputLabel value="Tiempo de bloqueo de Sesión:"/>
+                <h:outputText value="#{configuracionBackBean.tiempoBloqueoSesion} minutos"/>
+
+                <p:outputLabel value="Cantidad de intentos(Bloqueo inicio de Sesión):"/>
+                <h:outputText value="#{configuracionBackBean.intentosBloqueoSesion}"/>
+
+            </h:panelGrid>
+        </p:outputPanel>
+
+        <p:outputPanel styleClass="fila">
+            <p:outputPanel styleClass="panelTitulo">
+                <h:panelGrid columns="2" styleClass="panelGridMiddleClass">
+                    <h:graphicImage height="32" width="32" library="#{configApplicationBean.temaAplicacion}"  name="img/icons/configuracion/clipboard.png"/>
+                    <h:outputText style="font-weight: bold" value="Configuraciones de auditoría"/>
+                </h:panelGrid>
+            </p:outputPanel>
+
+            <h:panelGrid columns="4">
+                <p:outputLabel value="Auditar Inicios de Sesión:"/>
+                <h:outputText value="#{configuracionBackBean.auditarInicioSesion}"/>
+
+                <p:outputLabel value="Auditar Navegación:"/>
+                <h:outputText value="#{configuracionBackBean.auditarNavegacion}"/>
+            </h:panelGrid>
+        </p:outputPanel>
+
+        <p:outputPanel styleClass="fila">
+            <p:outputPanel styleClass="panelTitulo">
+                <h:panelGrid columns="2" styleClass="panelGridMiddleClass">
+                    <h:graphicImage height="24" library="#{configApplicationBean.temaAplicacion}"  name="img/icons/configuracion/errbit.png"/>
+                    <h:outputText style="font-weight: bold" value="Configuraciones de Errbit"/>
+                </h:panelGrid>
+            </p:outputPanel>
+
+            <h:panelGrid columns="4">
+                <p:outputLabel value="Habilitado:"/>
+                <h:outputText value="#{configuracionBackBean.errbitHabilitado}"/>
+
+                <p:outputLabel value="ApiKey:"/>
+                <h:outputText value="#{configuracionBackBean.errbitApiKey}"/>
+
+                <p:outputLabel value="Server:"/>
+                <h:outputText value="#{configuracionBackBean.errbitHost}"/>
+
+                <p:outputLabel value="Project Root:"/>
+                <h:outputText value="#{configuracionBackBean.projectRoot}"/>
+            </h:panelGrid>
+        </p:outputPanel>
+
+        <p:outputPanel styleClass="fila">
+            <p:outputPanel styleClass="panelTitulo">
+                <h:panelGrid columns="2" styleClass="panelGridMiddleClass">
+                    <h:graphicImage height="32" width="32" library="#{configApplicationBean.temaAplicacion}"  name="img/icons/configuracion/help.png"/>
+                    <h:outputText style="font-weight: bold" value="Configuraciones de ayuda"/>
+                </h:panelGrid>
+            </p:outputPanel>
+
+            <h:panelGrid columns="4">
+                <p:outputLabel value="Servidor de Ayuda:"/>
+                <h:outputText value="#{configuracionBackBean.helpHost}"/>
+            </h:panelGrid>
+        </p:outputPanel>
+
+        <p:outputPanel>
+            <p:outputPanel styleClass="panelTitulo">
+                <h:panelGrid columns="2" styleClass="panelGridMiddleClass">
+                    <h:graphicImage height="32" width="32" library="#{configApplicationBean.temaAplicacion}"  name="img/icons/configuracion/redmine.png"/>
+                    <h:outputText style="font-weight: bold" value="Configuraciones de Redmine"/>
+                </h:panelGrid>
+            </p:outputPanel>
+
+            <h:panelGrid columns="4">
+
+                <p:outputLabel value="Project:"/>
+                <h:outputText value="#{configuracionBackBean.redmineProject}"/>
+
+                <p:outputLabel value="Server:"/>
+                <h:outputText value="#{configuracionBackBean.redmineHost}"/>
+
+            </h:panelGrid>
+        </p:outputPanel>
+        </h:panelGrid>
+
+    </ui:define>
+</ui:composition>

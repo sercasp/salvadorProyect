@@ -1,0 +1,201 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml"
+>
+    <ui:param name="paramBackBean" value="#{listaPermisoLibroHuespedBackBean}"/>
+
+    <ui:define name="headerContent">
+        Otorgar permiso a los usuarios de las hospedería a la pantalla de libro huésped detallado/consolidado
+    </ui:define>
+
+    <ui:define name="content">
+
+        <style type="text/css">
+            @media (max-width: 1200px) and (min-width: 600px) {
+                .Responsive {
+                    width: 100% !important;
+                }
+            }
+
+        </style>
+
+        <div class="ContainerIndent">
+            <h:outputScript name="siit/1_0/js/calendar_es.js"/>
+
+            <div class="Container100 Responsive">
+                <h:form id="formPermisos" style="width: 100%">
+                    <!--style="height:490px;-->
+                    <p:panel id="panelLibroHuesped" styleClass="fondoPaneles" style="height:520px">
+
+
+                        <p:outputPanel styleClass="maxHeight tableClass">
+                            <p:dataTable id="dtEmpresaTuristica"
+                                         var="r"
+                                         value="#{listaPermisoLibroHuespedBackBean.listaEmpresas}"
+                                         paginatorPosition="top" reflow="true"
+                                         selectionMode="single"
+                                         selection="#{listaPermisoLibroHuespedBackBean.selectedRow}"
+                                         rowKey="#{r.id}"
+                                         paginator="true"
+                                         emptyMessage="#{labelName.tableEmptyMessage}"
+                                         rows="10"
+                                         pageLinks="5"
+                                         scrollable="false"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                <f:facet name="header">
+                                    <div class="ui-g">
+                                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                            <p:selectOneMenu id="departamentoFilter" widgetVar="departamentoFilter"
+                                                             style="width: 100%"
+                                                             label="Departamento:"
+                                                             value="#{listaPermisoLibroHuespedBackBean.cmbDptoBuscar}"
+                                                             filter="true"
+                                                             filterMatchMode="contains">
+                                                <p:ajax event="change"
+                                                        listener="#{listaPermisoLibroHuespedBackBean.cargarListaEmpresasDepto}"
+                                                        update="dtEmpresaTuristica municipioFilter"/>
+
+                                                <f:selectItem itemLabel="Seleccione un Departamento"
+                                                              itemValue="#{null}"/>
+                                                <f:selectItems var="cmbdepartamento"
+                                                               value="#{listaPermisoLibroHuespedBackBean.listaDepartamentos}"
+                                                               itemLabel="#{cmbdepartamento.nombre}"
+                                                               itemValue="#{cmbdepartamento.id}"/>
+                                            </p:selectOneMenu></div>
+                                        <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                            <p:selectOneMenu id="municipioFilter" style="width:100%"
+                                                             label="municipio"
+                                                             value="#{listaPermisoLibroHuespedBackBean.cmbMunicipio}"
+                                                             filter="true"
+                                                             filterMatchMode="contains">
+
+                                                <p:ajax listener="#{listaPermisoLibroHuespedBackBean.cargarListaEmpresaMunicipios}"
+                                                        update="dtEmpresaTuristica"/>
+
+                                                <f:selectItem itemLabel="Seleccione un Municipio" itemValue="#{null}"/>
+                                                <f:selectItems var="cmbmunicipio"
+                                                               value="#{listaPermisoLibroHuespedBackBean.listaMunicipio}"
+                                                               itemLabel="#{cmbmunicipio.nombre}"
+                                                               itemValue="#{cmbmunicipio.id}"/>
+                                            </p:selectOneMenu></div>
+                                    </div>
+                                </f:facet>
+
+                                <p:column id="nomEstab" filterBy="#{r.nombre_establecimiento}"
+                                          filterMatchMode="contains"
+                                          filterStyle="width: 90% !important;"
+                                          sortBy="#{r.nombre_establecimiento}" headerText="Nombre del Establecimiento"
+                                >
+                                    <h:outputText value="#{r.nombre_establecimiento}"/>
+                                </p:column>
+                                <p:column filterBy="#{r.segmento}" filterMatchMode="contains"
+                                          filterStyle="width: 95% !important;"
+                                          sortBy="#{r.segmento}" headerText="Segmento"
+                                >
+                                    <h:outputText value="#{r.segmento}"/>
+                                </p:column>
+                                <p:column filterBy="#{r.actividad}" filterMatchMode="contains"
+                                          filterStyle="width: 95% !important;"
+                                          sortBy="#{r.actividad}" headerText="Actividad">
+                                    <h:outputText value="#{r.actividad}"/>
+                                </p:column>
+                                <p:column filterBy="#{r.categoria}" filterMatchMode="contains"
+                                          filterStyle="width: 95% !important;"
+                                          sortBy="#{r.categoria}" headerText="Categoria">
+                                    <h:outputText value="#{r.categoria}"/>
+                                </p:column>
+                                <p:column filterBy="#{r.departamento}" filterMatchMode="contains"
+                                          filterStyle="width: 95% !important;"
+                                          sortBy="#{r.departamento}" headerText="Departamento"
+                                >
+                                    <h:outputText value="#{r.departamento}"/>
+                                </p:column>
+                                <p:column filterBy="#{r.municipio}" filterMatchMode="contains"
+                                          filterStyle="width: 95% !important;"
+                                          sortBy="#{r.municipio}" headerText="Municipio"
+                                >
+                                    <h:outputText value="#{r.municipio}"/>
+                                </p:column>
+                                <p:column filterBy="#{r.usuario}" filterMatchMode="contains"
+                                          filterStyle="width: 95% !important;"
+                                          sortBy="#{r.usuario}" headerText="Usuario"
+                                >
+                                    <h:outputText value="#{r.usuario}"/>
+                                </p:column>
+                                <p:column headerText="Permiso" style="text-align: center">
+                                    <p:commandButton id="btnPermiso" icon="fa fa-plus-circle" styleClass="cyan-btn"
+                                                     label="Permiso"
+                                                     actionListener="#{listaPermisoLibroHuespedBackBean.abrirModalPermiso(r.usuarioid, r.entidadid, r.nombre_establecimiento, r.usuario, r.rolid, r.rol)}"
+                                                     update=":formPermisoLibHuesped"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:outputPanel>
+
+                    </p:panel>
+                </h:form>
+            </div>
+        </div>
+        <!--Modal Cambiar Permiso Libro Huesped-->
+        <p:dialog header="Permiso Libro Huesped" id="modalPermisoLH"
+                  widgetVar="modalPermisoLH" modal="true" resizable="false" width="90%"  responsive="true" closable="false">
+            <h:form id="formPermisoLibHuesped">
+                <p:panel styleClass="fondoPaneles">
+                    <p:focus context="formPermisoLibHuesped"/>
+                    <f:facet name="header">
+                        <h:outputText value="#{listaPermisoLibroHuespedBackBean.nomEmpresa}"/>
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton id="btnProcesarPermiso"
+                                                 icon="fa fa-save" styleClass="green-btn" value="Agregar" style="width: 100%"
+                                                 actionListener="#{listaPermisoLibroHuespedBackBean.procesar}"
+                                                 update=":formPermisos :formPermisoLibHuesped"/></div>
+                            <div class="ui-g-12 ui-md-6 ui-lg-3">
+                                <p:commandButton icon="fa fa-ban" styleClass="orange-btn" value="#{labelName.btnCerrarModal}"
+                                                 id="btnCerrar" style="width: 100%"
+                                                 actionListener="#{listaPermisoLibroHuespedBackBean.cerrarModalPermiso}"
+                                                 immediate="true"
+                                                 update=":formPermisos :formPermisoLibHuesped"/></div>
+                        </div>
+                    </f:facet>
+                    <h:panelGrid columns="2" cellpadding="10" style="width: 100%"
+                                 columnClasses="Wid10,Wid90">
+
+                        <p:outputLabel for="itUsuario" value="Usuario:"/>
+                        <p:inputText maxlength="15" id="itUsuario"
+                                     autocomplete="off"
+                                     value="#{listaPermisoLibroHuespedBackBean.nomUsuario}" label="itUsuario"
+                                     required="true"
+                                     disabled="true"
+                                     style="width: 95%;background-color: #F7E3A4; color: #1a1a1a; font: bold">
+                        </p:inputText>
+                        <p:outputLabel for="itRol" value="Rol Asignado:"/>
+                        <p:inputText maxlength="15" id="itRol"
+                                     autocomplete="off"
+                                     value="#{listaPermisoLibroHuespedBackBean.nomRol}" label="itRol"
+                                     disabled="true"
+                                     style="width: 95%;background-color: #F7E3A4; color: #1a1a1a; font: bold">
+                        </p:inputText>
+                        <p:outputLabel for="somRol" value="Rol:"/>
+                        <p:selectOneMenu id="somRol" style="width: 95%;"
+                                         label="somRol"
+                                         required="true"
+                                         value="#{listaPermisoLibroHuespedBackBean.cmbRol}">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="#{null}"/>
+                            <f:selectItems var="pre"
+                                           value="#{listaPermisoLibroHuespedBackBean.listaRoles}"
+                                           itemLabel="#{pre.nombre}"
+                                           itemValue="#{pre.id}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                </p:panel>
+
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

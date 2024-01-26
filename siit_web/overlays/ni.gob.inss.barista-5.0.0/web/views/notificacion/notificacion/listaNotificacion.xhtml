@@ -1,0 +1,267 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps"
+                template="/web/template/innerLayout.xhtml">
+
+
+    <ui:param name="paramBackBean" value="#{listaNotificacionBackBean}"/>
+
+    <ui:define name="headerContent">
+        <h:outputText value="Mensajeria"/>
+        <mc:textoReplica servidorReplicacion="#{listaNotificacionBackBean.servidorReplicacion}"/>
+
+    </ui:define>
+    <ui:define name="content">
+        <style type="text/css">
+            .verticalAlign {
+                vertical-align: middle !important;
+            }
+
+            table.nopadding td {
+                padding: 0 !important;
+            }
+
+            .width13 {
+                width: 13% !important;
+            }
+
+            .center {
+                text-align: center !important;
+            }
+
+            .ui-panel .ui-panel-content {
+                height: 0%;
+            }
+        </style>
+        <div class="ContainerIndent">
+            <div class="Container50 Responsive">
+                <h:form id="formLista" style="width: 50%;float: left">
+                    <p:panel styleClass="fondoPaneles">
+                        <f:facet name="header">
+                            <p:outputPanel style="display: block" styleClass="left">
+                                <p:inputText
+                                        maxlength="150"
+                                        autocomplete="off"
+                                        placeholder="#{labelName.placeholderBuscar}"
+                                        value="#{listaNotificacionBackBean.txtBuscar}"/>
+                                <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}" ajax="true"
+                                                 update="formLista" action="#{listaNotificacionBackBean.cargarLista}"/>
+                            </p:outputPanel>
+                            <p:outputPanel style="display: block" styleClass="right">
+                                <p:commandButton icon="ui-icon-circle-plus" value="#{labelName.btnAgregar}"
+                                                 update=":formDetalle" action="#{listaNotificacionBackBean.limpiar}"
+                                                 resetValues="true"/>
+                                <p:commandButton icon="ui-icon-pencil"
+                                                 value="#{labelName.btnEditar}"
+                                                 update=":formDetalle"
+                                                 action="#{listaNotificacionBackBean.editar}"
+                                                 resetValues="true"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:outputPanel styleClass="tableClass">
+                            <p:dataTable style="width: 100%" var="r"
+                                         value="#{listaNotificacionBackBean.listaNotificacions}"
+                                         paginatorPosition="top"
+                                         selectionMode="single"
+                                         scrollable="true"
+                                         scrollHeight="410"
+                                         selection="#{listaNotificacionBackBean.notificacionSeleccionado}"
+                                         rowKey="#{r.id}"
+                                         paginator="true"
+                                         emptyMessage="#{labelName.tableEmptyMessage}"
+                                         rows="12"
+                                         pageLinks="3"
+                                         paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                         currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                                <!-- Evento doble click sobre una fila -->
+                                <p:ajax event="rowDblselect" listener="#{listaNotificacionBackBean.editar()}"
+                                        update=":formDetalle"/>
+
+                                <p:column headerText="Título">
+                                    <h:outputText value="#{r.titulo}"/>
+                                </p:column>
+
+                                <p:column headerText="Fecha">
+                                    <h:outputText
+                                            value="#{configApplicationBean.dateToString(r.fecha)} - #{configApplicationBean.dateToTime(r.hora)}"/>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:panel>
+                </h:form>
+            </div>
+
+            <div class="Container50 Responsive">
+                <h:form id="formDetalle" style="width: 49%;float: right">
+                    <p:panel style="height: 540px;" styleClass="fondoPaneles">
+                        <f:facet name="header">
+                            <h:outputText value="ID: #{listaNotificacionBackBean.id}"
+                                          rendered="#{!listaNotificacionBackBean.nuevoRegistro}"/>
+
+                            <p:outputPanel style="display: block" styleClass="right">
+                                <p:commandButton icon="ui-icon-disk" value="#{labelName.btnGuardar}"
+                                                 actionListener="#{listaNotificacionBackBean.guardar}"
+                                                 update="formDetalle :formLista"
+                                                 rendered="#{listaNotificacionBackBean.btnGuardarVisible}"/>
+                                <p:commandButton icon="ui-icon-trash" value="#{labelName.btnEliminar}"
+                                                 actionListener="#{listaNotificacionBackBean.elminar}"
+                                                 update="formDetalle :formLista"
+                                                 rendered="#{listaNotificacionBackBean.btnElminiarVisible}">
+                                    <p:confirm header="#{dialogText.deleteConfirmationTextHeader}"
+                                               message="#{dialogText.deleteConfirmationTextContent}"
+                                               icon="ui-icon-alert"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-cancel" value="#{labelName.btnCancelar}"
+                                                 actionListener="#{listaNotificacionBackBean.limpiar}"
+                                                 update="formDetalle"
+                                                 resetValues="true" process="@this"/>
+                            </p:outputPanel>
+
+                        </f:facet>
+
+                        <p:panelGrid columns="2" style="width: 100%" styleClass="panelGridClass"
+                                     columnClasses="width20">
+
+                            <p:outputLabel for="fecha" value="Fecha:"/>
+                            <p:panelGrid columns="3" style="width: 100%;padding: 4px 0px !important;"
+                                         styleClass="nopadding">
+
+                                <p:calendar id="fecha" pattern="#{configApplicationBean.formatoFecha}" mask="true"
+                                            styleClass="width90"
+                                            value="#{listaNotificacionBackBean.dtFecha}"
+                                            maxdate="#{auditoriaUsuarioBackBean.now}"
+                                            placeholder="Fecha"/>
+
+                                <p:outputLabel for="hora" value="Hora:"/>
+                                <p:calendar id="hora" value="#{listaNotificacionBackBean.tmHora}"
+                                            pattern="HH:mm a" timeOnly="true"
+                                            placeholder="Hora"/>
+
+                            </p:panelGrid>
+                            <p:outputLabel for="titulo" value="Título:"/>
+                            <p:inputText maxlength="150" id="titulo" label="Título"
+                                         required="true"
+                                         styleClass="width90"
+                                         autocomplete="off"
+                                         style="text-transform: none !important;"
+                                         value="#{listaNotificacionBackBean.txtTitulo}">
+                                <f:validateRegex pattern="#{listaNotificacionBackBean.regExpTexto}"/>
+                                <f:validateLength minimum="0" maximum="200"/>
+                            </p:inputText>
+
+                            <p:outputLabel for="tipo" value="Tipo:"/>
+                            <p:selectOneMenu id="tipo" style="width: 90%" label="Tipo"
+                                             value="#{listaNotificacionBackBean.cmbTipo}"
+                                             required="true">
+                                <f:selectItem itemLabel="NACIONAL" itemValue="N"/>
+                                <f:selectItem itemLabel="INTERNACIONAL" itemValue="I"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="categoria" value="Categoria:"/>
+                            <p:selectOneMenu id="categoria" style="width: 90%" label="Categoría"
+                                             value="#{listaNotificacionBackBean.cmbCategoria}"
+                                             required="true">
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="#{null}"/>
+                                <f:selectItems var="md" value="#{listaNotificacionBackBean.listaCategorias}"
+                                               itemLabel="#{md.nombre}"
+                                               itemValue="#{md.codigo}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="tag" value="Etiqueta:"/>
+                            <p:panelGrid columns="2" styleClass="nopadding" columnClasses="width13,width10">
+                                <p:autoComplete id="tag" multiple="true" value="#{listaNotificacionBackBean.listadoTag}"
+                                                completeMethod="#{listaNotificacionBackBean.cargarListaTags}"
+                                                maxResults="15"
+                                                var="tag" itemLabel="#{tag.nombre}" itemValue="#{tag.nombre}"
+                                                forceSelection="true">
+                                    <p:column>
+                                        <h:outputText value="#{tag.nombre}"/>
+                                    </p:column>
+                                </p:autoComplete>
+
+                                <p:commandButton icon="ui-icon-plus" value="Nueva Etiqueta"
+                                                 oncomplete="PF('modalRecursos').show();" immediate="true" ajax="true"/>
+
+                            </p:panelGrid>
+
+                            <p:outputLabel for="Notificacion" value="Notificación:"/>
+                            <p:inputTextarea autoResize="false"
+                                             maxlength="1500"
+                                             scrollHeight="100"
+                                             required="true"
+                                             rows="10"
+                                             styleClass="width90"
+                                             id="Notificacion" label="Notificacion"
+                                             autocomplete="on"
+                                             value="#{listaNotificacionBackBean.txtNotificacion}"
+                                             style="text-transform: none !important;"
+                                             counter="display" counterTemplate="{0} caracteres faltantes.">
+                                <f:validateLength minimum="0" maximum="1500"/>
+                            </p:inputTextarea>
+                            <h:outputText/>
+                            <h:outputText id="display" style="float: right"/>
+
+                            <p:outputLabel for="fuente" value="Fuente de la Noticia:"/>
+                            <p:inputText maxlength="200" id="fuente" label="Fuente de la Noticia"
+                                         required="true"
+                                         styleClass="width90"
+                                         autocomplete="off"
+                                         value="#{listaNotificacionBackBean.txtFuente}"
+                                         style="text-transform: none !important;">
+                                <f:validateRegex pattern="#{listaNotificacionBackBean.regExpTexto}"/>
+                                <f:validateLength minimum="0" maximum="150"/>
+                            </p:inputText>
+
+                            <p:outputLabel for="pasivo" value="Pasivo:"
+                                           rendered="#{listaNotificacionBackBean.mostrarExtras}"/>
+                            <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo"
+                                                   value="#{listaNotificacionBackBean.rbPasivo}"
+                                                   rendered="#{listaNotificacionBackBean.mostrarExtras}"/>
+
+                            <p:outputLabel for="verificado" value="Verificado:"
+                                           rendered="#{listaNotificacionBackBean.mostrarExtras}"/>
+                            <p:selectBooleanButton onLabel="Si" offLabel="No" id="verificado"
+                                                   value="#{listaNotificacionBackBean.rbVerificado}"
+                                                   rendered="#{listaNotificacionBackBean.mostrarExtras}"/>
+
+                        </p:panelGrid>
+                    </p:panel>
+
+                </h:form>
+            </div>
+        </div>
+        <p:dialog header="Agregar Nueva Etiqueta" widgetVar="modalRecursos" modal="true" height="100" width="300">
+            <h:form id="nuevoTag" style="width: 100%;">
+                <p:panel>
+                    <f:facet name="header">
+                        <p:outputPanel style="display: block" styleClass="right">
+                            <p:commandButton icon="ui-icon-circle-plus" value="#{labelName.btnAgregar}" ajax="true"
+                                             action="#{listaNotificacionBackBean.guardarTag}" update=":formDetalle:tag"
+                                             oncomplete="PF('modalRecursos').hide();"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:outputPanel>
+                        <p:outputLabel for="nuevoTags" value="Nombre:"/>
+                        <p:inputText maxlength="200" id="nuevoTags" label="Nombre"
+                                     required="true"
+                                     styleClass="width90"
+                                     autocomplete="off"
+                                     value="#{listaNotificacionBackBean.txtNewTag}">
+                            <f:validateRegex pattern="#{listaNotificacionBackBean.regExpTexto}"/>
+                            <f:validateLength minimum="0" maximum="100"/>
+                        </p:inputText>
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

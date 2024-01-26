@@ -1,0 +1,250 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/web/template/innerLayout.xhtml">
+
+    <ui:param name="paramBackBean" value="#{viewGeneradorReporteAuditoriaBackBean}"/>
+
+    <ui:define name="headerContent">
+        Generador de Reporte de la Auditoría del SIIT
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="formGeneradorReportes" style="width: 100%">
+            <p:panel id="panelReporte" styleClass="fondoPaneles">
+                <f:facet name="header">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12">
+                            <p:selectOneMenu id="reporte"
+                                             filter="true"
+                                             required="true"
+                                             filterMatchMode="contains"
+                                             label="Reporte" title="Reporte"
+                                             value="#{viewGeneradorReporteAuditoriaBackBean.RReporte}">
+                                <f:selectItem itemLabel="Seleccione un Reporte " itemValue="#{null}"/>
+
+                                <f:selectItems var="pre"
+                                               value="#{viewGeneradorReporteAuditoriaBackBean.listaReporte}"
+                                               itemLabel="#{pre.nombre}"
+                                               itemValue="#{pre.codigo}"/>
+                                <p:ajax event="change" update="formGeneradorReportes"
+                                        listener="#{viewGeneradorReporteAuditoriaBackBean.cambiarMostrarFiltros}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                </f:facet>
+
+                <p:panel id="parametros" styleClass="fondoPaneles">
+                    <p:panel id="parametros1" styleClass="fondoPaneles"
+                             rendered="#{viewGeneradorReporteAuditoriaBackBean.mostrarFiltros}">
+
+                        <div class="ui-g-12 ui-md-12 ui-lg-12">
+                            <p:selectOneMenu id="delegacion" style="width: 100%;"
+                                             filter="true"
+                                             disabled="#{sessionBean.entidadActual.id == 1 ? false : true}"
+                                             filterMatchMode="contains"
+                                             label="Delegación" title="Delegación"
+                                             required="true"
+                                             value="#{viewGeneradorReporteAuditoriaBackBean.cmbDelegacion}">
+                                <f:selectItem itemLabel="Seleccione una delegación" itemValue="#{null}"/>
+                                <f:selectItems var="del"
+                                               value="#{viewGeneradorReporteAuditoriaBackBean.listaDelegaciones}"
+                                               itemLabel="#{del.nombre}"
+                                               itemValue="#{del.id}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <p:panelGrid columns="3" styleClass="panelPMD" style="border: none;" id="filtro"
+                                     columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-3"
+                                     layout="grid">
+                            <p:outputLabel value="Filtro Empresas:"/>
+                            <p:selectOneRadio id="filemp"
+                                              value="#{viewGeneradorReporteAuditoriaBackBean.RFiltro}"
+                                              required="true"
+                                              requiredMessage="Tiene que seleccionar el filtro de empresa">
+                                <f:selectItem itemLabel="Empresa Especifica" itemValue="1"/>
+                                <f:selectItem itemLabel="Todas las Empresas" itemValue="0"/>
+                                <p:ajax event="change" update="emptur"
+                                        listener="#{viewGeneradorReporteAuditoriaBackBean.cambiarMostrarEmpresa}"/>
+                            </p:selectOneRadio>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="3" styleClass="panelPMD" style="border: none;" id="emptur"
+                                     columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1"
+                                     layout="grid">
+                            <p:outputLabel value="Empresa Turística:" for="empturist"/>
+                            <p:inputText autocomplete="off"
+                                         disabled="true"
+                                         id="empturist"
+                                         label="empturist"
+                                         style="width: 95%; background-color: #F7E3A4; color: #1a1a1a; font: bold"
+                                         value="#{viewGeneradorReporteAuditoriaBackBean.txtnounicoemptur}">
+                            </p:inputText>
+
+                            <p:commandButton icon="fa fa-search" styleClass="teal-btn"
+                                             ajax="true"
+                                             style="width: 20%; padding-left: 0%"
+                                             disabled="#{viewGeneradorReporteAuditoriaBackBean.mostrarBotonEmpresa}"
+                                             actionListener="#{viewGeneradorReporteAuditoriaBackBean.abrirModalEmpresas}"
+                                             update=":formEmpresas"/>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel id="parametros2" styleClass="fondoPaneles" style="width:99.5%;height:120px;"
+                             rendered="#{viewGeneradorReporteAuditoriaBackBean.mostrarFiltros2}">
+                        <h:panelGrid columns="2" styleClass="panelPMD"
+                                     columnClasses="ui-grid-col-6,ui-grid-col-6" style="border: none;"
+                                     layout="grid">
+                            <p:outputLabel value="Usuario del Sistema: " for="empleados"/>
+                            <p:autoComplete id="empleados"
+                                            placeholder="Ingrese nombre de usuario del sistema..."
+                                            value="#{viewGeneradorReporteAuditoriaBackBean.usuarioSeleccionado}"
+                                            completeMethod="#{viewGeneradorReporteAuditoriaBackBean.listaUsuarios}"
+                                            var="usuarioSeleccionado" maxResults="10"
+                                            itemLabel="#{usuarioSeleccionado!=null?usuarioSeleccionado.nombres.concat(' ').concat(usuarioSeleccionado.apellidos).concat(' - ').concat(usuarioSeleccionado.username):''}"
+                                            itemValue="#{usuarioSeleccionado!=null?usuarioSeleccionado.id.toString():''}"
+                                            inputStyle="width: 300% !important;"
+                                            forceSelection="true" required="true">
+                            </p:autoComplete>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:panel>
+
+                <p:panel id="parametrosPeriodoBorrar" styleClass="fondoPaneles"
+                         style="width:100%;height:80px;">
+                    <p:panel id="parametrosPeriodo" styleClass="fondoPaneles" style="width:99.5%;height:60px;">
+                        <h:panelGrid columns="2" styleClass="panelPMD" columnClasses="Wid10, Wid45"
+                                     style="border: none;" layout="grid">
+                            <p:outputLabel value="Fecha Inicio: " for="fechaInicio"/>
+                            <p:calendar id="fechaInicio" pattern="dd/MM/yyyy"
+                                        mask="99/99/9999"
+                                        navigator="true"
+                                        required="false"
+                                        disabledWeekends="false" showOn="button"
+                                        showButtonPanel="true" size="12"
+                                        effect="fadeIn"
+                                        effectDuration="100"
+                                        style="vertical-align: middle; width: 99%;"
+                                        value="#{viewGeneradorReporteAuditoriaBackBean.fechaInicio}"
+                                        placeholder="Fecha Inicial">
+                                <p:ajax event="dateSelect" update="fechaInicio"/>
+                            </p:calendar>
+                            <p:outputLabel value="Fecha Fin: " for="fechaFin"/>
+                            <p:calendar id="fechaFin" pattern="dd/MM/yyyy"
+                                        mask="99/99/9999"
+                                        navigator="true"
+                                        required="false"
+                                        disabledWeekends="false" showOn="button"
+                                        showButtonPanel="true" size="12"
+                                        effect="fadeIn"
+                                        effectDuration="100"
+                                        style="vertical-align: middle; width: 99%;"
+                                        value="#{viewGeneradorReporteAuditoriaBackBean.fechaFin}"
+                                        placeholder="Fecha Final">
+                                <p:ajax event="dateSelect" update="fechaFin"/>
+                            </p:calendar>
+
+                        </h:panelGrid>
+                    </p:panel>
+
+                </p:panel>
+
+                <p:panel id="boton" styleClass="fondoPaneles" style="width:100%">
+                    <p:commandButton value="Imprimir" id="withIcon"
+                                     actionListener="#{viewGeneradorReporteAuditoriaBackBean.imprimirReporte}"
+                                     ajax="false" icon="fa fa-print" styleClass="orange-btn"/>
+                </p:panel>
+            </p:panel>
+        </h:form>
+
+        <!-- Buscar Empresa -->
+        <p:dialog header="Buscar Empresas" widgetVar="modalEmpresas" modal="true" closable="false" resizable="false"
+                  responsive="true"
+                  width="90%">
+            <h:form id="formEmpresas" style="width: 99%; float: left">
+                <p:panel styleClass="fondoPaneles">
+                    <f:facet name="header">
+                        <p:outputPanel style="display: block" styleClass="right">
+                            <p:commandButton icon="fa fa-check-square-o" styleClass="amber-btn" value="Seleccionar"
+                                             ajax="true"
+                                             oncomplete="PF('modalEmpresas').hide();"
+                                             action="#{viewGeneradorReporteAuditoriaBackBean.seleccionarEmpresa}"
+                                             update=":formEmpresas :formGeneradorReportes"
+                                             resetValues="true"/>
+                            <p:commandButton icon="fa fa-close" styleClass="blue-grey-btn"
+                                             value="#{labelName.btnCerrarModal}"
+                                             id="btnCerrarModalEmpresas"
+                                             actionListener="#{viewGeneradorReporteAuditoriaBackBean.cerrarModalEmpresas}"
+                                             ajax="true" update="formEmpresas"
+                                             immediate="true"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:outputPanel styleClass="maxHeight tableClass">
+                        <p:dataTable style="width: 100%" var="r" id="dataTableET"
+                                     widgetVar="dtEmpresaTuristica"
+                                     value="#{viewGeneradorReporteAuditoriaBackBean.listaEmpresas}"
+                                     paginatorPosition="top"
+                                     selectionMode="single"
+                                     selection="#{viewGeneradorReporteAuditoriaBackBean.selectedRow}"
+                                     rowKey="#{r.id}"
+                                     paginator="true"
+                                     emptyMessage="#{labelName.tableEmptyMessage}"
+                                     rows="12"
+                                     reflow="true"
+                                     pageLinks="5"
+                                     scrollable="false"
+                                     scrollHeight="500px"
+                                     paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                     currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="Buscar por todas las columnas: "/>
+                                    <p:inputText id="globalFilter" onkeyup="PF('dtEmpresaTuristica').filter()"
+                                                 style="width:400px" placeholder="Escriba la palabra"/>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:ajax event="rowDblselect"
+                                    listener="#{viewGeneradorReporteAuditoriaBackBean.seleccionarEmpresa}"
+                                    update=":formGeneradorReportes" resetValues="true"/>
+
+                            <p:column id="columnNoUnico" filterBy="#{r.no_unico}" filterMatchMode="contains"
+                                      filterStyle="width: 90% !important;"
+                                      sortBy="#{r.no_unico}" headerText="Número Único" style="width: 15% !important;">
+                                <h:outputText value="#{r.no_unico}"/>
+                            </p:column>
+                            <p:column filterBy="#{r.no_ruc}" filterMatchMode="contains"
+                                      filterStyle="width: 95% !important;"
+                                      sortBy="#{r.no_ruc}" headerText="Número RUC" style="width: 15% !important;">
+                                <h:outputText value="#{r.no_ruc}"/>
+                            </p:column>
+                            <p:column filterBy="#{r.nombre_establecimiento}" filterMatchMode="contains"
+                                      filterStyle="width: 95% !important;"
+                                      sortBy="#{r.nombre_establecimiento}" headerText="Nombre Establecimiento"
+                                      style="width: 35% !important;">
+                                <h:outputText value="#{r.nombre_establecimiento}"/>
+                            </p:column>
+                            <p:column filterBy="#{r.actividad}" filterMatchMode="contains"
+                                      filterStyle="width: 95% !important;"
+                                      sortBy="#{r.actividad}" headerText="Actividad"
+                                      style="width: 15% !important;">
+                                <h:outputText value="#{r.actividad}"/>
+                            </p:column>
+                            <p:column filterBy="#{r.entidad}" filterMatchMode="contains"
+                                      filterStyle="width: 95% !important;"
+                                      sortBy="#{r.entidad}" headerText="Delegación"
+                                      style="width: 20% !important;">
+                                <h:outputText value="#{r.entidad}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,187 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:mc="http://java.sun.com/jsf/composite/comps"
+                template="/web/template/innerLayout.xhtml">
+
+
+    <ui:param name="paramBackBean" value="#{listaNotificacionVerificadaBackBean}" />
+
+    <ui:define name="headerContent">
+        <h:outputText value="Mensajeria Verificada"/>
+        <mc:textoReplica servidorReplicacion="#{listaNotificacionVerificadaBackBean.servidorReplicacion}"/>
+
+    </ui:define>
+    <ui:define name="content">
+
+        <h:form id="formLista" style="width: 50%;float: left">
+            <p:panel style="height: 540px">
+                <f:facet name="header">
+                    <p:outputPanel style="display: block" styleClass="left">
+                        <p:inputText
+                                maxlength="150"
+                                autocomplete="off"
+                                placeholder="#{labelName.placeholderBuscar}"
+                                value="#{listaNotificacionVerificadaBackBean.txtBuscar}"/>
+                        <p:commandButton icon="ui-icon-search" value="#{labelName.btnBuscar}" styleClass="teal-btn" ajax="true" update="formLista" action="#{listaNotificacionVerificadaBackBean.cargarLista}"/>
+                    </p:outputPanel>
+                    <p:outputPanel style="display: block" styleClass="right">
+                        <p:commandButton icon="ui-icon-pencil"
+                                         value="Mostrar"
+                                         update=":formDetalle"
+                                         action="Mostrar"
+                                         resetValues="true"/>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:outputPanel styleClass="tableClass" >
+                    <p:dataTable style="width: 100%" var="r"
+                                 value="#{listaNotificacionVerificadaBackBean.listaNotificacions}"
+                                 paginatorPosition="top"
+                                 selectionMode="single"
+                                 scrollable="true"
+                                 scrollHeight="430"
+                                 selection="#{listaNotificacionVerificadaBackBean.notificacionSeleccionado}"
+                                 rowKey="#{r.id}"
+                                 paginator="true"
+                                 emptyMessage="#{labelName.tableEmptyMessage}"
+                                 rows="18"
+                                 pageLinks="3"
+                                 paginatorTemplate="#{configApplicationBean.paginatorTemplate}"
+                                 currentPageReportTemplate="#{configApplicationBean.currentPageReportTemplate}">
+
+                        <!-- Evento doble click sobre una fila -->
+                        <p:ajax event="rowDblselect" listener="#{listaNotificacionVerificadaBackBean.editar()}"
+                                update=":formDetalle" />
+
+                        <p:column headerText="Título">
+                            <h:outputText value="#{r.titulo}" />
+                        </p:column>
+
+                        <p:column headerText="Fecha">
+                            <h:outputText value="#{configApplicationBean.dateToString(r.fecha)} - #{configApplicationBean.dateToTime(r.hora)}" />
+                        </p:column>
+
+                    </p:dataTable>
+                </p:outputPanel>
+            </p:panel>
+        </h:form>
+
+
+        <h:form id="formDetalle" style="width: 49%;float: right" >
+            <p:panel style="height: 540px">
+                <f:facet name="header">
+                    <h:outputText value="ID: #{listaNotificacionVerificadaBackBean.id}"
+                                  rendered="#{!listaNotificacionVerificadaBackBean.nuevoRegistro}"/>
+
+                    <p:outputPanel style="display: block" styleClass="right">
+                    </p:outputPanel>
+
+                </f:facet>
+
+                <p:panelGrid columns="2" style="width: 100%" styleClass="panelGridClass" columnClasses="width20">
+
+                    <p:outputLabel for="fecha" value="Fecha:"/>
+                    <p:panelGrid columns="3" style="width: 100%;padding: 4px 0px !important;" styleClass="nopadding">
+
+                        <p:calendar id="fecha" pattern="#{configApplicationBean.formatoFecha}" mask="true"
+                                    styleClass="width90" disabled="true"
+                                    value="#{listaNotificacionVerificadaBackBean.dtFecha}"
+                                    maxdate="#{auditoriaUsuarioBackBean.now}"
+                                    placeholder="Fecha"/>
+
+                        <p:outputLabel for="hora" value="Hora:" />
+                        <p:calendar id="hora" value="#{listaNotificacionVerificadaBackBean.tmHora}"
+                                    pattern="HH:mm a" timeOnly="true" disabled="true"
+                                    placeholder="Hora"/>
+
+                    </p:panelGrid>
+                    <p:outputLabel for="titulo" value="Título:"/>
+                    <p:inputText maxlength="150" id="titulo" label="Título"
+                                 required="true" disabled="true"
+                                 styleClass="width90"
+                                 autocomplete="off"
+                                 style="text-transform: none !important;"
+                                 value="#{listaNotificacionVerificadaBackBean.txtTitulo}">
+                        <f:validateRegex pattern="#{listaNotificacionVerificadaBackBean.regExpTexto}" />
+                        <f:validateLength minimum="0" maximum="200" />
+                    </p:inputText>
+
+                    <p:outputLabel for="tipo" value="Tipo:"/>
+                    <p:selectOneMenu id="tipo" style="width: 90%" label="Tipo" value="#{listaNotificacionVerificadaBackBean.cmbTipo}"
+                                     required="true" disabled="true">
+                        <f:selectItem itemLabel="NACIONAL" itemValue="N"/>
+                        <f:selectItem itemLabel="INTERNACIONAL" itemValue="I"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="categoria" value="Categoria:"/>
+                    <p:selectOneMenu id="categoria" style="width: 90%" label="Categoria" value="#{listaNotificacionVerificadaBackBean.cmbCategoria}"
+                                     required="true" disabled="true">
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue="#{null}"/>
+                        <f:selectItems var="md" value="#{listaNotificacionVerificadaBackBean.listaCategorias}"
+                                       itemLabel="#{md.nombre}"
+                                       itemValue="#{md.codigo}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="tag" value="Etiqueta:"/>
+                    <p:panelGrid columns="2" styleClass="nopadding">
+                        <p:autoComplete id="tag" multiple="true" disabled="true" value="#{listaNotificacionVerificadaBackBean.listadoTag}"
+                                        completeMethod="#{listaNotificacionVerificadaBackBean.cargarListaTags}" maxResults="15"
+                                        var="tag" itemLabel="#{tag.nombre}" itemValue="#{tag.nombre}" forceSelection="true">
+                            <p:column>
+                                <h:outputText  value="#{tag.nombre}" />
+                            </p:column>
+                        </p:autoComplete>
+                    </p:panelGrid>
+
+                    <p:outputLabel for="Notificacion" value="Notificacion:" />
+                    <p:inputTextarea autoResize="false"
+                                     maxlength="1500"
+                                     scrollHeight="100"
+                                     required="true"
+                                     rows="10"
+                                     disabled="true"
+                                     styleClass="width90"
+                                     id="Notificacion" label="Notificacion"
+                                     autocomplete="on"
+                                     value="#{listaNotificacionVerificadaBackBean.txtNotificacion}"
+                                     style="text-transform: none !important;"
+                                     counter="display" counterTemplate="{0} caracteres faltantes.">
+                        <f:validateLength minimum="0" maximum="1500" />
+                    </p:inputTextarea>
+                    <h:outputText />
+                    <h:outputText id="display" style="float: right"/>
+
+                    <p:outputLabel for="fuente" value="Fuente de la Noticia:"/>
+                    <p:inputText maxlength="200" id="fuente" label="Fuente de la Noticia"
+                                 required="true"
+                                 disabled="true"
+                                 styleClass="width90"
+                                 autocomplete="off"
+                                 value="#{listaNotificacionVerificadaBackBean.txtFuente}"
+                                 style="text-transform: none !important;">
+                        <f:validateRegex pattern="#{listaNotificacionVerificadaBackBean.regExpTexto}" />
+                        <f:validateLength minimum="0" maximum="150" />
+                    </p:inputText>
+
+                    <p:outputLabel for="pasivo" value="Pasivo:"  rendered="#{listaNotificacionVerificadaBackBean.mostrarExtras}"/>
+                    <p:selectBooleanButton onLabel="Si" offLabel="No" id="pasivo" disabled="true"
+                                           value="#{listaNotificacionVerificadaBackBean.rbPasivo}"
+                                           rendered="#{listaNotificacionVerificadaBackBean.mostrarExtras}"/>
+
+                    <p:outputLabel for="verificado" value="Verificado:"  rendered="#{listaNotificacionVerificadaBackBean.mostrarExtras}"/>
+                    <p:selectBooleanButton onLabel="Si" offLabel="No" id="verificado" disabled="true"
+                                           value="#{listaNotificacionVerificadaBackBean.rbVerificado}"
+                                           rendered="#{listaNotificacionVerificadaBackBean.mostrarExtras}"/>
+
+                </p:panelGrid>
+            </p:panel>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
